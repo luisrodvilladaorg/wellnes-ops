@@ -10,7 +10,7 @@ services:
     ports:
       - "8080:80"                 # Host 8080 → contenedor 80
     networks:
-      - web_net                   # Red privada web
+      - web_net
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost"]
@@ -29,14 +29,38 @@ services:
     ports:
       - "80:80"                   # Punto de entrada al sistema
     depends_on:
-      - frontend                  # Espera a que frontend esté levantado
+      - frontend
+      - backend
     networks:
-      - web_net                   # Misma red que frontend
+      - web_net
+      - backend_net
     restart: unless-stopped
+
+  # ==========================
+  # Backend API
+  # ==========================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: wellness-backend-container
+    env_file:
+      - env/dev/.env
+    networks:
+      - backend_net               # Red separada (seguridad)
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
 # ==========================
 # Networks
 # ==========================
 networks:
   web_net:
+    driver: bridge
+
+  backend_net:
     driver: bridge
