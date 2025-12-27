@@ -1,0 +1,1 @@
+contenedor frontend profesional, típico de empresa, que sirva una web estática, esté en una red personalizada web_net, y que podamos probarlo y validarlo antes de seguir.

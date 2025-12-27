@@ -1,0 +1,24 @@
+#Frontend container
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: wellness-frontend-container
+    ports:
+      - "8080:80"           # Host 8080 → contenedor 80
+    networks:
+      - web_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+networks:
+  web_net:
+    driver: bridge
+
+

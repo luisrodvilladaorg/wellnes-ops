@@ -1,0 +1,18 @@
+# Imagen oficial y estable de Nginx (muy usada en empresas)
+FROM nginx:stable-alpine
+
+# Eliminamos la configuración por defecto
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copiamos la web estática al directorio que Nginx sirve
+COPY mi-web/ /usr/share/nginx/html/
+
+# Exponemos el puerto interno 80 (Nginx estándar)
+EXPOSE 80
+
+# Healthcheck para verificar que Nginx responde
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
+    CMD wget -qO- http://localhost || exit 1
+
+# Arrancamos Nginx en primer plano
+CMD ["nginx", "-g", "daemon off;"]
