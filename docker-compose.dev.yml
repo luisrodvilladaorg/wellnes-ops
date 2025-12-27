@@ -55,6 +55,27 @@ services:
       timeout: 3s
       retries: 3
 
+  # ==========================
+  # PostgreSQL Database
+  # ==========================
+  postgres:
+    image: postgres:15-alpine
+    container_name: wellness-postgres-db
+    env_file:
+      - env/dev/.env
+    volumes:
+      - db-data:/var/lib/postgresql/data   # Persistencia real
+    networks:
+      - backend_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+
 # ==========================
 # Networks
 # ==========================
@@ -64,3 +85,11 @@ networks:
 
   backend_net:
     driver: bridge
+
+# ==========================
+# Volumes
+# ==========================
+
+
+volumes:
+  db-data:
