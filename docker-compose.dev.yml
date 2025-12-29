@@ -52,7 +52,7 @@ services:
       - backend_net               # Red separada (seguridad)
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
       interval: 10s
       timeout: 3s
       retries: 3
