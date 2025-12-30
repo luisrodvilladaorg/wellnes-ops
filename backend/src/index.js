@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 3000;
 
 const auth = require("./middleware/auth");
 
+//Required Role
+const requireRole = require("./middleware/requireRole");
+
 app.use(express.json());
 
 //EndPoint login
@@ -168,7 +171,8 @@ app.delete("/entries/:id", async (req, res) => {
 // ==========================
 // DELETE entry by ID
 // ==========================
-app.delete("/entries/:id", auth, async (req, res) => {
+app.delete("/entries/:id", auth, requireRole("admin"), async (req, res) => {
+
     const { id } = req.params;
 
     try {
@@ -194,7 +198,8 @@ app.delete("/entries/:id", auth, async (req, res) => {
 // ==========================
 // UPDATE entry
 // ==========================
-app.put("/entries/:id", auth, async (req, res) => {
+app.put("/entries/:id", auth, requireRole("admin"), async (req, res) => {
+
     const { id } = req.params;
     const { title, description } = req.body;
 
