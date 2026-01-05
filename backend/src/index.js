@@ -46,8 +46,11 @@ app.post("/login", (req, res) => {
 // HEALTHCHECKS
 // ==========================
 app.get("/health", (req, res) => {
-    res.json({ status: "OK" });
+    res.status(500).json({ status: "ERROR" });
 });
+
+
+
 
 app.get("/db-health", async (req, res) => {
     try {
