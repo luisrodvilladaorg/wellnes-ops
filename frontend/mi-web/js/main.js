@@ -1,54 +1,76 @@
 document.addEventListener("DOMContentLoaded", () => {
     let editingEntryId = null;
 
-    console.log("JS cargado correctamente");
-
     const form = document.getElementById("entry-form");
     const list = document.getElementById("entries-list");
-
-    console.log("form:", form);
-    console.log("list:", list);
+    const loginSection = document.getElementById("login-section");
+    const appSection = document.getElementById("app-section");
 
     // ==========================
-    // Load entries from backend
+    // Helpers
+    // ==========================
+    function getToken() {
+        return localStorage.getItem("token");
+    }
+
+    function showApp() {
+        loginSection.style.display = "none";
+        appSection.style.display = "block";
+    }
+
+    function showLogin() {
+        loginSection.style.display = "block";
+        appSection.style.display = "none";
+    }
+
+    // ==========================
+    // Load entries
     // ==========================
     async function loadEntries() {
-        const response = await fetch("/api/entries");
-        const entries = await response.json();
+        const res = await fetch("/api/entries");
+        if (!res.ok) return;
 
-        const list = document.getElementById("entries-list");
+        const entries = await res.json();
         list.innerHTML = "";
 
         entries.forEach(entry => {
             const li = document.createElement("li");
-            li.className = "list-group-item d-flex justify-content-between align-items-center";
-
-            li.innerHTML = `
-            <span>
-                <strong>${entry.title}</strong> — ${entry.description || ""}
-            </span>
-            <button class="btn btn-sm btn-warning">Edit</button>
-        `;
-
-            li.querySelector("button").addEventListener("click", () => {
-                document.getElementById("entry-title").value = entry.title;
-                document.getElementById("entry-description").value = entry.description || "";
-                editingEntryId = entry.id;
-            });
-
+            li.className = "list-group-item";
+            li.textContent = `${entry.title} — ${entry.description || ""}`;
             list.appendChild(li);
         });
     }
 
+    // ==========================
+    // Login
+    // ==========================
+    window.login = async function () {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
 
-    // Cargar datos al arrancar
-    loadEntries();
+        const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (!res.ok) {
+            document.getElementById("login-error").innerText = "Login incorrecto";
+            return;
+        }
+
+        const data = await res.json();
+        localStorage.setItem("token", data.token);
+
+        showApp();
+        loadEntries();
+    };
 
     // ==========================
-    // Handle form submit
+    // Create / Update entry
     // ==========================
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
         const title = document.getElementById("entry-title").value.trim();
         const description = document.getElementById("entry-description").value.trim();
@@ -58,28 +80,44 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        const token = getToken();
+        if (!token) {
+            alert("Debes iniciar sesión");
+            showLogin();
+            return;
+        }
+
         const method = editingEntryId ? "PUT" : "POST";
         const url = editingEntryId
             ? `/api/entries/${editingEntryId}`
             : "/api/entries";
 
-        const response = await fetch(url, {
+        const res = await fetch(url, {
             method,
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({ title, description })
         });
 
-        if (!response.ok) {
+        if (!res.ok) {
             alert("Error saving entry");
             return;
         }
 
-        // Reset estado
         editingEntryId = null;
         form.reset();
         loadEntries();
     });
 
+    // ==========================
+    // Init
+    // ==========================
+    if (getToken()) {
+        showApp();
+        loadEntries();
+    } else {
+        showLogin();
+    }
 });
