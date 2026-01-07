@@ -93,8 +93,19 @@ services:
       - backend
     networks:
       - backend_net
+# ==========================
+  # grafana
+  # ==========================
 
-
+  grafana:
+    image: grafana/grafana:latest
+    container_name: wellness-grafana
+    ports:
+    - "3001:3000"
+    depends_on:
+    - prometheus
+    networks:
+    - backend_net
 
 # ==========================
 # Networks

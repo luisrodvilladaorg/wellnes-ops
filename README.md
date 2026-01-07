@@ -115,6 +115,6 @@ It is designed to reflect junior-to-mid DevOps / infrastructure engineering skil
 Auth funcionando
 Form working
 App working 
-Stack 100%
+Stack 100%.
 
 
