@@ -1,9 +1,6 @@
-const express = require("express");
 const jwt = require("jsonwebtoken");
 
-const router = express.Router();
-
-router.post("/login", (req, res) => {
+exports.login = (req, res) => {
     const { username, password } = req.body;
 
     const user = {
@@ -28,9 +25,4 @@ router.post("/login", (req, res) => {
     );
 
     res.json({ token });
-});
-
-module.exports = router;
-
-
-//Routes simplicity routes
+};
