@@ -40,4 +40,4 @@ HEALTHCHECK --interval=10s --timeout=3s \
     CMD wget -qO- http://localhost:3000/health || exit 1
 
 # Arranque
-CMD ["node", "src/index.js"]
+CMD ["node", "src/server.js"]
