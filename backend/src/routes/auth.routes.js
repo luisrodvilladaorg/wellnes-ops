@@ -1,36 +1,40 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
-router.post("/login", (req, res) => {
+// Usuario fijo SOLO para DEV
+const USER = {
+    id: 1,
+    username: "admin",
+    passwordHash: bcrypt.hashSync("admin123", 10),
+    role: "admin"
+};
+
+router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
-    const user = {
-        id: 1,
-        username: "admin",
-        role: "admin",
-        password: "admin123"
-    };
+    if (username !== USER.username) {
+        return res.status(401).json({ error: "Invalid credentials" });
+    }
 
-    if (username !== user.username || password !== user.password) {
+    const valid = await bcrypt.compare(password, USER.passwordHash);
+    if (!valid) {
         return res.status(401).json({ error: "Invalid credentials" });
     }
 
     const token = jwt.sign(
         {
-            id: user.id,
-            username: user.username,
-            role: user.role
+            id: USER.id,
+            username: USER.username,
+            role: USER.role
         },
         process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
+        { expiresIn: "1h" }
     );
 
     res.json({ token });
 });
 
 module.exports = router;
-
-
-//Routes simplicity routes

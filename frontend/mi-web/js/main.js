@@ -25,7 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load entries
     // =========================
     async function loadEntries() {
-        const res = await fetch("/api/entries");
+        const token = getToken();
+
+        const res = await fetch("/api/entries", {
+            headers: token
+                ? { "Authorization": `Bearer ${token}` }
+                : {}
+        });
+
         if (!res.ok) return;
 
         const entries = await res.json();
@@ -38,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             list.appendChild(li);
         });
     }
+
 
     // =========================
     // LOGIN
