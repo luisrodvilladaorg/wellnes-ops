@@ -1,120 +1,115 @@
-Wellness-Ops – Dockerized Web Platform (DevOps Project)
-📌 Overview
+# Wellness Ops
 
-Wellness-Ops is a Docker-based web platform designed to demonstrate real-world DevOps and containerization practices used in enterprise environments.
-The project focuses on service isolation, network segmentation, reverse proxying, and health monitoring, following production-ready architecture patterns.
+DevOps-oriented full-stack application built with Docker, featuring a Node.js backend, PostgreSQL database, Nginx reverse proxy, CI/CD pipeline, and monitoring with Prometheus and Grafana.
 
-This repository is intended as a technical portfolio project to showcase skills in Docker, networking, and backend/frontend integration.
+---
 
-🏗️ Architecture
+## 🧰 Tech Stack
 
-The platform is composed of multiple isolated services connected through dedicated Docker networks:
+- **Backend**: Node.js (Express)
+- **Database**: PostgreSQL
+- **Frontend**: Static HTML / JavaScript
+- **Reverse Proxy**: Nginx
+- **Containerization**: Docker & Docker Compose
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Prometheus & Grafana
+- **Authentication**: JWT
+- **Metrics**: Custom HTTP metrics exposed for Prometheus
 
-Frontend
-Static web application served via Nginx (internal container).
+---
 
-Reverse Proxy (Nginx)
-Acts as the single entry point to the system, routing traffic to frontend and backend services.
+## 🏗 Architecture Overview
 
-Backend API (Node.js)
-REST API exposing health endpoints and prepared for database integration.
+The application is composed of multiple services orchestrated with Docker Compose:
 
-Network Segmentation
+- **Nginx**  
+  Acts as the single entry point and reverse proxy for frontend and backend services.
 
-web_net → Frontend + Nginx Proxy
+- **Backend (Node.js API)**  
+  Provides authentication, CRUD operations, health checks and Prometheus metrics.
 
-backend_net → Backend API (and future database)
+- **PostgreSQL**  
+  Persistent relational database, initialized automatically using SQL scripts.
 
-Only the Nginx reverse proxy has access to both networks, enforcing a secure and enterprise-style communication model.
+- **Frontend**  
+  Static UI consuming the backend API through Nginx.
 
-Wellness-Ops – Dockerized Web Platform (DevOps Project)
-📌 Overview
+- **Prometheus**  
+  Scrapes metrics from the backend.
 
-Wellness-Ops is a Docker-based web platform designed to demonstrate real-world DevOps and containerization practices used in enterprise environments.
-The project focuses on service isolation, network segmentation, reverse proxying, and health monitoring, following production-ready architecture patterns.
+- **Grafana**  
+  Visualizes metrics such as request count and latency.
 
-This repository is intended as a technical portfolio project to showcase skills in Docker, networking, and backend/frontend integration.
+---
 
-🏗️ Architecture
+## 📁 Project Structure
 
-The platform is composed of multiple isolated services connected through dedicated Docker networks:
+```text
+.
+├── backend
+│   ├── src
+│   │   ├── app.js
+│   │   ├── server.js
+│   │   ├── routes
+│   │   ├── middleware
+│   │   ├── metrics
+│   │   └── db.js
+│   ├── test
+│   ├── Dockerfile.dev
+│   └── Dockerfile.prod
+├── frontend
+├── nginx
+├── db
+│   └── init.sql
+├── monitoring
+│   ├── prometheus
+│   └── grafana
+├── docker-compose.dev.yml
+├── docker-compose.prod.yml
+└── README.md
 
-Frontend
-Static web application served via Nginx (internal container).
+CI/CD Pipeline
 
-Reverse Proxy (Nginx)
-Acts as the single entry point to the system, routing traffic to frontend and backend services.
+The project includes a GitHub Actions pipeline that runs on every push and pull request:
 
-Backend API (Node.js)
-REST API exposing health endpoints and prepared for database integration.
+Install backend dependencies
 
-Network Segmentation
+Run automated tests
 
-web_net → Frontend + Nginx Proxy
+Build Docker backend image
 
-backend_net → Backend API (and future database)
+This ensures that code changes are validated before deployment.
 
-Only the Nginx reverse proxy has access to both networks, enforcing a secure and enterprise-style communication model.
+Monitoring & Observability
 
-🧪 Health Checks
+Prometheus scrapes backend metrics exposed at /metrics
 
-Each service implements Docker health checks to ensure service readiness:
+Grafana displays dashboards including:
 
-Frontend → HTTP check on root path
+HTTP request count
 
-Backend → /api/health endpoint
+Request latency
 
-Reverse proxy → container availability
+Endpoint-level metrics
 
-This allows Docker Compose to monitor service state in a production-like manner.
+The backend exposes custom metrics using middleware.
 
-⚙️ Technologies Used
+Security Considerations
 
-Docker & Docker Compose
+JWT-based authentication
 
-Nginx (static serving & reverse proxy)
+Secrets managed via environment variables
 
-Node.js (Backend API)
+Backend isolated behind Nginx reverse proxy
 
-Linux-based containers (Alpine)
+No sensitive data committed to the repository
 
-Environment-based configuration (.env)
+Security Considerations
 
-docker compose -f docker-compose.dev.yml up -d --build
+JWT-based authentication
 
-📈 Project Goals
+Secrets managed via environment variables
 
-This project is intentionally built step by step to reflect how systems evolve in real companies, not just to “make it work”.
+Backend isolated behind Nginx reverse proxy
 
-Upcoming steps include:
-
-PostgreSQL integration with persistent volumes
-
-Database health checks and initialization scripts
-
-HTTPS with certificates
-
-Monitoring with Prometheus & Grafana
-
-CI/CD pipelines
-
-🎯 Why This Project
-
-This repository demonstrates:
-
-Understanding of container isolation and security
-
-Realistic network design
-
-Proper use of reverse proxies
-
-Production-minded service orchestration
-
-It is designed to reflect junior-to-mid DevOps / infrastructure engineering skills in a clear and auditable way.
-06/01
-Auth funcionando
-Form working
-App working 
-Stack 100%.
-
-
+No sensitive data committed to the repository
