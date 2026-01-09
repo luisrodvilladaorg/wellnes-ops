@@ -1,8 +1,9 @@
 const express = require("express");
-const router = express.Router();
-const { client } = require("../metrics");
+const client = require("prom-client");
 
-router.get("/metrics", async (req, res) => {
+const router = express.Router();
+
+router.get("/", async (req, res) => {
     res.set("Content-Type", client.register.contentType);
     res.end(await client.register.metrics());
 });

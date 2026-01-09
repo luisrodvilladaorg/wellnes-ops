@@ -113,3 +113,37 @@ Secrets managed via environment variables
 Backend isolated behind Nginx reverse proxy
 
 No sensitive data committed to the repository
+
+
+                         ┌──────────────────────────┐
+                         │        Frontend          │
+                         │        (Nginx)           │
+                         └────────────┬─────────────┘
+                                      │
+                                      ▼
+                         ┌──────────────────────────┐
+                         │        Nginx Proxy       │
+                         │  Reverse Proxy / Routing │
+                         └────────────┬─────────────┘
+                                      │
+             ┌────────────────────────┼────────────────────────┐
+             │                        │                        │
+             ▼                        ▼                        ▼
+ ┌──────────────────┐      ┌──────────────────┐      ┌──────────────────┐
+ │   Backend API     │      │   Prometheus     │      │     Grafana      │
+ │  Node.js + Auth   │      │ Scraping metrics │      │ Dashboards/Logs  │
+ └─────────┬────────┘      └─────────┬────────┘      └─────────┬────────┘
+           │                           │                         │
+           ▼                           │                         │
+ ┌──────────────────┐                  │                         │
+ │   PostgreSQL DB   │◄────────────────┘                         │
+ │  Init scripts     │                                           │
+ └──────────────────┘                                            │
+                                                                 │
+                     ┌───────────────────────────────────────────┘
+                     │
+                     ▼
+           ┌──────────────────────────┐
+           │        Docker Host       │
+           │  (Compose: dev/prod)     │
+           └──────────────────────────┘
