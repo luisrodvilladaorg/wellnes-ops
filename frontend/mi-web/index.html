@@ -16,12 +16,18 @@
     <!-- ========================= -->
     <!-- NAVBAR -->
     <!-- ========================= -->
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <i class="fas fa-notes-medical mr-2"></i>
+                <i class="fas fa-notes-medical me-2"></i>
                 Wellness Ops
             </a>
+
+            <!-- USER INFO + LOGOUT -->
+            <div id="navbar-user" class="ms-auto d-none d-flex align-items-center text-white">
+                <span id="user-info" class="me-3"></span>
+                <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
+            </div>
         </div>
     </nav>
 
@@ -38,18 +44,14 @@
         <!-- ========================= -->
         <!-- LOGIN SECTION -->
         <!-- ========================= -->
-        <section id="login-section" class="mb-5">
-            <h2 class="tm-text-primary mb-3">Login</h2>
+        <section id="login-section">
+            <h2>Welcome to Wellness Ops From Luis</h2>
+            <p>Please log in to continue</p>
 
-            <div class="mb-3">
-                <input id="username" class="form-control" placeholder="Usuario">
-            </div>
+            <input id="username" placeholder="Username" class="form-control mb-2" />
+            <input id="password" type="password" placeholder="Password" class="form-control mb-3" />
 
-            <div class="mb-3">
-                <input id="password" type="password" class="form-control" placeholder="Contraseña">
-            </div>
-
-            <button class="btn btn-primary" onclick="login()">Entrar</button>
+            <button class="btn btn-primary" onclick="login()">Login</button>
 
             <p id="login-error" class="mt-2 text-danger"></p>
         </section>
@@ -58,9 +60,6 @@
         <!-- APP SECTION (AUTH REQUIRED) -->
         <!-- ========================= -->
         <section id="app-section" style="display:none;">
-
-
-
 
             <!-- ========================= -->
             <!-- ENTRIES LIST -->
@@ -80,20 +79,9 @@
                     <h3 class="tm-text-primary mb-3">Add New Entry</h3>
 
                     <form id="entry-form">
-                        <div class="mb-3">
-                            <input type="text" class="form-control" id="entry-title" placeholder="Title" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <textarea class="form-control" id="entry-description" placeholder="Description"
-                                rows="4"></textarea>
-                        </div>
-                        <button onclick="logout()" class="btn btn-secondary mb-3">
-                            Logout
-                        </button>
-                        <button type="submit" class="btn btn-success">
-                            Save Entry
-                        </button>
+                        <input id="entry-title" class="form-control mb-2" placeholder="Title" required />
+                        <textarea id="entry-description" class="form-control mb-3" placeholder="Description"></textarea>
+                        <button type="submit" class="btn btn-success">Save entry</button>
                     </form>
                 </div>
             </div>

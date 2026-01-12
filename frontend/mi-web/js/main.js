@@ -14,11 +14,19 @@ document.addEventListener("DOMContentLoaded", () => {
     function showLogin() {
         loginSection.style.display = "block";
         appSection.style.display = "none";
+
+        document.getElementById("navbar-user").classList.add("d-none");
     }
 
-    function showApp() {
+    function showApp(username = "admin") {
         loginSection.style.display = "none";
         appSection.style.display = "block";
+
+        const navbarUser = document.getElementById("navbar-user");
+        const userInfo = document.getElementById("user-info");
+
+        navbarUser.classList.remove("d-none");
+        userInfo.innerText = `Logged in as ${username}`;
     }
 
     // =========================
@@ -71,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await res.json();
         localStorage.setItem("token", data.token);
 
-        showApp();
+        showApp(username);
         loadEntries();
     };
 
