@@ -2,31 +2,35 @@ name: Backend CI
 
 on:
   push:
-    branches:
-      - main
-      - feature/**
+    branches: [main]
   pull_request:
 
 jobs:
   backend-ci:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Login to GHCR
+        uses: docker/login-action@v3
         with:
-          node-version: 18
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install backend dependencies
-        working-directory: backend
-        run: npm install
+      - name: Build backend image
+        run: |
+          docker build \
+            -f backend/Dockerfile.prod \
+            -t ghcr.io/${{ github.repository }}-backend:latest \
+            backend
 
-      - name: Run backend tests
-        working-directory: backend
-        run: npm test
-
-      - name: Build backend Docker image
-        run: docker build -f backend/Dockerfile.dev -t wellness-backend:ci backend
+      - name: Push backend image
+        run: |
+          docker push ghcr.io/${{ github.repository }}-backend:latest
