@@ -1,7 +1,7 @@
-# Wellness Ops
+# Wellnes Ops – Modern DevOps Infrastructure with Docker & GitHub Actions
 
-DevOps-oriented full-stack application built with Docker, featuring a Node.js backend, PostgreSQL database, Nginx reverse proxy, CI/CD pipeline, and monitoring with Prometheus and Grafana.
-
+A production‑ready infrastructure for deploying a backend service and Nginx reverse proxy using Docker, Docker Compose, GitHub Actions, and GitHub Container Registry (GHCR).
+This repository demonstrates clean DevOps practices, automated CI/CD pipelines, and a modular container‑based architecture suitable for real‑world deployments.
 ---
 
 ## 🧰 Tech Stack
@@ -68,51 +68,153 @@ The application is composed of multiple services orchestrated with Docker Compos
 ├── docker-compose.prod.yml
 └── README.md
 
-CI/CD Pipeline
 
-The project includes a GitHub Actions pipeline that runs on every push and pull request:
+## 🐳 Dockerized Services
 
-Install backend dependencies
+Backend
 
-Run automated tests
+Packaged as a Docker image.
 
-Build Docker backend image
+Automatically built and pushed to GHCR on every push to main.
 
-This ensures that code changes are validated before deployment.
+Deployed via SSH using GitHub Actions.
 
-Monitoring & Observability
+Nginx Reverse Proxy
 
-Prometheus scrapes backend metrics exposed at /metrics
+Custom production Dockerfile.
 
-Grafana displays dashboards including:
+Handles routing, static assets, and proxying to the backend.
 
-HTTP request count
+Built and pushed to GHCR through its own CI workflow.
 
-Request latency
+docker-compose.yml
 
-Endpoint-level metrics
+Defines the full stack:
 
-The backend exposes custom metrics using middleware.
+Backend container
 
-Security Considerations
+Nginx container
 
-JWT-based authentication
+Networking between services
 
-Secrets managed via environment variables
+Environment variables
 
-Backend isolated behind Nginx reverse proxy
+Image tags pulled from GHCR
+
+This makes the entire environment reproducible on any machine
+
+⚙️ CI/CD Pipelines
+
+1. Backend CI (Continuous Integration)
+Located in .github/workflows/backend-ci.yml.
+
+It performs:
+
+Checkout of the repository
+
+Login to GHCR
+
+Build backend Docker image
+
+Tag with commit SHA and latest
+
+Push both tags to GHCR
+
+This ensures every commit produces a traceable, immutable image.
+
+
+2. Backend CD (Continuous Deployment)
+
+Located in .github/workflows/backend-cd.yml.
+
+Triggered on push to main.
+
+It performs:
+
+SSH connection to the server using GitHub Secrets
+
+Navigate to the deployment directory
+
+Pull the latest backend image from GHCR
+
+Restart the backend container with zero downtime
+
+This creates a fully automated deployment pipeline.
+
+3. Nginx CI
+
+Located in .github/workflows/nginx-ci.yml.
+
+It:
+
+Builds the production Nginx image
+
+Pushes it to GHCR
+
+Ensures the reverse proxy is always up to date
+
+🔐 Security Practices
+
+SSH private key stored in secrets.SSH_KEY
+
+Host, user, and connection details stored in GitHub Secrets
 
 No sensitive data committed to the repository
 
-Security Considerations
+Images stored in GHCR with controlled access
 
-JWT-based authentication
+📦 Deployment Workflow
 
-Secrets managed via environment variables
+Developer pushes to main
 
-Backend isolated behind Nginx reverse proxy
+GitHub Actions builds backend and Nginx images
 
-No sensitive data committed to the repository
+Images are pushed to GHCR
+
+CD workflow connects to the server via SSH
+
+Server pulls the new image
+
+Docker Compose restarts the updated service
+
+Deployment completes automatically
+
+This ensures consistent, repeatable, and safe deployments
+
+🎯 Why This Project Matters
+
+This repository demonstrates:
+
+Real‑world CI/CD automation
+
+Production‑grade Docker architecture
+
+Secure and maintainable deployment workflows
+
+Clean separation of services
+
+Infrastructure that scales and adapts easily
+
+It’s a strong example of DevOps engineering, container orchestration, and automated delivery pipelines.
+
+📬 Contact
+
+If you’d like to discuss the architecture or improvements, feel free to reach out.
+
+luisfernando198912@gmail.com
++34612223759
+
+If you want, I can also create:
+
+a diagram of the architecture
+
+a shorter recruiter‑focused summary
+
+a badge section (build passing, GHCR, Docker pulls)
+
+a project logo
+
+Just tell me what style you want.
 
 
                          ┌──────────────────────────┐
