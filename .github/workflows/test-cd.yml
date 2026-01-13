@@ -1,0 +1,21 @@
+name: Test CD
+
+on:
+    workflow_dispatch:
+
+jobs:
+    test:
+        runs-on: self-hosted
+
+        steps:
+            - name: Print working directory
+              run: |
+                  echo "PWD:"
+                  pwd
+                  echo "LS:"
+                  ls -la
+
+            - name: Create test file
+              run: |
+                  echo "Hola desde GitHub Actions" > /opt/wellness-ops/test-runner.txt
+                  echo "Archivo creado"
