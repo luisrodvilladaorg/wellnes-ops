@@ -9,18 +9,11 @@ on:
 
 jobs:
     deploy:
-        runs-on: ubuntu-latest
-        if: always()
+        runs-on: self-hosted # ← aquí el cambio clave
 
         steps:
             - name: Deploy Nginx
-              uses: appleboy/ssh-action@v1.0.3
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ secrets.SSH_USER }}
-                  key: ${{ secrets.SSH_KEY }}
-                  script_stop: true
-                  script: |
-                      cd /opt/wellness-ops
-                      docker compose pull nginx
-                      docker compose up -d --no-deps nginx
+              run: |
+                  cd /opt/wellness-ops
+                  docker compose pull nginx
+                  docker compose up -d --no-deps nginx
