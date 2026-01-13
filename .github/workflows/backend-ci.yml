@@ -10,13 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH deploy
+      - name: Deploy backend via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          timeout: 60s
+          command_timeout: 15m
           script: |
-            cd /opt/wellness-ops
+            set -e
+            echo "📂 Moving to project directory"
+            cd /home/usuario1/Documents/Docker/wellnes-ops
+
+            echo "🐳 Pulling backend image"
             docker compose pull backend
+
+            echo "🚀 Restarting backend container"
             docker compose up -d --no-deps backend
+
+            echo "✅ Backend deployed successfully"
