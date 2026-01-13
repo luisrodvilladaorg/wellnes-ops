@@ -1,0 +1,31 @@
+    Ejecutar CI desde path
+
+act -W .github/workflows/nginx-ci.yml
+
+act -W .github/workflows/backend-ci.yml --secret-file .secrets
+
+
+    Aplicar cambio sin tirar el stack
+
+docker compose build frontend
+docker compose up -d frontend
+
+
+
+
+
+
+
+Siguientes pasos:
+
+Meter CI/CD de los containers
+
+Crear un makefile
+
+Enlazar guide readme a readme de alguna forma.
+
+Mejorar el readme, 2 paginas
+
+Mejorar infra de carpetas y archivos
+tienen que estar dentro de env/dev
+

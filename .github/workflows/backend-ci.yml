@@ -19,4 +19,4 @@ jobs:
           script: |
             cd /opt/wellness-ops
             docker compose pull backend
-            docker compose up -d backend
+            docker compose up -d --no-deps backend
