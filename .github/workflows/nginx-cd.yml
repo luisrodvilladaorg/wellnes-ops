@@ -1,0 +1,24 @@
+name: Nginx CD
+
+on:
+    workflow_run:
+        workflows: ["Nginx CI"]
+        types:
+            - completed
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+        steps:
+            - name: Deploy Nginx
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_KEY }}
+                  script: |
+                      cd /opt/wellness-ops
+                      docker compose pull nginx
+                      docker compose up -d --no-deps nginx

@@ -28,9 +28,11 @@ jobs:
         run: |
           docker build \
             -f nginx/Dockerfile.prod \
-            -t ghcr.io/${{ github.repository }}-nginx:latest \
+            -t ghcr.io/${{ github.repository }}-nginx:${{ github.sha }} \
             nginx
 
       - name: Push nginx image
         run: |
+          docker push ghcr.io/${{ github.repository }}-nginx:${{ github.sha }}
+          docker tag ghcr.io/${{ github.repository }}-nginx:${{ github.sha }} ghcr.io/${{ github.repository }}-nginx:latest
           docker push ghcr.io/${{ github.repository }}-nginx:latest
