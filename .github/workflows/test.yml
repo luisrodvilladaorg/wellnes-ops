@@ -1,0 +1,22 @@
+name: SSH Test
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    ssh-test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Test SSH
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_KEY }}
+                  debug: true
+                  script: |
+                      echo "CONNECTED OK"
+                      whoami
+                      hostname
