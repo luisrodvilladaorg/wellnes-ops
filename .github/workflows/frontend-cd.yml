@@ -1,4 +1,4 @@
-name: Frontend CD
+name: Frontend CD-v2
 
 on:
     push:
@@ -7,23 +7,21 @@ on:
 
 jobs:
     deploy-frontend:
-        # ⚠️ IMPORTANTE:
-        # Este job se ejecuta en tu propio servidor (runner local)
         runs-on: self-hosted
 
         steps:
-            # 1️⃣ Nos movemos al directorio del proyecto
+            # 1️⃣ Ir al directorio del proyecto en el servidor
             - name: Go to project directory
               run: |
                   cd /opt/wellness-ops
 
-            # 2️⃣ Actualizamos la imagen del frontend desde GHCR
+            # 2️⃣ Descargar la última imagen del frontend desde el registry
             - name: Pull latest frontend image
               run: |
-                  docker compose pull frontend
+                  docker compose -f docker-compose.prod.yml pull frontend
 
-            # 3️⃣ Recreamos SOLO el contenedor frontend
-            # --no-deps = no toca backend ni nginx
+            # 3️⃣ Recrear SOLO el contenedor frontend
+            # --no-deps evita reiniciar backend y nginx
             - name: Restart frontend container
               run: |
-                  docker compose up -d --no-deps frontend
+                  docker compose -f docker-compose.prod.yml up -d --no-deps frontend
