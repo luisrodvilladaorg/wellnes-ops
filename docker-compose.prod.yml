@@ -1,6 +1,7 @@
 services:
   frontend:
-    image: wellness-frontend:prod
+    image: ghcr.io/luisrodvillada/wellnes-ops-frontend:latest
+
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
