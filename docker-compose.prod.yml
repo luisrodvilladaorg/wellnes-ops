@@ -1,14 +1,11 @@
 services:
   frontend:
     image: ghcr.io/luisrodvillada/wellnes-ops-frontend:latest
-
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
     container_name: wellness-frontend
     networks:
-      - web_net
+    - web_net
     restart: unless-stopped
+
 
   nginx:
     image: ghcr.io/luisrodvillada/wellnes-ops-nginx:latest
