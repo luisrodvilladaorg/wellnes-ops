@@ -1,0 +1,35 @@
+name: Frontend CI
+
+on:
+    push:
+        branches:
+            - main
+            - feature/**
+    pull_request:
+
+jobs:
+    frontend-ci:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Validate frontend structure
+              run: |
+                  test -f frontend/mi-web/index.html
+                  test -d frontend/mi-web/css
+                  test -d frontend/mi-web/js
+
+            - name: Build frontend Docker image
+              run: |
+                  docker build \
+                    -f frontend/Dockerfile.prod \
+                    -t wellness-frontend:ci \
+                    .
+
+#Que valida este CI
+#✔️ El frontend existe y es consistente
+#✔️ No falta el index.html
+#✔️ El Dockerfile es válido
+#✔️ La imagen se puede construir sin errores
