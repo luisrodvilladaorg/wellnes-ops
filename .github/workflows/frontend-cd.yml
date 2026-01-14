@@ -1,4 +1,4 @@
-name: Frontend CD-v2
+name: Frontend CD-v3
 
 on:
     push:
