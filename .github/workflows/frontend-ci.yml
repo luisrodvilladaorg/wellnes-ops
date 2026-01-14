@@ -1,0 +1,49 @@
+name: Frontend CI
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    frontend-ci:
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            # 1️⃣ Descarga el código del repositorio
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            # 2️⃣ Validamos que la estructura del frontend existe
+            # (evita builds rotos si alguien borra archivos)
+            - name: Validate frontend structure
+              run: |
+                  test -f frontend/Dockerfile.prod
+                  test -d frontend/mi-web
+                  test -f frontend/mi-web/index.html
+
+            # 3️⃣ Login en GitHub Container Registry (GHCR)
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            # 4️⃣ Build de la imagen Docker del frontend
+            - name: Build frontend Docker image
+              run: |
+                  docker build \
+                    -f frontend/Dockerfile.prod \
+                    -t ghcr.io/${{ github.repository }}-frontend:latest \
+                    frontend
+
+            # 5️⃣ Push de la imagen al registry
+            - name: Push frontend Docker image
+              run: |
+                  docker push ghcr.io/${{ github.repository }}-frontend:latest
