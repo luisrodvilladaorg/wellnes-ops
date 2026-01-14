@@ -1,4 +1,4 @@
-name: Nginx CI - config validation
+name: Nginx CI - Docker build
 
 on:
     push:
@@ -8,16 +8,21 @@ on:
     pull_request:
 
 jobs:
-    nginx-ci:
+    nginx-build:
         runs-on: ubuntu-latest
 
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            # CI valida SOLO sintaxis, no infraestructura real
-            - name: Validate nginx CI config
+            # Construimos la imagen de Nginx PROD
+            # Esto valida:
+            # - Dockerfile.prod
+            # - COPY de nginx.prod.conf
+            # - Contexto correcto
+            - name: Build nginx production image
               run: |
-                  docker run --rm \
-                    -v ${{ github.workspace }}/nginx/nginx.ci.conf:/etc/nginx/conf.d/default.conf:ro \
-                    nginx:stable-alpine nginx -t
+                  docker build \
+                    -f nginx/Dockerfile.prod \
+                    -t wellness-nginx:ci \
+                    nginx
