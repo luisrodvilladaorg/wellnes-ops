@@ -1,44 +1,36 @@
-name: Stack CD (Production Deploy)
+name: Stack CD (Production)
 
 on:
+  workflow_dispatch:   # manual, profesional
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: self-hosted
 
     steps:
-      # 1️⃣ Actualizar el repo REAL del servidor
-      - name: Update repository on server
-        working-directory: /opt/wellness-ops
-        run: git pull origin main
-
-      # 2️⃣ Pull de imágenes desde GHCR
-      - name: Pull latest images
-        working-directory: /opt/wellness-ops
-        run: docker compose -f docker-compose.prod.yml pull
-
-      # 3️⃣ Levantar TODO el stack
-      - name: Deploy stack
-        working-directory: /opt/wellness-ops
-        run: docker compose -f docker-compose.prod.yml up -d
-
-      # 4️⃣ Mostrar contenedores
-      - name: Show running containers
-        run: docker ps
-
-      # 5️⃣ Prueba de ejecución en el hostv3
-      - name: Proof of execution
+      - name: Show runner info (DEBUG)
         run: |
-          echo "CI/CD RUNNING ON HOSTT:"
+          echo "RUNNING ON:"
           hostname
           whoami
           pwd
-          ls -la /
-          ls -la /opt || true
-          ls -la /opt/wellness-ops || true
-          which docker || true
-          docker ps || true
-          echo "==== DEBUG END ===="
+
+      - name: Update repo
+        run: |
+          cd /opt/wellness-ops
+          git pull origin main
+
+      - name: Pull images
+        run: |
+          cd /opt/wellness-ops
+          docker compose -f docker-compose.prod.yml pull
+
+      - name: Deploy stack
+        run: |
+          cd /opt/wellness-ops
+          docker compose -f docker-compose.prod.yml up -d
+
+      - name: Show containers
+        run: docker ps
