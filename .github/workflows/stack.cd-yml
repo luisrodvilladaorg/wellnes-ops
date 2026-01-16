@@ -35,4 +35,10 @@ jobs:
           echo "CI/CD RUNNING ON HOST:"
           hostname
           whoami
-          date
+          pwd
+          ls -la /
+          ls -la /opt || true
+          ls -la /opt/wellness-ops || true
+          which docker || true
+          docker ps || true
+          echo "==== DEBUG END ===="
