@@ -1,6 +1,6 @@
     Ejecutar CI desde path
 
-act -W .github/workflows/nginx-ci.yml
+act -W .github/workflows/frontend-ci.yml
 
 act -W .github/workflows/backend-ci.yml --secret-file .secrets
 

@@ -216,7 +216,7 @@ a project logo
 
 Just tell me what style you want.
 
-Sample3
+Sample4
 
 
                          ┌──────────────────────────┐
