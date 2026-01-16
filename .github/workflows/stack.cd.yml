@@ -35,3 +35,15 @@ jobs:
 
       - name: Show containers
         run: docker ps
+
+      - name: Wait for services to start
+        run: sleep 10
+
+      - name: Backend healthcheck
+        run: |
+          curl -f http://localhost/api/health
+
+      - name: Nginx healthcheck
+        run: |
+          curl -f http://localhost/
+          curl -f https://localhost/
