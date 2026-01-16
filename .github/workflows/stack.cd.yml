@@ -1,13 +1,13 @@
 name: Stack CD (Production)
 
 on:
-  workflow_dispatch:   # manual, profesional
+  workflow_dispatch: # manual, profesional
   push:
     branches: [main]
 
 jobs:
   deploy:
-    runs-on:  self-hosted
+    runs-on: self-hosted
 
     steps:
       - name: Show runner info (DEBUG)
