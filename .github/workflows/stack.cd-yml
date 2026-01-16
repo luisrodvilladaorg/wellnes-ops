@@ -25,6 +25,6 @@ jobs:
         working-directory: /opt/wellness-ops
         run: docker compose -f docker-compose.prod.yml up -d
 
-      # 4️⃣ Mostrar contenedores
+      # 4️⃣ Mostrar contenedores2
       - name: Show running containers
         run: docker ps
