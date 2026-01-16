@@ -19,12 +19,12 @@ jobs:
 
       - name: Update repo
         run: |
-          cd /opt/wellness-ops
+          cd /opt/wellnes-ops
           git pull origin main
 
       - name: Pull images
         run: |
-          cd /opt/wellness-ops
+          cd /opt/wellnes-ops
           docker compose -f docker-compose.prod.yml pull
 
       - name: Deploy stack
