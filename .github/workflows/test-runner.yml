@@ -1,16 +1,17 @@
-name: Test Runner
+name: Runner Proof FINAL
 
 on:
     workflow_dispatch:
 
 jobs:
-    test:
-        runs-on: self-hosted
+    proof:
+        runs-on: [self-hosted, Linux, X64]
 
         steps:
-            - name: Show runner infos
+            - name: Proof execution
               run: |
-                  echo "Runner is working"
+                  echo "RUNNING ON SELF-HOSTED RUNNER"
                   hostname
                   whoami
                   pwd
+                  date
