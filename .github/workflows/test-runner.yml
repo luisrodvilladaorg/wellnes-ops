@@ -1,17 +1,16 @@
-name: Runner Proof FINALv2
+name: Test Runner
 
 on:
     workflow_dispatch:
 
 jobs:
-    proof:
-        runs-on: [self-hosted, Linux, X64]
+    test:
+        runs-on: self-hosted
 
         steps:
-            - name: Proof
+            - name: Show runner info
               run: |
-                  echo "RUNNER OK"
-                  echo "Repo: $GITHUB_REPOSITORY"
+                  echo "Runner is working"
                   hostname
                   whoami
                   pwd
