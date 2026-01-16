@@ -15,22 +15,24 @@ jobs:
         working-directory: /opt/wellness-ops
         run: git pull origin main
 
-      # 2️⃣ Pull de imágenes
+      # 2️⃣ Pull de imágenes desde GHCR
       - name: Pull latest images
         working-directory: /opt/wellness-ops
         run: docker compose -f docker-compose.prod.yml pull
 
-      # 3️⃣ Levantar stack
+      # 3️⃣ Levantar TODO el stack
       - name: Deploy stack
         working-directory: /opt/wellness-ops
         run: docker compose -f docker-compose.prod.yml up -d
 
-      # 4️⃣ Mostrar contenedores2
+      # 4️⃣ Mostrar contenedores
       - name: Show running containers
         run: docker ps
+
+      # 5️⃣ Prueba de ejecución en el host
       - name: Proof of execution
         run: |
-        echo "CI/CD RUNNING ON HOST:"
-        hostname
-        whoami
-        date
+          echo "CI/CD RUNNING ON HOST:"
+          hostname
+          whoami
+          date
