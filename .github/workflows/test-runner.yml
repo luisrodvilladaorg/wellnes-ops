@@ -14,11 +14,3 @@ jobs:
                   hostname
                   whoami
                   pwd
-
-            - name: Create test file in /opt
-              run: |
-                  echo "Hola Luis, el runner funciona" | sudo tee /opt/runner-test.txt
-
-            - name: List /opt directory
-              run: |
-                  ls -l /opt
