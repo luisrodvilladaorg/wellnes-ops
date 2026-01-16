@@ -1,4 +1,4 @@
-name: Runner Proof FINAL
+name: Runner Proof FINALv2
 
 on:
     workflow_dispatch:
