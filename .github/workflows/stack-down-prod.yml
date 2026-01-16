@@ -1,0 +1,47 @@
+name: Stack DOWN (Production)
+
+# ❗ Este workflow NO se ejecuta con push
+# ❗ Solo manual desde GitHub Actions
+on:
+    workflow_dispatch:
+        inputs:
+            confirm:
+                description: "Type DOWN to confirm stack shutdown"
+                required: true
+                default: ""
+
+jobs:
+    shutdown:
+        name: Stop production stack
+        runs-on: self-hosted
+
+        steps:
+            # 1️⃣ Seguridad: evitar ejecuciones accidentales
+            - name: Validate confirmation
+              run: |
+                  if [ "${{ github.event.inputs.confirm }}" != "DOWN" ]; then
+                    echo "❌ Confirmation failed. Type DOWN to proceed."
+                    exit 1
+                  fi
+
+            # 2️⃣ Ir al directorio real del stack
+            - name: Go to stack directory
+              working-directory: /opt/wellness-ops
+              run: pwd
+
+            # 3️⃣ Apagar TODO el stack
+            - name: Stop Docker Compose stack
+              working-directory: /opt/wellness-ops
+              run: docker compose -f docker-compose.prod.yml down
+
+            # 4️⃣ Verificación
+            - name: Show running containers
+              run: docker ps
+
+            # 5️⃣ Evidencia de ejecución
+            - name: Execution proof
+              run: |
+                  echo "🧨 STACK STOPPED"
+                  hostname
+                  whoami
+                  date
