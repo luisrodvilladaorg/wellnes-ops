@@ -29,7 +29,7 @@ jobs:
       - name: Show running containers
         run: docker ps
 
-      # 5️⃣ Prueba de ejecución en el hostv2
+      # 5️⃣ Prueba de ejecución en el hostv3
       - name: Proof of execution
         run: |
           echo "CI/CD RUNNING ON HOSTT:"
