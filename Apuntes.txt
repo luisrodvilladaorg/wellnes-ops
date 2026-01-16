@@ -1,0 +1,24 @@
+    Eliminar un archivo de GIT solo web no local
+
+git rm --cached "Apuntes.txt"
+
+    Aplicar cambio sin tirar el stack
+
+docker compose build frontend
+docker compose up -d frontend
+
+Hola3
+
+
+Siguientes pasos:
+
+
+Crear un makefile
+
+Enlazar guide readme a readme de alguna forma.
+
+Mejorar el readme, 2 paginas
+
+Mejorar infra de carpetas y archivos
+tienen que estar dentro de env/dev
+
