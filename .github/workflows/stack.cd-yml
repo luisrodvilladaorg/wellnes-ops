@@ -1,0 +1,40 @@
+name: Stack CD (Production Deploy)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # 1️⃣ Este job SOLO se ejecuta en tu runner local (la VM)
+    runs-on: self-hosted
+
+    steps:
+      # 2️⃣ Nos aseguramos de estar en el repo correcto
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 3️⃣ Entramos en la carpeta real del stack en el servidor
+      - name: Go to stack directory
+        run: |
+          cd /opt/wellness-ops
+          pwd
+          ls -l
+
+      # 4️⃣ Actualizamos imágenes desde el registry
+      - name: Pull latest images
+        run: |
+          cd /opt/wellness-ops
+          docker compose -f docker-compose.prod.yml pull
+
+      # 5️⃣ Levantamos / actualizamos TODO el stack
+      - name: Deploy stack
+        run: |
+          cd /opt/wellness-ops
+          docker compose -f docker-compose.prod.yml up -d
+
+      # 6️⃣ Mostramos estado final (debug visual)
+      - name: Show running containers
+        run: |
+          docker ps
