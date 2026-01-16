@@ -32,7 +32,7 @@ jobs:
       # 5️⃣ Prueba de ejecución en el hostv2
       - name: Proof of execution
         run: |
-          echo "CI/CD RUNNING ON HOST:"
+          echo "CI/CD RUNNING ON HOSTT:"
           hostname
           whoami
           pwd
