@@ -48,6 +48,8 @@ services:
     container_name: wellness-backend-container
     env_file:
       - env/dev/.env
+    depends_on:
+      - postgres  
     networks:
       - backend_net               # Red separada (seguridad)
     restart: unless-stopped
@@ -72,7 +74,7 @@ services:
       - backend_net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U wellness"]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -7,10 +7,31 @@ git rm --cached "Apuntes.txt"
 docker compose build frontend
 docker compose up -d frontend
 
-Hola3
+    Conectarme a mi db
 
+docker exec -it wellness-postgres psql -U postgres -d wellness
+\dt
 
+    Ver que BD usa mi backend
+docker inspect wellness-backend-prod | grep -E "DB_|POSTGRES"
+                "DB_NAME=wellness",
+                "DB_HOST=postgres",
+                "DB_USER=wellness",
+                "DB_PASSWORD=wellness",
+
+    Levantar stack
+
+    docker compose -f docker-compose.prod.yml down
+
+    Levantar stack desde base
+docker-compose --env-file .env.dev up --build
+
+                
 Siguientes pasos:
+
+comprobar CD del stack ya que tiene un fallo con curl http://localhost
+
+Comprobar porque cuando hago un cambio en la app no me cambia automaticamente
 
 
 Crear un makefile
