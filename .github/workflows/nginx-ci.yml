@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 name: Nginx CI
+=======
+name: Nginx CI2
+>>>>>>> feature-proof-CI/CD
 
 # 🔹 Se ejecuta cuando hay cambios en main o PR
 on:
     push:
+<<<<<<< HEAD
         branches: [main]
+=======
+        branches: [feature-proof-CI/CD]
+>>>>>>> feature-proof-CI/CD
     pull_request:
 
 jobs:

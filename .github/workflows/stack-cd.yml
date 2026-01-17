@@ -1,0 +1,49 @@
+name: Stack CD (Production)
+
+on:
+    workflow_dispatch: # manual, profesional
+    push:
+        branches: [feature-proof-CI/CD]
+
+jobs:
+    deploy:
+        runs-on: self-hosted
+        environment: production
+
+        steps:
+            - name: Show runner info (DEBUG)
+              run: |
+                  echo "RUNNING ON:"
+                  hostname
+                  whoami
+                  pwd
+
+            - name: Update repo
+              run: |
+                  cd /opt/wellnes-ops
+                  git pull origin main
+
+            - name: Pull images
+              run: |
+                  cd /opt/wellnes-ops
+                  docker compose -f docker-compose.prod.yml pull
+
+            - name: Deploy stack
+              run: |
+                  cd /opt/wellness-ops
+                  docker compose -f docker-compose.prod.yml up -d
+
+            - name: Show containers
+              run: docker ps
+
+            - name: Wait for services to start
+              run: sleep 10
+
+            - name: Backend healthcheck
+              run: |
+                  curl -f http://localhost/api/health
+
+            - name: Nginx healthcheck
+              run: |
+                  curl -f http://localhost/
+                  curl -f https://localhost/
