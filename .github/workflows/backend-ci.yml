@@ -35,7 +35,14 @@ jobs:
               working-directory: backend
               run: npm ci
 
-            # 5️⃣ Ejecutamos tests si existen (NO falla si no hay)
+            # 5️⃣ Levantamos el backend antes de correr los tests
+            - name: Start backend
+              working-directory: backend
+              run: |
+                  npm start &
+                  sleep 3
+
+            # 6️⃣ Ejecutamos tests si existen
             - name: Run backend tests (optional)
               working-directory: backend
               run: |
@@ -45,7 +52,7 @@ jobs:
                     echo "No tests defined, skipping"
                   fi
 
-            # 6️⃣ Construimos la imagen Docker del backend (solo build)
+            # 7️⃣ Construimos la imagen Docker del backend (solo build)
             - name: Build backend Docker image
               run: |
                   docker build \
