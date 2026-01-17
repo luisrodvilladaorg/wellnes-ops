@@ -3,7 +3,7 @@ name: Backend CI
 on:
     push:
         branches:
-            - main
+            - feature-proof-CI/CD
     pull_request:
 
 jobs:
