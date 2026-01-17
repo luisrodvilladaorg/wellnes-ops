@@ -29,6 +29,7 @@ WORKDIR /app
 # Copiamos app ya lista
 COPY --from=build /app ./
 
+
 # Variables por defecto (sobrescribibles)
 ENV NODE_ENV=production
 ENV PORT=3000
