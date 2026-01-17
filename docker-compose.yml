@@ -1,0 +1,85 @@
+
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: "${NODE_ENV}" # Configurar el entorno desde .env
+    container_name: wellness-backend
+    env_file:
+      - ${ENV_FILE} # Archivo .env apropiado para el entorno
+    networks:
+      - backend_net
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT}:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ${FRONTEND_DOCKERFILE} # Dockerfile dinámico para dev/prod
+    container_name: wellness-frontend
+    env_file:
+      - ${ENV_FILE}
+    ports:
+      - "8080:80" # Configurable si es necesario
+    networks:
+      - web_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: ${NGINX_DOCKERFILE} # Dinámico entre entornos
+    container_name: wellness-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - web_net
+      - backend_net
+    volumes:
+      - ${NGINX_CONF_FILE}:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: wellness-postgres
+    env_file:
+      - ${ENV_FILE} # Archivo de entorno (dev o prod)
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - backend_net
+    restart: unless-stopped
+    ports:
+      - "5432:5432" # Puerto mapeado localmente
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  web_net:
+    driver: bridge
+  backend_net:
+    driver: bridge
+
+volumes:
+  db-data:
