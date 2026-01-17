@@ -3,7 +3,7 @@ name: Stack CD (Production)
 on:
     workflow_dispatch: # manual, profesional
     push:
-        branches: [feature-proof-CI/CD]
+        branches: [main]
 
 jobs:
     deploy:
