@@ -1,0 +1,38 @@
+name: Stack CI (docker-compose validation)
+
+on:
+    push:
+        branches:
+            - feature-proof-CI/CD
+    pull_request:
+
+jobs:
+    stack-ci:
+        runs-on: self-hosted
+
+        steps:
+            # 1️⃣ Clonamos el repositorio
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            # 2️⃣ Verificamos que existe el compose de producción
+            - name: Check docker-compose.prod.yml exists
+              run: |
+                  test -f docker-compose.prod.yml
+
+            # 3️⃣ Validamos la sintaxis del docker compose (NO levanta nada)
+            - name: Validate docker-compose syntax
+              run: |
+                  docker compose -f docker-compose.prod.yml config
+
+            # 4️⃣ Validamos que los Dockerfile.prod existen donde el compose los usa
+            - name: Validate Dockerfiles used by compose
+              run: |
+                  test -f backend/Dockerfile.prod
+                  test -f frontend/Dockerfile.prod
+                  test -f nginx/Dockerfile.prod
+
+            # 5️⃣ Intentamos construir el stack completo (sin arrancar)
+            - name: Build stack images (dry build)
+              run: |
+                  docker compose -f docker-compose.prod.yml up -d --build
