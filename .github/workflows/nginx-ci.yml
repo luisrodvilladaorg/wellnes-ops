@@ -2,19 +2,21 @@ name: Nginx CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - feature-https-web
   pull_request:
 
 jobs:
   nginx-ci:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       # 1️⃣ Clonamos el repositorio
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Validamos la sintaxis del nginx.ci.conf
+      # 2️⃣ Validamos sintaxis del archivo `nginx.ci.conf`
       - name: Validate nginx configuration
         run: |
           docker run --rm \
@@ -22,10 +24,21 @@ jobs:
             nginx:stable-alpine \
             nginx -t
 
-      # 3️⃣ Construimos la imagen Docker de Nginx (producción)
-      - name: Build nginx Docker image
+      # 3️⃣ Validamos que Certificados SSL (si aplica) estén presentes
+      - name: Validate SSL Certificates
+        run: |
+          test -f nginx/certs/server.crt
+          test -f nginx/certs/server.key
+
+      # 4️⃣ Construimos la Imagen Docker de Nginx
+      - name: Build Nginx Docker image
         run: |
           docker build \
             -f nginx/Dockerfile.prod \
-            -t wellness-nginx:ci \
+            -t wellness-nginx:${{ github.run_number }} \
             nginx
+
+      # 5️⃣ (Opcional) Escanear Imagen en Runners Self-Hosted
+      - name: Docker Scan (Optional)
+        run: |
+          docker scan wellness-nginx:${{ github.run_number }} --accept-license
