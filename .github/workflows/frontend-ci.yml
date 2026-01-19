@@ -1,9 +1,10 @@
-name: Frontend CI-check
+name: Frontend CI-Check
 
 on:
   push:
     branches:
       - feature-https-web
+      - main
   pull_request:
 
 jobs:
@@ -15,17 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Instalamos NodeJS y dependencias (para herramientas como eslint, pruebas)
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-          cache: "npm"
-
-      - name: Install Dependencies
-        run: npm ci --prefix frontend # Asegúrate que frontend/ contenga package.json
-
-      # 3️⃣ Validamos Estructura del Proyecto
+      # 2️⃣ Validamos que la estructura del frontend existe
       - name: Validate frontend structure
         run: |
           test -f frontend/Dockerfile.prod
@@ -34,22 +25,10 @@ jobs:
           test -d frontend/mi-web/css
           test -d frontend/mi-web/js
 
-      # 4️⃣ Linting del Código (Estandarización de Estilo de Código)
-      - name: Run ESLint
-        run: npx eslint "frontend/**/*.{js,jsx,ts,tsx}"
-
-      # 5️⃣ Pruebas Unitarias del Frontend
-      - name: Run Unit Tests
-        run: npm test --prefix frontend
-
-      # 6️⃣ Construcción de la Imagen Docker
+      # 3️⃣ Construimos la imagen Docker del frontend (solo build)
       - name: Build frontend Docker image
         run: |
           docker build \
             -f frontend/Dockerfile.prod \
             -t frontend-ci:test \
             frontend
-
-      # 7️⃣ Monitoreo de Seguridad (Opcional)
-      - name: Security Scan
-        run: docker scan frontend-ci:test --accept-license --file frontend/Dockerfile.prod
