@@ -11,6 +11,8 @@ services:
       - "8080:80"                 # Host 8080 → contenedor 80
     networks:
       - web_net
+    volumes:
+      - ./frontend/mi-web:/usr/share/nginx/html # Mapea la carpeta local al contenedor
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost"]

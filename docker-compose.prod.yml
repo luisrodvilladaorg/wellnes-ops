@@ -5,6 +5,8 @@ services:
     networks:
     - web_net
     restart: unless-stopped
+    volumes:
+      - ./frontend/mi-web:/usr/share/nginx/html # Mapea la carpeta local al contenedor
 
 
   nginx:
