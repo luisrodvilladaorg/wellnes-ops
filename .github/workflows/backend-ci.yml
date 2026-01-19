@@ -1,45 +1,56 @@
 name: Backend CI
 
 on:
-    push:
-        branches:
-            - feature-proof-CI/CD
-            - main
-
-    pull_request:
+  push:
+    branches:
+      - feature-https-web
+      - main
+  pull_request:
 
 jobs:
-    backend-ci:
-        runs-on: self-hosted
+  backend-ci:
+    runs-on: self-hosted
 
-        steps:
-            # 1️⃣ Clonamos el repositorio
-            - name: Checkout repository
-              uses: actions/checkout@v4
+    steps:
+      # 1️⃣ Clonamos el repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            # 2️⃣ Validamos que el backend tiene la estructura mínima
-            - name: Validate backend structure
-              run: |
-                  test -f backend/Dockerfile.prod
-                  test -f backend/package.json
-                  test -d backend/src
-                  test -d backend/test
+      # 2️⃣ Validamos que el backend tiene la estructura mínima
+      - name: Validate backend structure
+        run: |
+          test -f backend/Dockerfile.prod
+          test -f backend/Dockerfile.dev
+          test -f backend/package.json
+          test -f backend/package-lock.json
+          test -d backend/src
+          test -d backend/test
 
-            # 3️⃣ Instalamos Node.js (versión estable)
-            - name: Set up Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 18
+      # 3️⃣ Instalamos Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-            # 4️⃣ Instalamos dependencias del backend
-            - name: Install backend dependencies
-              working-directory: backend
-              run: npm ci
+      # 4️⃣ Instalamos dependencias
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
 
-            # 5 Construimos la imagen Docker del backend (solo build)
-            - name: Build backend Docker image
-              run: |
-                  docker build \
-                    -f backend/Dockerfile.prod \
-                    -t backend-ci:test \
-                    backend
+      # 5️⃣ Ejecutamos Pruebas Automatizadas
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test
+
+      # 6️⃣ Escaneamos vulnerabilidades del código y dependencias
+      - name: Run npm audit
+        working-directory: backend
+        run: npm audit --production
+
+      # 7️⃣ Construimos la imagen Docker del backend
+      - name: Build backend Docker image
+        run: |
+          docker build \
+            -f backend/Dockerfile.prod \
+            -t backend-ci:${{ github.sha }} \
+            backend
