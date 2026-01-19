@@ -14,4 +14,3 @@ COPY mi-web/ /usr/share/nginx/html/
 # 4️⃣ Exponemos el puerto interno (solo para docker, NO público)
 EXPOSE 80
 
-# 5️⃣ Nginx arranca solo (CMD ya definido en la imagen base)
