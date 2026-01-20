@@ -3,7 +3,7 @@ name: Backend CI-Check
 on:
   push:
     branches:
-      - feature-proof-CI/CD
+      - CI-CD
       - main
 
   pull_request:
