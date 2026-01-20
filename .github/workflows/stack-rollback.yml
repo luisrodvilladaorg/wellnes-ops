@@ -1,0 +1,76 @@
+name: Stack ROLLBACK (Production)
+
+# ❗ Rollback manual y controlado
+on:
+    workflow_dispatch:
+        inputs:
+            ref:
+                description: "Git commit SHA or tag to rollback to (e.g. v1.2.3 or 9f3a1c2)"
+                required: true
+            confirm:
+                description: "Type ROLLBACK to confirm"
+                required: true
+                default: ""
+
+jobs:
+    rollback:
+        name: Rollback production stack
+        runs-on: self-hosted
+        environment: production
+
+        steps:
+            # 1️⃣ Seguridad dura
+            - name: Validate confirmation
+              run: |
+                  if [ "${{ github.event.inputs.confirm }}" != "ROLLBACK" ]; then
+                    echo "❌ Confirmation failed. Type ROLLBACK to proceed."
+                    exit 1
+                  fi
+
+            # 2️⃣ Info del runner
+            - name: Show runner info
+              run: |
+                  hostname
+                  whoami
+                  pwd
+                  docker version
+                  docker compose version
+
+            # 3️⃣ Ir al repo y sincronizar
+            - name: Fetch repository
+              run: |
+                  cd /opt/wellnes-ops
+                  git fetch --all --tags
+
+            # 4️⃣ Rollback al commit/tag indicado
+            - name: Checkout rollback ref
+              run: |
+                  cd /opt/wellnes-ops
+                  git reset --hard ${{ github.event.inputs.ref }}
+
+            # 5️⃣ Pull de imágenes correspondientes
+            - name: Pull images
+              run: |
+                  cd /opt/wellnes-ops
+                  docker compose -f docker-compose.prod.yml pull
+
+            # 6️⃣ Levantar stack
+            - name: Deploy rollback stack
+              run: |
+                  cd /opt/wellnes-ops
+                  docker compose -f docker-compose.prod.yml up -d
+
+            # 7️⃣ Mostrar contenedores
+            - name: Show running containers
+              run: docker ps
+
+            # 8️⃣ Esperar servicios
+            - name: Wait for services
+              run: sleep 10
+
+            # 9️⃣ Healthchecks básicos
+            - name: Backend healthcheck
+              run: curl -fsS http://localhost/api/health
+
+            - name: Nginx healthcheck
+              run: curl -fsS http://localhost/
