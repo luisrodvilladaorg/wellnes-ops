@@ -1,40 +1,53 @@
 name: Stack CI (docker-compose validation)
 
 on:
-    push:
-        branches:
-            - feature-proof-CI/CD
-            - main
-
-    pull_request:
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
-    stack-ci:
-        runs-on: self-hosted
+  stack-ci:
+    runs-on: self-hosted
 
-        steps:
-            # 1️⃣ Clonamos el repositorio
-            - name: Checkout repository
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            # 2️⃣ Verificamos que existe el compose de producción
-            - name: Check docker-compose.prod.yml exists
-              run: |
-                  test -f docker-compose.prod.yml
+      - name: Check docker-compose.prod.yml exists
+        run: test -f docker-compose.prod.yml
 
-            # 3️⃣ Validamos la sintaxis del docker compose (NO levanta nada)
-            - name: Validate docker-compose syntax
-              run: |
-                  docker compose -f docker-compose.prod.yml config
+      - name: Create prod env file
+        run: |
+          mkdir -p env/prod
+          cat <<EOF > env/prod/.env
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
 
-            # 4️⃣ Validamos que los Dockerfile.prod existen donde el compose los usa
-            - name: Validate Dockerfiles used by compose
-              run: |
-                  test -f backend/Dockerfile.prod
-                  test -f frontend/Dockerfile.prod
-                  test -f nginx/Dockerfile.prod
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
 
-            # 5️⃣ Intentamos construir el stack completo (sin arrancar)
-            - name: Build stack images (dry build)
-              run: |
-                  docker compose -f docker-compose.prod.yml up -d --build
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          NODE_ENV=${{ secrets.NODE_ENV }}
+          PORT=${{ secrets.PORT }}
+          EOF
+
+      - name: Validate docker-compose syntax
+        run: docker compose -f docker-compose.prod.yml config
+
+      - name: Validate Dockerfiles used by compose
+        run: |
+          test -f backend/Dockerfile.prod
+          test -f frontend/Dockerfile.prod
+          test -f nginx/Dockerfile.prod
+
+      - name: Build stack images
+        run: docker compose -f docker-compose.prod.yml build
+
+      - name: Docker cleanup
+        if: always()
+        run: |
+          docker system prune -af || true
