@@ -10,8 +10,6 @@ WORKDIR /app
 # Copiamos solo manifests
 COPY package*.json ./
 
-# Instalamos SOLO dependencias de prod
-RUN npm ci --omit=dev
 
 RUN npm install 
 
