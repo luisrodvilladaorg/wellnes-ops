@@ -1,3 +1,18 @@
+Estamos revisando la conexión de postgres que no existe un usuario
+luego falta CI de backend
+ci de stack
+CD de todo manual
+
+
+
+    Levantar runner
+
+./run.sh
+
+    Levantar stack
+
+docker compose -f docker-compose.prod.yml down
+
     Eliminar un archivo de GIT solo web no local
 
 git rm --cached "Apuntes.txt"
@@ -19,9 +34,8 @@ docker inspect wellness-backend-prod | grep -E "DB_|POSTGRES"
                 "DB_USER=wellness",
                 "DB_PASSWORD=wellness",
 
-    Levantar stack
 
-    docker compose -f docker-compose.prod.yml down
+
 
     Levantar stack desde base
 docker-compose --env-file .env.dev up --build
@@ -31,15 +45,51 @@ Siguientes pasos:
 
 comprobar CD del stack ya que tiene un fallo con curl http://localhost
 
-Comprobar porque cuando hago un cambio en la app no me cambia automaticamente
+            TAREAS PENDIENTES
+
+1. CI/CD y Estabilidad del Proyecto (Máxima Prioridad)
+🚀 Por qué es importante:
+
+Muestra experiencia práctica en automatización (una SKILL clave hoy).
+Es transversal: Puede aplicarse a codebases con Terraform u otros stacks.
+✅ Qué hacer:
+
+Completa pipelines en ambos proyectos:
+Validación, pruebas y despliegue automático.
+Para Terraform: Configura GitHub Actions con validaciones automáticas y despliegue controlado.
+Para wellnes-ops: Implementa pruebas (unitarias, integración), construye imágenes Docker óptimas, y gestiona despliegues multiambiente.
 
 
-Crear un makefile
+2. Demostrar Infraestructura en Producción (IaC + Orquestación)
 
-Enlazar guide readme a readme de alguna forma.
 
-Mejorar el readme, 2 paginas
+🚀 Por qué es importante:
 
-Mejorar infra de carpetas y archivos
-tienen que estar dentro de env/dev
+Los proyectos con integración en nubes reales son vistos como más avanzados.
+Terraform cubre AWS de manera profesional, muestra madurez en IaC. Sin embargo, sumarle despliegues orquestados te diferenciará.
+✅ Qué hacer:
 
+Integra Docker y Kubernetes para un ejemplo real de despliegue orquestado de wellnes-ops en un cluster.
+Ejemplo: Usa terraform-aws-production-stack para lanzar un AWS Elastic Kubernetes Service (EKS) o Fargate (sin agregar complejidad al segundo repo).
+3. Sistema Observabilidad + Seguridad (Crítico)
+🚀 Por qué es importante:
+
+Estas características harán que tus proyectos escalen hacia un entorno enterprise-ready.
+Expone tu preocupación por métricas y monitoreo.
+✅ Qué hacer:
+
+En wellnes-ops:
+Añade Prometheus y Grafana para métricas de contenedores.
+Usa Fluentd o ELK Stack para centralizar logs (puedes incluirlos con Docker Compose).
+En terraform-aws-production-stack:
+Define alarmas básicas de CloudWatch (terraform outputs).
+También, habilita alertas críticas en herramientas de nube.
+4. Refactorización Modular (Frontend y Backend Bien Desacoplados)
+🚀 Por qué es importante:
+
+Los sistemas modulares son más atractivos porque son más mantenibles y escalables.
+Esto es relevante particularmente para wellnes-ops.
+✅ Qué hacer:
+
+Obliga al frontend a comunicarse con el backend solo a través de solicitudes API claras.
+Asegúrate de que cada pieza del stack (frontend, backend, nginx) pueda reemplazarse/modularizarse sin afectar las otras.
