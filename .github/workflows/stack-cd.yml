@@ -1,49 +1,50 @@
 name: Stack CD (Production)
 
 on:
-    workflow_dispatch: # manual, profesional
-    push:
-        branches: [main]
+  workflow_dispatch: # SOLO manual
 
 jobs:
-    deploy:
-        runs-on: self-hosted
-        environment: production
+  deploy:
+    runs-on: self-hosted
+    environment: production
 
-        steps:
-            - name: Show runner info (DEBUG)
-              run: |
-                  echo "RUNNING ON:"
-                  hostname
-                  whoami
-                  pwd
+    steps:
+      - name: Show runner info
+        run: |
+          echo "RUNNING ON:"
+          hostname
+          whoami
+          pwd
+          docker version
+          docker compose version
 
-            - name: Update repo
-              run: |
-                  cd /opt/wellnes-ops
-                  git pull origin main
+      - name: Ensure clean repo
+        run: |
+          cd /opt/wellnes-ops
+          git fetch origin main
+          git reset --hard origin/main
 
-            - name: Pull images
-              run: |
-                  cd /opt/wellnes-ops
-                  docker compose -f docker-compose.prod.yml pull
+      - name: Pull images
+        run: |
+          cd /opt/wellnes-ops
+          docker compose -f docker-compose.prod.yml pull
 
-            - name: Deploy stack
-              run: |
-                  cd /opt/wellness-ops
-                  docker compose -f docker-compose.prod.yml up -d
+      - name: Deploy stack
+        run: |
+          cd /opt/wellnes-ops
+          docker compose -f docker-compose.prod.yml up -d
 
-            - name: Show containers
-              run: docker ps
+      - name: Show running containers
+        run: docker ps
 
-            - name: Wait for services to start
-              run: sleep 10
+      - name: Wait for services
+        run: sleep 10
 
-            - name: Backend healthcheck
-              run: |
-                  curl -k http://localhost/api/health
+      - name: Backend healthcheck
+        run: |
+          curl -fsS http://localhost/api/health
 
-            - name: Nginx healthcheck
-              run: |
-                  curl -k http://localhost/
-                  curl -k https://localhost/
+      - name: Nginx healthcheck (HTTP + HTTPS)
+        run: |
+          curl -fsS http://localhost/
+          curl -kfsS https://localhost/
