@@ -2,10 +2,7 @@ name: Backend CI-Check
 
 on:
   push:
-    branches:
-      - CI-CD
-      - main
-
+    branches: [CI-CD, main]
   pull_request:
 
 jobs:
@@ -13,11 +10,9 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # 1️⃣ Clonamos el repositorio
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Validamos que el backend tiene la estructura mínima
       - name: Validate backend structure
         run: |
           test -f backend/Dockerfile.prod
@@ -25,21 +20,29 @@ jobs:
           test -d backend/src
           test -d backend/test
 
-      # 3️⃣ Instalamos Node.js (versión estable)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      # 4️⃣ Instalamos dependencias del backend
       - name: Install backend dependencies
         working-directory: backend
-        run: npm ci
+        run: |
+          node -v
+          npm -v
+          npm ci
 
-      # 5 Construimos la imagen Docker del backend (solo build)
+      - name: Check Docker
+        run: |
+          docker version
+          docker info
+
       - name: Build backend Docker image
         run: |
           docker build \
             -f backend/Dockerfile.prod \
             -t backend-ci:test \
             backend
+
+      - name: CI finished successfully
+        run: echo "✅ Backend CI completed successfully"
