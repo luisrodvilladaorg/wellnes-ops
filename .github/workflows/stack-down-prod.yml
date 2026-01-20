@@ -48,3 +48,9 @@ jobs:
         run: |
           echo "🧨 STACK STOPPED"
           date
+
+      - name: Ensure clean repo state
+        run: |
+          cd /opt/wellnes-ops
+          git fetch origin main --prune
+          git reset --hard origin/main

@@ -2,7 +2,7 @@ name: Backend CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, Feature-Blindate-CI/CD]
   pull_request:
 
 jobs:
@@ -46,3 +46,8 @@ jobs:
 
       - name: CI finished successfully
         run: echo "✅ Backend CI completed successfully"
+
+      - name: Ensure clean repo state
+        run: |
+          git fetch origin main --prune
+          git reset --hard origin/main
