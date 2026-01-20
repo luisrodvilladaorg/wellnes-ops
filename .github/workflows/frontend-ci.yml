@@ -1,34 +1,33 @@
 name: Frontend CI
 
 on:
-    push:
-        branches:
-            - feature-proof-CI/CD
-            - main
-    pull_request:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-    frontend-ci:
-        runs-on: self-hosted
+  frontend-ci:
+    runs-on: self-hosted
 
-        steps:
-            # 1️⃣ Clonamos el repositorio
-            - name: Checkout repository
-              uses: actions/checkout@v4
+    steps:
+      # 1️⃣ Clonamos el repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            # 2️⃣ Validamos que la estructura del frontend existe
-            - name: Validate frontend structure
-              run: |
-                  test -f frontend/Dockerfile.prod
-                  test -d frontend/mi-web
-                  test -f frontend/mi-web/index.html
-                  test -d frontend/mi-web/css
-                  test -d frontend/mi-web/js
+      # 2️⃣ Validamos que la estructura del frontend existe
+      - name: Validate frontend structure
+        run: |
+          test -f frontend/Dockerfile.prod
+          test -d frontend/mi-web
+          test -f frontend/mi-web/index.html
+          test -d frontend/mi-web/css
+          test -d frontend/mi-web/js
 
-            # 3️⃣ Construimos la imagen Docker del frontend (solo build)
-            - name: Build frontend Docker image
-              run: |
-                  docker build \
-                    -f frontend/Dockerfile.prod \
-                    -t frontend-ci:test \
-                    frontend
+      # 3️⃣ Construimos la imagen Docker del frontend (solo build)
+      - name: Build frontend Docker image
+        run: |
+          docker build \
+            -f frontend/Dockerfile.prod \
+            -t frontend-ci:test \
+            frontend
