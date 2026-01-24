@@ -1,13 +1,7 @@
-Estamos revisando la conexión de postgres que no existe un usuario
-luego falta CI de backend
-ci de stack
-CD de todo manual
 
+Ver logs del runner
+    journalctl -u actions.runner.* -f
 
-
-    Levantar runner
-
-./run.sh
 
     Levantar stack
 
@@ -29,22 +23,11 @@ docker exec -it wellness-postgres psql -U postgres -d wellness
 
     Ver que BD usa mi backend
 docker inspect wellness-backend-prod | grep -E "DB_|POSTGRES"
-                "DB_NAME=wellness",
-                "DB_HOST=postgres",
-                "DB_USER=wellness",
-                "DB_PASSWORD=wellness",
-
-
-
 
     Levantar stack desde base
 docker-compose --env-file .env.dev up --build
 
                 
-Siguientes pasos:
-
-comprobar CD del stack ya que tiene un fallo con curl http://localhost
-
             TAREAS PENDIENTES
 
 1. CI/CD y Estabilidad del Proyecto (Máxima Prioridad)
