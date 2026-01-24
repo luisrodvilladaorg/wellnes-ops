@@ -1,4 +1,5 @@
 Apuntes
+postgres-secret.yml
 .env
 backend/.env
 node_modules/
