@@ -13,7 +13,14 @@ spec:
         app: frontend
     spec:
       containers:
-        - name: frontend
-          image: wellness-frontend:dev
+        - name: frontend-deployment
+          image: frontend-dev:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
