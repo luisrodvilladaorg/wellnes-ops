@@ -28,51 +28,26 @@ docker inspect wellness-backend-prod | grep -E "DB_|POSTGRES"
 docker-compose --env-file .env.dev up --build
 
                 
-            TAREAS PENDIENTES
+           Ejecutar orden de ymls
 
-1. CI/CD y Estabilidad del Proyecto (Máxima Prioridad)
-🚀 Por qué es importante:
+kubectl apply -f k8s/postgres/postgres-secret.yml
+kubectl apply -f k8s/postgres/postgres-service.yml
+kubectl apply -f k8s/postgres/postgres-statefulset.yml
 
-Muestra experiencia práctica en automatización (una SKILL clave hoy).
-Es transversal: Puede aplicarse a codebases con Terraform u otros stacks.
-✅ Qué hacer:
+        Poner pods a 0
 
-Completa pipelines en ambos proyectos:
-Validación, pruebas y despliegue automático.
-Para Terraform: Configura GitHub Actions con validaciones automáticas y despliegue controlado.
-Para wellnes-ops: Implementa pruebas (unitarias, integración), construye imágenes Docker óptimas, y gestiona despliegues multiambiente.
+kubectl scale deploy --all --replicas=0
+kubectl scale statefulset --all --replicas=0
 
 
-2. Demostrar Infraestructura en Producción (IaC + Orquestación)
+           Aspectos a mejorar Docker
 
 
-🚀 Por qué es importante:
-
-Los proyectos con integración en nubes reales son vistos como más avanzados.
-Terraform cubre AWS de manera profesional, muestra madurez en IaC. Sin embargo, sumarle despliegues orquestados te diferenciará.
-✅ Qué hacer:
-
-Integra Docker y Kubernetes para un ejemplo real de despliegue orquestado de wellnes-ops en un cluster.
-Ejemplo: Usa terraform-aws-production-stack para lanzar un AWS Elastic Kubernetes Service (EKS) o Fargate (sin agregar complejidad al segundo repo).
-3. Sistema Observabilidad + Seguridad (Crítico)
-🚀 Por qué es importante:
-
-Estas características harán que tus proyectos escalen hacia un entorno enterprise-ready.
-Expone tu preocupación por métricas y monitoreo.
-✅ Qué hacer:
-
-En wellnes-ops:
-Añade Prometheus y Grafana para métricas de contenedores.
-Usa Fluentd o ELK Stack para centralizar logs (puedes incluirlos con Docker Compose).
-En terraform-aws-production-stack:
-Define alarmas básicas de CloudWatch (terraform outputs).
-También, habilita alertas críticas en herramientas de nube.
-4. Refactorización Modular (Frontend y Backend Bien Desacoplados)
-🚀 Por qué es importante:
-
-Los sistemas modulares son más atractivos porque son más mantenibles y escalables.
-Esto es relevante particularmente para wellnes-ops.
-✅ Qué hacer:
-
-Obliga al frontend a comunicarse con el backend solo a través de solicitudes API claras.
-Asegúrate de que cada pieza del stack (frontend, backend, nginx) pueda reemplazarse/modularizarse sin afectar las otras.
+2. Migrar de Docker Compose a Kubernetes con manifests, Helm y probes.
+3. Zero-downtime deployments con rolling updates y healthchecks estrictos.
+4. Logs centralizados con Loki, Promtail y dashboards avanzados.
+5. Security hardening con Trivy, Snyk, CSP, rate limiting y OIDC.
+6. Tests automáticos del stack completo con Testcontainers, smoke tests y pruebas de carga.
+7. Pipelines multi-entorno con staging y promoción a producción.
+8. Backups automáticos y restauración de PostgreSQL.
+9. Dashboard profesional para reclutadores con estado del stack y métricas clave.
