@@ -39,6 +39,10 @@ kubectl apply -f k8s/postgres/postgres-statefulset.yml
 kubectl scale deploy --all --replicas=0
 kubectl scale statefulset --all --replicas=0
 
+        Tumbar y levantar cluster
+k3d cluster list
+k3d cluster stop cluster-wellness-local
+k3d cluster start cluster-wellness-local
 
            Aspectos a mejorar Docker
 
