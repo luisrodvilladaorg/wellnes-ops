@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend-deployment
-          image: frontend-dev:latest
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:v1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

@@ -14,7 +14,7 @@ spec:
     spec:
       initContainers:
         - name: wait-for-postgres
-          image: postgres:16-alpine
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:latest
           command:
             - sh
             - -c
@@ -26,8 +26,8 @@ spec:
 
       containers:
         - name: backend
-          image: backend-dev:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.0
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           envFrom:
