@@ -5,4 +5,3 @@ metadata:
 spec:
   ca:
     secretName: wellness-ca-secret
-    namespace: cert-manager

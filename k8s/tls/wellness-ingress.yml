@@ -4,16 +4,17 @@ metadata:
   name: wellness-ingress
   namespace: default
   annotations:
+    cert-manager.io/cluster-issuer: wellness-ca
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - wellness.127.0.0.1.nip.io
+        - wellness.local
       secretName: wellness-tls
   rules:
-    - host: wellness.127.0.0.1.nip.io
+    - host: wellness.local
       http:
         paths:
           - path: /api

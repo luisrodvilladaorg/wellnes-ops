@@ -10,6 +10,6 @@ spec:
   issuerRef:
     name: wellness-ca
     kind: ClusterIssuer
-  commonName: wellness.127.0.0.1.nip.io
+  commonName: wellness.local
   dnsNames:
-    - wellness.127.0.0.1.nip.io
+    - wellness.local
