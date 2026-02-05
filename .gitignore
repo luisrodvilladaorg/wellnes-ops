@@ -1,6 +1,7 @@
 errores
 comandos
 Apuntes
+HTTPS
 postgres-secret.yml
 .env
 backend/.env

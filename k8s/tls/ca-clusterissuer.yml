@@ -3,5 +3,4 @@ kind: ClusterIssuer
 metadata:
   name: wellness-ca
 spec:
-  ca:
-    secretName: wellness-ca-secret
+  ca: { secretName: wellness-ca-secret }
