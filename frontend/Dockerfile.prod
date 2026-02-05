@@ -3,7 +3,7 @@
 # ==========================
 
 # 1️⃣ Usamos Nginx oficial (ligero y estándar)
-#FROM nginx:stable-alpine
+FROM nginx:stable-alpine
 
 # 2️⃣ Limpiamos la config por defecto (opcional pero profesional)
 RUN rm -rf /usr/share/nginx/html/*
