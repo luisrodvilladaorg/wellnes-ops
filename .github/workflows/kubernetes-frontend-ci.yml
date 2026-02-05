@@ -1,0 +1,42 @@
+name: Frontend Image CI (Kubernetes)
+
+on:
+    push:
+        tags:
+            - "v*.*.*"
+
+jobs:
+    build-frontend-image:
+        runs-on: self-hosted
+
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Validate frontend build artifacts
+              run: |
+                  test -f frontend/Dockerfile.prod
+                  test -d frontend/mi-web
+
+            - name: Log in to GitHub Container Registry
+              run: |
+                  echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+                    -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+            - name: Build frontend Docker image
+              run: |
+                  docker build \
+                    -f frontend/Dockerfile.prod \
+                    -t ghcr.io/luisrodvilladaorg/wellness-ops-frontend:${GITHUB_REF_NAME} \
+                    frontend
+
+            - name: Push frontend Docker image
+              run: |
+                  docker push ghcr.io/luisrodvilladaorg/wellness-ops-frontend:${GITHUB_REF_NAME}
+
+            - name: CI completed
+              run: echo "✅ Frontend image ${GITHUB_REF_NAME} pushed to GHCR"
