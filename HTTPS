@@ -1,224 +1,272 @@
-Resumen técnico de la resolución de HTTPS
-========================================
+Guía completa de diagnóstico y arreglo de HTTPS (con comandos y motivos)
+=======================================================================
 
-Contexto y objetivo
--------------------
-Se investigó un fallo de conexión TLS al acceder a https://wellness.local y https://wellness.local/api/health. El síntoma principal fue un error de OpenSSL SSL_connect (SSL_ERROR_SYSCALL) en curl, junto con conexiones que se quedaban “pensando” sin respuesta. El objetivo fue dejar funcionando HTTPS con Ingress NGINX, cert-manager, un certificado válido para wellness.local y una IP accesible desde el host local, usando MetalLB en un clúster k3d.
-
-
-Estado inicial observado
-------------------------
-1) El Ingress con TLS y el Ingress HTTP tenían el mismo nombre y el mismo host/path, lo cual podía generar colisiones.
-2) El Certificate estaba emitiéndose para el host wellness.127.0.0.1.nip.io, mientras el usuario accedía por wellness.local.
-3) El Ingress TLS refería un ClusterIssuer con un nombre distinto al real.
-4) Se conectaba a 127.0.0.1:443, pero el Ingress real estaba expuesto vía LoadBalancer/NodePort sin IP externa válida.
-5) MetalLB no estaba instalado inicialmente, por lo que la IP externa estaba “pending”.
+Resumen breve
+-------------
+Se diagnosticó un fallo de TLS al acceder a https://wellness.local. El problema no estaba en el backend sino en la exposición del Ingress: el host del certificado no coincidía, el Ingress duplicado colisionaba, y MetalLB asignaba IPs fuera de la red real de k3d. Se corrigieron manifiestos, se instaló y configuró MetalLB con el rango correcto, se actualizó /etc/hosts y se verificó con curl.
 
 
-Diagnóstico detallado
----------------------
-A) Comprobación de Ingress
-- El Ingress TLS existía y apuntaba a un secret wellness-tls.
-- El Ingress HTTP duplicaba host y path con el TLS, causando conflicto de admisión en NGINX.
-- Se confirmó que el Ingress estaba en namespace default.
-
-B) Comprobación de certificados
-- Se verificó que el Certificate se emite con cert-manager.
-- Se encontró discrepancia entre host real (wellness.local) y el commonName/dnsNames del Certificate (wellness.127.0.0.1.nip.io).
-
-C) Comprobación de IP externa
-- La IP del servicio ingress-nginx-controller estaba pendiente o asignada a una red no accesible desde el host.
-- Las pruebas internas dentro del cluster con curl funcionaban, lo que indicó que el Ingress y el backend estaban bien, y el problema era la exposición al host.
-
-D) Comprobación de MetalLB
-- No existía namespace metallb-system al inicio.
-- Se instaló MetalLB y se configuró un pool con un rango que no pertenecía a la red de Docker de k3d.
-- El host no podía enrutar a la IP en 172.18.255.x, porque el clúster k3d estaba en la red 172.19.0.0/16.
+Índice
+------
+1) Diagnóstico inicial (comandos y por qué)
+2) Correcciones de manifiestos (comandos y por qué)
+3) Instalación y configuración de MetalLB (comandos y por qué)
+4) Verificación de red (comandos y por qué)
+5) Resolución local (comandos y por qué)
+6) Verificación final (comandos y por qué)
+7) Listados de recursos relevantes (resumen)
+8) Causa raíz y solución final (explicación corta)
 
 
-Cambios realizados en manifiestos
----------------------------------
-1) Ingress HTTP renombrado para evitar colisión con el TLS.
-2) Ingress TLS actualizado a wellness.local y con la anotación correcta del ClusterIssuer.
-3) Certificate actualizado para wellness.local (commonName y dnsNames).
-4) ClusterIssuer corregido eliminando el campo no válido spec.ca.namespace.
-5) MetalLB pool ajustado al rango de la red de k3d.
+1) Diagnóstico inicial (comandos y por qué)
+-------------------------------------------
+
+Comando:
+kubectl get ingress -A
+Qué hace:
+Lista todos los Ingress en todos los namespaces.
+Por qué se ejecutó:
+Para detectar duplicados, confirmar el host y ver si el Ingress TLS existía.
+
+Comando:
+kubectl describe ingress wellness-ingress -n default
+Qué hace:
+Muestra reglas, TLS, anotaciones y eventos del Ingress.
+Por qué se ejecutó:
+Para confirmar el host real, el secret TLS y las anotaciones del issuer.
+
+Comando:
+kubectl get certificate wellness-tls -n default -o wide
+Qué hace:
+Muestra estado del Certificate y el issuer asociado.
+Por qué se ejecutó:
+Para validar si el cert estaba Ready y con qué issuer.
+
+Comando:
+kubectl describe certificate wellness-tls -n default
+Qué hace:
+Detalla CN/DNSNames, emisor y eventos de emisión.
+Por qué se ejecutó:
+Para comprobar si el cert estaba generado para wellness.local o para otro host.
+
+Comando:
+kubectl get svc -n ingress-nginx -o wide
+Qué hace:
+Muestra el servicio del controlador Ingress y su IP externa.
+Por qué se ejecutó:
+Para ver si había IP accesible desde el host o estaba en pending.
+
+Comando:
+curl -vk https://wellness.local/api/health
+Qué hace:
+Prueba conexión TLS y respuesta del endpoint de salud.
+Por qué se ejecutó:
+Para reproducir el error SSL y tener un baseline antes de cambios.
 
 
-Cronología de acciones y comandos relevantes
---------------------------------------------
-Nota: Se incluyen los comandos más relevantes. Se ejecutaron varios kubectl describe/get para ver estado de recursos.
+2) Correcciones de manifiestos (comandos y por qué)
+---------------------------------------------------
 
-1) Validación de Ingress y TLS
-- kubectl get ingress -A
-- kubectl describe ingress wellness-ingress -n default
-- kubectl get certificate wellness-tls -n default -o wide
-- kubectl describe certificate wellness-tls -n default
+Comando:
+kubectl apply -f k8s/tls/ca-issuer.yml
+Qué hace:
+Aplica el ClusterIssuer selfsigned (raíz inicial).
+Por qué se ejecutó:
+Es necesario para crear el CA interno.
 
-2) Aplicación de cambios de manifiestos
-- kubectl apply -f k8s/tls/ca-issuer.yml
-- kubectl apply -f k8s/tls/ca-certificate.yml
-- kubectl apply -f k8s/tls/ca-clusterissuer.yml
-- kubectl apply -f k8s/tls/wellness-tls.yml
-- kubectl apply -f k8s/tls/wellness-ingress.yml
+Comando:
+kubectl apply -f k8s/tls/ca-certificate.yml
+Qué hace:
+Crea el certificado CA (wellness-ca) en cert-manager.
+Por qué se ejecutó:
+Necesario para emitir certificados para el Ingress.
 
-3) Instalación de MetalLB
-- kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
-- kubectl -n metallb-system rollout status deploy/controller
-- kubectl -n metallb-system rollout status ds/speaker
-- kubectl apply -f k8s/metallb/ip-pool.yml
-- kubectl apply -f k8s/metallb/12-advertisement.yml
+Comando:
+kubectl apply -f k8s/tls/ca-clusterissuer.yml
+Qué hace:
+Crea el ClusterIssuer que usa el secret del CA.
+Por qué se ejecutó:
+Para que cert-manager pueda firmar el cert TLS final.
 
-4) Validación de IP externa
-- kubectl get svc -n ingress-nginx -o wide
+Comando:
+kubectl apply -f k8s/tls/wellness-tls.yml
+Qué hace:
+Emite el certificado TLS para wellness.local.
+Por qué se ejecutó:
+El cert anterior estaba para wellness.127.0.0.1.nip.io.
 
-5) Diagnóstico de red
-- docker network inspect k3d-cluster-wellness-local
-- docker ps --filter name=serverlb --format "{{.ID}} {{.Names}} {{.Ports}}"
+Comando:
+kubectl apply -f k8s/tls/wellness-ingress.yml
+Qué hace:
+Aplica el Ingress TLS con host wellness.local.
+Por qué se ejecutó:
+Para alinear host y TLS con el certificado correcto.
 
-6) Ajustes de MetalLB al rango correcto
-- ip-pool actualizado a 172.19.255.200-172.19.255.250
-- Recreación de services para limpiar IPs anteriores
-  - kubectl -n ingress-nginx delete svc ingress-nginx-controller
-  - kubectl -n ingress-nginx apply -f <svc sin status>
-  - kubectl -n default delete svc nginx-gateway
-  - kubectl -n default apply -f k8s/nginx/nginx-service.yml
-
-7) Resolución local
-- Edición de /etc/hosts para apuntar wellness.local a la IP de MetalLB
-
-8) Verificación final
-- curl -vk https://wellness.local/api/health
+Comando:
+kubectl apply -f k8s/ingress/ingress-http.yml
+Qué hace:
+Aplica el Ingress HTTP (renombrado para evitar colisión).
+Por qué se ejecutó:
+Evitar conflicto de host/path con el TLS.
 
 
-Listados de recursos relevantes
--------------------------------
-Ingress principal TLS
-- Nombre: wellness-ingress
-- Namespace: default
+3) Instalación y configuración de MetalLB (comandos y por qué)
+--------------------------------------------------------------
+
+Comando:
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
+Qué hace:
+Instala MetalLB (controller + speaker y CRDs).
+Por qué se ejecutó:
+Para asignar IPs externas a servicios LoadBalancer en k3d.
+
+Comando:
+kubectl -n metallb-system rollout status deploy/controller
+Qué hace:
+Espera a que el controlador de MetalLB esté listo.
+Por qué se ejecutó:
+Evitar fallos al crear los pools antes de que el controlador responda.
+
+Comando:
+kubectl -n metallb-system rollout status ds/speaker
+Qué hace:
+Espera a que el speaker de MetalLB esté listo.
+Por qué se ejecutó:
+Es necesario para anunciar IPs vía L2.
+
+Comando:
+kubectl apply -f k8s/metallb/ip-pool.yml
+Qué hace:
+Crea el IPAddressPool para MetalLB.
+Por qué se ejecutó:
+Definir el rango de IPs a asignar (ajustado a la red real de k3d).
+
+Comando:
+kubectl apply -f k8s/metallb/12-advertisement.yml
+Qué hace:
+Crea el L2Advertisement.
+Por qué se ejecutó:
+Anunciar en L2 las IPs del pool.
+
+
+4) Verificación de red (comandos y por qué)
+-------------------------------------------
+
+Comando:
+docker network inspect k3d-cluster-wellness-local
+Qué hace:
+Muestra la red real de Docker usada por k3d.
+Por qué se ejecutó:
+Para confirmar que el rango correcto era 172.19.0.0/16.
+
+Comando:
+docker ps --filter name=serverlb --format "{{.ID}} {{.Names}} {{.Ports}}"
+Qué hace:
+Muestra el load balancer de k3d y sus puertos expuestos.
+Por qué se ejecutó:
+Para verificar que 80/443 están publicados en el host.
+
+
+5) Limpieza y reasignación de IPs (comandos y por qué)
+------------------------------------------------------
+
+Comando:
+kubectl -n ingress-nginx get svc ingress-nginx-controller -o yaml | sed '/loadBalancerIP:/d' | sed '/^status:/,$d' > /tmp/ingress-nginx-svc.yaml
+Qué hace:
+Exporta el Service sin status ni loadBalancerIP.
+Por qué se ejecutó:
+Para recrearlo limpio y forzar nueva asignación de IP.
+
+Comando:
+kubectl -n ingress-nginx delete svc ingress-nginx-controller
+Qué hace:
+Elimina el service actual del Ingress.
+Por qué se ejecutó:
+Liberar la IP antigua no válida.
+
+Comando:
+kubectl apply -f /tmp/ingress-nginx-svc.yaml
+Qué hace:
+Recrea el service del Ingress sin IP fija.
+Por qué se ejecutó:
+Permitir que MetalLB asigne una IP válida del pool nuevo.
+
+Comando:
+kubectl -n default delete svc nginx-gateway
+Qué hace:
+Elimina el service nginx-gateway.
+Por qué se ejecutó:
+Liberar IP antigua no válida y evitar conflictos.
+
+Comando:
+kubectl -n default apply -f k8s/nginx/nginx-service.yml
+Qué hace:
+Recrea nginx-gateway y asigna IP válida.
+Por qué se ejecutó:
+Evitar que otro LoadBalancer quede con IP fuera del pool.
+
+
+6) Resolución local (comandos y por qué)
+----------------------------------------
+
+Comando:
+grep -n "wellness.local" /etc/hosts
+Qué hace:
+Muestra la línea de resolución local del host.
+Por qué se ejecutó:
+Validar que wellness.local apunta a la IP correcta.
+
+Comando:
+sudo sed -i 's/.*\bwellness\.local\b.*/172.19.255.200 wellness.local/' /etc/hosts
+Qué hace:
+Actualiza la IP de wellness.local en /etc/hosts.
+Por qué se ejecutó:
+Hacer que el host resuelva al IP del Ingress.
+
+
+7) Verificación final (comandos y por qué)
+------------------------------------------
+
+Comando:
+curl -v http://wellness.local/health --connect-timeout 5
+Qué hace:
+Prueba HTTP y muestra redirección.
+Por qué se ejecutó:
+Confirmar redirección 308 a HTTPS.
+
+Comando:
+curl -vk https://wellness.local/api/health --connect-timeout 5
+Qué hace:
+Prueba HTTPS con salida detallada del handshake.
+Por qué se ejecutó:
+Confirmar que TLS responde 200 y el backend está sano.
+
+
+8) Listados de recursos relevantes (resumen)
+-------------------------------------------
+
+Ingress TLS
+- default/wellness-ingress
 - Host: wellness.local
 - TLS secret: wellness-tls
-- Backends:
-  - /api -> backend:3000
-  - / -> frontend-service:80
+- Paths: /api -> backend:3000, / -> frontend-service:80
 
-Ingress HTTP
-- Nombre renombrado: wellness-ingress-http
-- Se dejó fuera de uso para evitar colisión.
+Ingress HTTP (renombrado)
+- default/wellness-ingress-http
+- Evita colisión con TLS
 
-Services expuestos
-- ingress-nginx-controller (LoadBalancer) con IP de MetalLB
-- nginx-gateway (LoadBalancer) con IP de MetalLB
+Services LoadBalancer
+- ingress-nginx-controller (IP MetalLB del Ingress)
+- nginx-gateway (IP MetalLB del gateway)
 
-Certificados
-- Certificate wellness-tls (CN wellness.local)
-- ClusterIssuer wellness-ca
-- Certificate wellness-ca (CA root)
+Cert-manager
+- ClusterIssuer: wellness-ca
+- Certificate: wellness-tls (CN wellness.local)
 
 
-Problemas encontrados y causa raíz
-----------------------------------
-1) Host del certificado incorrecto
-- El certificado se emitía para wellness.127.0.0.1.nip.io, pero el cliente accedía a wellness.local. Esto impedía el handshake correcto si se verificaba el host.
-
-2) Ingress duplicado con el mismo host/path
-- Dos Ingress con el mismo host y path generaron conflictos en el webhook del controlador.
-
-3) IP externa fuera del rango accesible
-- MetalLB asignó IPs de 172.18.255.x, pero el clúster k3d estaba en 172.19.0.0/16. El host no podía enrutar a esa red, por lo que la conexión se quedaba colgada.
-
-4) hostNetwork no viable en el nodo
-- Se intentó habilitar hostNetwork para el controlador, pero el nodo no tenía puertos libres (80/443), lo que impidió el scheduling. Se revirtió.
-
-
-Solución aplicada
------------------
-1) Alineación de host
-- Ingress y Certificate ajustados a wellness.local.
-
-2) Limpieza de colisiones de Ingress
-- El Ingress HTTP renombrado para no colisionar con el TLS.
-
-3) Corrección de ClusterIssuer
-- Se eliminó el campo inválido spec.ca.namespace.
-
-4) MetalLB instalado y configurado con rango correcto
-- IP pool ajustado al rango 172.19.255.200-172.19.255.250, que pertenece a la red de Docker k3d.
-
-5) Reasignación de IPs
-- Services recreados para que MetalLB reasigne IPs válidas dentro del nuevo pool.
-
-6) Resolución local
-- /etc/hosts actualizado a wellness.local -> IP de MetalLB.
-
-
-Validación final
-----------------
-- curl -vk https://wellness.local/api/health
-  Resultado: HTTP/2 200, respuesta JSON, TLS handshake OK.
-
-
-Notas adicionales
------------------
-- El warning “unable to get local issuer certificate” en curl es esperado si el CA no está instalado en el trust store del sistema. Se puede instalar el CA para eliminarlo.
-- El backend funcionaba correctamente desde dentro del cluster; el bloqueo era puramente de exposición/red.
-- Es recomendable evitar múltiples Ingress con el mismo host/path.
-
-
-Estado actual
--------------
-- HTTPS operativo usando wellness.local.
-- MetalLB activo y asignando IPs dentro del rango correcto.
-- Certificado válido para wellness.local emitido por wellness-ca.
-- /etc/hosts actualizado en el host.
-
-
-Anexo A: Comandos utilizados (lista ampliada)
----------------------------------------------
-- kubectl get ingress -A
-- kubectl describe ingress wellness-ingress -n default
-- kubectl get certificate wellness-tls -n default -o wide
-- kubectl describe certificate wellness-tls -n default
-- kubectl apply -f k8s/tls/ca-issuer.yml
-- kubectl apply -f k8s/tls/ca-certificate.yml
-- kubectl apply -f k8s/tls/ca-clusterissuer.yml
-- kubectl apply -f k8s/tls/wellness-tls.yml
-- kubectl apply -f k8s/tls/wellness-ingress.yml
-- kubectl apply -f k8s/ingress/ingress-http.yml
-- kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
-- kubectl -n metallb-system rollout status deploy/controller
-- kubectl -n metallb-system rollout status ds/speaker
-- kubectl apply -f k8s/metallb/ip-pool.yml
-- kubectl apply -f k8s/metallb/12-advertisement.yml
-- kubectl get svc -n ingress-nginx -o wide
-- docker network inspect k3d-cluster-wellness-local
-- docker ps --filter name=serverlb --format "{{.ID}} {{.Names}} {{.Ports}}"
-- kubectl -n ingress-nginx delete svc ingress-nginx-controller
-- kubectl -n ingress-nginx apply -f <svc sin status>
-- kubectl -n default delete svc nginx-gateway
-- kubectl -n default apply -f k8s/nginx/nginx-service.yml
-- curl -vk https://wellness.local/api/health
-
-
-Anexo B: Listado lógico de Ingress
-----------------------------------
-1) default/wellness-ingress (TLS)
-   - Host: wellness.local
-   - Paths: /api, /
-   - Secret TLS: wellness-tls
-
-2) default/wellness-ingress-http (no TLS)
-   - Host: wellness.local
-   - Path: /
-   - Nota: se dejó renombrado para evitar colisión; no se usa para producción.
-
-
-Anexo C: Riesgos y recomendaciones
-----------------------------------
-- Evitar LoadBalancer con IPs fuera del rango del bridge Docker.
-- Evitar múltiples Ingress con el mismo host/path.
-- Registrar el CA en el trust store para evitar warnings.
-- Mantener documentación de IP pools y k3d network.
+Causa raíz y solución final (explicación corta)
+-----------------------------------------------
+La conexión HTTPS fallaba porque el certificado no correspondía al host real, había colisiones de Ingress, y MetalLB asignaba IPs fuera de la red de k3d, lo que hacía que el host no pudiera enrutar hacia el Ingress. Se corrigieron los manifiestos (host y issuer), se ajustó el pool de MetalLB al rango 172.19.0.0/16, se recrearon services para reasignar IPs válidas, y se actualizó /etc/hosts. Tras ello, el endpoint HTTPS respondió correctamente.
 
 
 Fin del documento
