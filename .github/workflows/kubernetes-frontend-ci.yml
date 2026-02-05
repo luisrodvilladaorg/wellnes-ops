@@ -31,12 +31,12 @@ jobs:
               run: |
                   docker build \
                     -f frontend/Dockerfile.prod \
-                    -t ghcr.io/luisrodvilladaorg/wellness-ops-frontend:${GITHUB_REF_NAME} \
+                    -t ghcr.io/luisrodvilladaorg/wellness-ops-frontend:v1.0.0 \
                     frontend
 
             - name: Push frontend Docker image
               run: |
-                  docker push ghcr.io/luisrodvilladaorg/wellness-ops-frontend:${GITHUB_REF_NAME}
+                  docker push ghcr.io/luisrodvilladaorg/wellness-ops-frontend:v1.0.0
 
             - name: CI completed
-              run: echo "✅ Frontend image ${GITHUB_REF_NAME} pushed to GHCR"
+              run: echo "✅ Frontend image v1.0.0 pushed to GHCR"
