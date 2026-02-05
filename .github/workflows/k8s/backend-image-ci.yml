@@ -1,4 +1,4 @@
-name: Backend Image CI Kubernetes
+name: Backend Image CI KubernetesV1
 
 on:
     push:
