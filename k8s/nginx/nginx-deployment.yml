@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: ghcr.io/luisrodvilladaorg/wellness-ops-nginx-gateway:v1.0.0
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-nginx-gateway:v1.0.04
           ports:
             - containerPort: 80
           volumeMounts:
