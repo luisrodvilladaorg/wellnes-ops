@@ -1,0 +1,56 @@
+name: Backend Image CI (Kubernetes)
+
+on:
+    push:
+        tags:
+            - "v*.*.*"
+
+jobs:
+    build-backend-image:
+        runs-on: self-hosted
+
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Validate backend structure
+              run: |
+                  test -f backend/Dockerfile.prod
+                  test -f backend/package.json
+                  test -d backend/src
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Install backend dependencies
+              working-directory: backend
+              run: npm ci
+
+            - name: Run backend tests
+              working-directory: backend
+              run: npm test --if-present
+
+            - name: Log in to GitHub Container Registry
+              run: |
+                  echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+                    -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+            - name: Build backend Docker image
+              run: |
+                  docker build \
+                    -f backend/Dockerfile.prod \
+                    -t ghcr.io/luisrodvilladaorg/wellness-ops-backend:${GITHUB_REF_NAME} \
+                    backend
+
+            - name: Push backend Docker image
+              run: |
+                  docker push ghcr.io/luisrodvilladaorg/wellness-ops-backend:${GITHUB_REF_NAME}
+
+            - name: CI completed
+              run: echo "✅ Backend image ${GITHUB_REF_NAME} pushed to GHCR"

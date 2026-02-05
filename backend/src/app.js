@@ -26,7 +26,7 @@ app.use("/api/health", healthRoutes);
 app.use("/metrics", metricsRoutes);
 // Healthcheck simple para Docker / orquestadores
 app.get("/health", (req, res) => {
-    res.json({ status: "OK Connected Luis Fernando" });
+    res.json({ status: "OK" });
 });
 
 
