@@ -1,0 +1,42 @@
+name: Nginx Gateway Image CI (Kubernetes)
+
+on:
+    push:
+        tags:
+            - "v*.*.*"
+
+jobs:
+    build-nginx-gateway-image:
+        runs-on: self-hosted
+
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Validate nginx gateway artifacts
+              run: |
+                  test -f nginx/Dockerfile.prod
+                  test -f nginx/nginx-ci.conf
+
+            - name: Log in to GitHub Container Registry
+              run: |
+                  echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+                    -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+            - name: Build nginx gateway Docker image
+              run: |
+                  docker build \
+                    -f nginx/Dockerfile.prod \
+                    -t ghcr.io/luisrodvilladaorg/wellness-ops-nginx-gateway:${GITHUB_REF_NAME} \
+                    nginx
+
+            - name: Push nginx gateway Docker image
+              run: |
+                  docker push ghcr.io/luisrodvilladaorg/wellness-ops-nginx-gateway:${GITHUB_REF_NAME}
+
+            - name: CI completed
+              run: echo "✅ Nginx gateway image ${GITHUB_REF_NAME} pushed to GHCR"
