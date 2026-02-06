@@ -1,0 +1,33 @@
+name: Nginx Gateway CD (Kubernetes)
+
+on:
+    push:
+        tags:
+            - "v*.*.*"
+
+jobs:
+    deploy-nginx-gateway:
+        runs-on: self-hosted
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set kubeconfig
+              run: |
+                  mkdir -p ~/.kube
+                  echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+                  chmod 600 ~/.kube/config
+
+            - name: Set nginx gateway image version
+              run: |
+                  kubectl set image deployment/nginx-gateway \
+                    nginx=ghcr.io/luisrodvilladaorg/wellness-ops-nginx-gateway:${GITHUB_REF_NAME}
+
+            - name: Wait for rollout
+              run: |
+                  kubectl rollout status deployment/nginx-gateway --timeout=120s
+
+            - name: Verify gateway routing
+              run: |
+                  curl -k https://wellness.local/api/health
