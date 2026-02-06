@@ -1,0 +1,33 @@
+name: Backend CD (Kubernetes)
+
+on:
+    push:
+        tags:
+            - "v*.*.*"
+
+jobs:
+    deploy-backend:
+        runs-on: self-hosted
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set kubeconfig
+              run: |
+                  mkdir -p ~/.kube
+                  echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+                  chmod 600 ~/.kube/config
+
+            - name: Set backend image version
+              run: |
+                  kubectl set image deployment/backend \
+                    backend=ghcr.io/luisrodvilladaorg/wellness-ops-backend:${GITHUB_REF_NAME}
+
+            - name: Wait for rollout
+              run: |
+                  kubectl rollout status deployment/backend --timeout=120s
+
+            - name: Verify backend health
+              run: |
+                  curl -k https://wellness.local/api/health
