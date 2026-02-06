@@ -13,12 +13,29 @@ spec:
       labels:
         app: postgres
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999  # postgres user
+        runAsGroup: 999
+        fsGroup: 999
       containers:
         - name: postgres
           image: postgres:16-alpine
 
           ports:
             - containerPort: 5432
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           envFrom:
             - secretRef:
                 name: postgres-secret
@@ -38,9 +55,34 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_DB
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data
+            - name: init-script
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: init-script
+          configMap:
+            name: postgres-init-configmap
   volumeClaimTemplates:
     - metadata:
         name: data
