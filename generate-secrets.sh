@@ -14,7 +14,16 @@ echo ""
 
 # Generate JWT secret
 JWT_SECRET=$(openssl rand -base64 64 | tr -d "=+/" | cut -c1-64)
-JWT_SECRET_B64=$(echo -n "$JWT_SECRET" | base64 -w 0)
+
+# Portable base64 encoding (works on both Linux and macOS)
+if base64 --version 2>&1 | grep -q "GNU coreutils"; then
+  # GNU base64 (Linux)
+  JWT_SECRET_B64=$(echo -n "$JWT_SECRET" | base64 -w 0)
+else
+  # BSD base64 (macOS)
+  JWT_SECRET_B64=$(echo -n "$JWT_SECRET" | base64)
+fi
+
 echo "JWT Secret (plain):"
 echo "$JWT_SECRET"
 echo ""
