@@ -21,8 +21,8 @@ jobs:
 
             - name: Set frontend image version
               run: |
-                  kubectl set image deployment/frontenfrontend-deploymentd \
-                    frontend=ghcr.io/luisrodvilladaorg/wellness-ops-frontend:${GITHUB_REF_NAME}
+                  kubectl set image deployment/frontend \
+                    frontend-deployment=ghcr.io/luisrodvilladaorg/wellness-ops-frontend:${GITHUB_REF_NAME}
 
             - name: Wait for rollout
               run: |
