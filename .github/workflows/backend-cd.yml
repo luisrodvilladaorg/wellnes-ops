@@ -1,4 +1,4 @@
-name: Backend CD (Kubernetes)
+name: Backend CD  (Kubernetes)
 
 on:
     push:
