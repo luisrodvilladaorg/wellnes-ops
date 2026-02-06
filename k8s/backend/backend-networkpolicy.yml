@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow connections from nginx gateway
+    - from:
+      - podSelector:
+          matchLabels:
+            app: nginx-gateway
+      ports:
+        - protocol: TCP
+          port: 3000

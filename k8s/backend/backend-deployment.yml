@@ -12,9 +12,14 @@ spec:
       labels:
         app: backend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       initContainers:
         - name: wait-for-postgres
-          image: ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:latest
+          image: postgres:16-alpine
           command:
             - sh
             - -c
@@ -23,13 +28,23 @@ spec:
                 echo "Waiting for PostgreSQL..."
                 sleep 2
               done
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
 
       containers:
         - name: backend
           image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.01
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           envFrom:
             - configMapRef:
                 name: backend-config
