@@ -4,6 +4,7 @@ metadata:
   name: nginx-gateway
 spec:
   type: LoadBalancer
+  loadBalancerIP: 172.19.255.201
   selector:
     app: nginx-gateway
   ports:
