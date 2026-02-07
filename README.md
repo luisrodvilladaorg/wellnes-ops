@@ -1,6 +1,9 @@
 
 
- <img src="docs/images/docker-kubernetes.png" width="500">
+ <p align="center">
+  <img src="docs/images/docker-kubernetes.png" width="450">
+</p>
+
 
 **Thank you for watching!**
 
