@@ -1,6 +1,6 @@
 
 
- ![Metrics Prometheus](docs/images/docker-kubernetes.png)
+ ![](docs/images/docker-kubernetes.png)
 
 **Thank you for watching!**
 
