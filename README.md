@@ -19,7 +19,8 @@
 ## Screenshots
 
 1. Pods
-  <img src="docs/pods.png" width="320" alt="Pods"/>
+  ![Pods running](docs/images/pods.png)
+
 2. Logs
   <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='420'><rect width='100%' height='100%' fill='%230b1320'/><rect x='24' y='24' width='852' height='372' fill='%231c2541' stroke='%233a506b' stroke-width='2' rx='12'/><text x='50%' y='50%' fill='%23ffffff' font-size='48' font-family='Arial, sans-serif' text-anchor='middle' dominant-baseline='middle'>Logs</text></svg>" width="320" alt="Logs"/>
 3. Deployments

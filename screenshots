@@ -1,0 +1,18 @@
+]633;E;echo '$ kubectl get pods -n default';e59b989f-bf48-463c-8ea9-c4e42895ccdd]633;C$ kubectl get pods -n default
+NAME                            READY   STATUS    RESTARTS      AGE
+backend-77d5c6d584-twtz4        1/1     Running   0             66m
+frontend-56cfc57d8f-wtfcg       1/1     Running   0             68m
+nginx-gateway-6cbb948c5-8jhjv   1/1     Running   0             66m
+postgres-0                      1/1     Running   1 (10h ago)   25h
+
+$ kubectl get svc -n default
+NAME               TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+backend            ClusterIP      10.43.144.53   <none>        3000/TCP       2d2h
+frontend-service   ClusterIP      10.43.169.89   <none>        80/TCP         2d2h
+kubernetes         ClusterIP      10.43.0.1      <none>        443/TCP        2d2h
+nginx-gateway      LoadBalancer   10.43.177.40   <pending>     80:30904/TCP   35h
+postgres-service   ClusterIP      10.43.50.237   <none>        5432/TCP       2d2h
+
+$ kubectl get ingress -n default
+NAME               CLASS   HOSTS            ADDRESS          PORTS     AGE
+wellness-ingress   nginx   wellness.local   172.19.255.200   80, 443   2d1h
