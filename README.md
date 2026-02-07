@@ -20,42 +20,52 @@
 ## Screenshots
 
 1. Arquitecture
+
   ![architecture](docs/images/arquitecture.png)
 
 
 
 2. Pods
+
  ![Pods running](docs/images/pods-running.png)
 
 
 
 3. Pods Monitoring
+
   ![Pods running](docs/images/monitoring.png)
   
 
 4. CI/CD
+
  ![Pipelines](docs/images/deploy-nginx.png)
 
 
 5. CI Backend
+
  ![Pods running](docs/images/backend-ci.png)
 
 
 6. CD Backend
+
   ![Pods running](docs/images/backend-cd.png)
   
 
 7. Some Workflows 
+
  ![Metrics Prometheus](docs/images/cackend-cd-working.png)
 
 
 8. Prometheus
+
   ![Metrics Prometheus](docs/images/metrics-2.png)
 
 9. Grafana
+
   ![Metrics Grafana](docs/images/metrics-grafana.png)
   
 10. Metrics
+
   ![Metrics Grafana](docs/images/metrics.png)
 ---
 
@@ -67,13 +77,7 @@
 * [K9s v0.21.3](https://youtu.be/wG8KCwDAhnw)
 * [K9s v0.19.X](https://youtu.be/kj-WverKZ24)
 * [K9s v0.18.0](https://www.youtube.com/watch?v=zMnD5e53yRw)
-* [K9s v0.17.0](https://www.youtube.com/watch?v=7S33CNLAofk&feature=youtu.be)
-* [K9s Pulses](https://asciinema.org/a/UbXKPal6IWpTaVAjBBFmizcGN)
-* [K9s v0.15.1](https://youtu.be/7Fx4XQ2ftpM)
-* [K9s v0.13.0](https://www.youtube.com/watch?v=qaeR2iK7U0o&t=15s)
-* [K9s v0.9.0](https://www.youtube.com/watch?v=bxKfqumjW4I)
-* [K9s v0.7.0 Features](https://youtu.be/83jYehwlql8)
-* [K9s v0 Demo](https://youtu.be/k7zseUhaXeU)
+
 
 ---
 
