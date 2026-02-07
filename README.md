@@ -12,7 +12,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/derailed/k9s?)](https://goreportcard.com/report/github.com/derailed/k9s)
 [![golangci badge](https://img.shields.io/badge/golangci-A%2B-brightgreen)](https://golangci.com/r/github.com/derailed/k9s)
 [![codebeat badge](https://img.shields.io/codebeat/grade/github/derailed/k9s/master)](https://codebeat.co/projects/github-com-derailed-k9s-master)
-[![Build Status](https://img.shields.io/travis/com/derailed/k9s/master?label=build)](https://travis-ci.com/derailed/k9s)
 [![Docker Repository on Quay](https://quay.io/repository/derailed/k9s/status "Docker Repository on Quay")](https://quay.io/repository/derailed/k9s)
 [![release](https://img.shields.io/github/release-pre/derailed/k9s.svg)](https://github.com/derailed/k9s/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/mum4k/termdash/blob/master/LICENSE)
@@ -86,24 +85,17 @@
 
 ## Documentation
 
-Please refer to our [K9s documentation](https://k9scli.io) site for installation, usage, customization and tips.
+For additional screenshots related to the project and its execution, please visit the following link:[Kubernetes and Docker Guide wellness ops](https://github.com/luisrodvilladaorg/wellnes-ops/tree/main/docs).
 
-## Slack Channel
-
-Wanna discuss K9s features with your fellow `K9sers` or simply show your support for this tool?
-
-* Channel: [K9ersSlack](https://k9sers.slack.com/)
-* Invite: [K9slackers Invite](https://join.slack.com/t/k9sers/shared_invite/enQtOTA5MDEyNzI5MTU0LWQ1ZGI3MzliYzZhZWEyNzYxYzA3NjE0YTk1YmFmNzViZjIyNzhkZGI0MmJjYzhlNjdlMGJhYzE2ZGU1NjkyNTM)
 
 ## Installation
 
-K9s is available on Linux, macOS and Windows platforms.
-Binaries for Linux, Windows and Mac are available as tarballs in the [release page](https://github.com/derailed/k9s/releases).
+To install the project on your host, use the following command which will make a copy of the entire repository from Git.
 
-* Via [Homebrew](https://brew.sh/) for macOS or Linux
+* MacOS or Linux
 
    ```shell
-   brew install derailed/k9s/k9s
+   git clone https://github.com/luisrodvilladaorg/wellnes-ops.git
    ```
 
 * Via [MacPorts](https://www.macports.org)
