@@ -92,22 +92,31 @@ For additional screenshots related to the project and its execution, please visi
 
 To install the project on your host, use the following command which will make a copy of the entire repository from Git.
 
+
+*Prerequisites
+
+- Docker >= 24
+- Docker Compose
+- Kubernetes (k3d/kind/minikube)
+- kubectl
+- Helm
+   ```
+   
 * MacOS or Linux
 
    ```shell
    git clone https://github.com/luisrodvilladaorg/wellnes-ops.git
+   cd wellnes-ops
    ```
 
-* Via [MacPorts](https://www.macports.org)
+* Create environment variables necessary for project use (see example file .env.example). For security reasons, we do not include public environment variables. 
 
-   ```shell
-   sudo port install k9s
-   ```
+Edit the `.env` file if needed
 
-* Via [snap](https://snapcraft.io/k9s) for Linux
+* Start the stack with Docker Compose (development environment) in the background
 
   ```shell
-  snap install k9s --devmode
+  docker compose -f docker-compose.dev.yml up -d
   ```
 
 * On Arch Linux
