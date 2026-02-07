@@ -1,6 +1,6 @@
 
 
- ![](docs/images/docker-kubernetes.png)
+ <img src="docs/images/docker-kubernetes.png" width="500">
 
 **Thank you for watching!**
 
