@@ -1,4 +1,10 @@
+# 🧭 What is this?
 
+This project is a fully containerized, production‑ready DevOps environment designed to demonstrate modern infrastructure practices. It brings together Docker, Kubernetes, GitHub Actions, NGINX, TLS, monitoring, and a complete CI/CD pipeline to showcase how a real-world application is built, deployed, and operated end‑to‑end.
+
+## ⚙️ What does it do?
+
+This system builds and deploys a Node.js  backend, serves a static frontend through an NGINX gateway, manages traffic using an Ingress Controller, and exposes the application securely through TLS. It also includes automated CI/CD pipelines, container image publishing, Kubernetes manifests, and a full monitoring stack with Prometheus and Grafana.
 
  <p align="center">
   <img src="docs/images/docker-kubernetes.png" width="450">
