@@ -29,24 +29,34 @@
 
 
 
-3. Monitoring
+3. Pods Monitoring
   ![Pods running](docs/images/monitoring.png)
   
 
-2. Metrics
- ![Metrics Prometheus](docs/images/metrics-2.png)
+4. CI/CD
+ ![Pipelines](docs/images/deploy-nginx.png)
 
 
-
-3. Prometheus
-  ![Metrics Prometheus](docs/images/metrics.png)
-
+5. CI Backend
+ ![Pods running](docs/images/backend-ci.png)
 
 
-3. Grafana
-  ![Metrics Grafana](docs/images/metrics-grafana.png)
+6. CD Backend
+  ![Pods running](docs/images/backend-cd.png)
   
 
+7. Some Workflows 
+ ![Metrics Prometheus](docs/images/cackend-cd-working.png)
+
+
+8. Prometheus
+  ![Metrics Prometheus](docs/images/metrics-2.png)
+
+9. Grafana
+  ![Metrics Grafana](docs/images/metrics-grafana.png)
+  
+10. Metrics
+  ![Metrics Grafana](docs/images/metrics.png)
 ---
 
 ## Demo Videos/Recordings
