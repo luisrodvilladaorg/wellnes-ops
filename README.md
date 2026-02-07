@@ -100,7 +100,7 @@ To install the project on your host, use the following command which will make a
 - Kubernetes (k3d/kind/minikube)
 - kubectl
 - Helm
-   ```
+
    
 * MacOS or Linux
 
@@ -117,74 +117,56 @@ Edit the `.env` file if needed
 
   ```shell
   docker compose -f docker-compose.dev.yml up -d
+  docker ps
   ```
 
-* On Arch Linux
+* Verify that the backend is working
 
   ```shell
-  pacman -S k9s
+  docker logs -f backend
   ```
 
-* On OpenSUSE Linux distribution
+* functional tests
 
   ```shell
-  zypper install k9s
+  curl http://localhost:3000/api/health
   ```
 
-* On FreeBSD
+## Kubernetes (PRODUCTION / REAL mode)
+
+* Create cluster
 
   ```shell
-  pkg install k9s
+  k3d cluster create cluster-wellness-local
   ```
 
-* Via [Winget](https://github.com/microsoft/winget-cli) for Windows
+* apply manifests
 
   ```shell
-  winget install k9s
+  kubectl apply -R -f k8s/
   ```
 
-* Via [Scoop](https://scoop.sh) for Windows
+* Check status
 
   ```shell
-  scoop install k9s
+  kubectl get pods
+  kubectl get svc
+  kubectl get ingress
   ```
-
-* Via [Chocolatey](https://chocolatey.org/packages/k9s) for Windows
+* Access the application
 
   ```shell
-  choco install k9s
+  curl -k https://wellness.local/api/health
+
   ```
+Please update your `/etc/hosts` file by adding the following entry:
 
-* Via a GO install
+127.0.0.1   wellness.local
 
-  ```shell
-  # NOTE: The dev version will be in effect!
-  go install github.com/derailed/k9s@latest
-  ```
 
-* Via [Webi](https://webinstall.dev) for Linux and macOS
+The project can be run locally using Docker Compose for development or deployed to Kubernetes for a production-like environment.
 
-  ```shell
-  curl -sS https://webinstall.dev/k9s | bash
-  ```
 
-* Via [pkgx](https://pkgx.dev/pkgs/k9scli.io/) for Linux and macOS
-
-  ```shell
-  pkgx k9s
-  ```
-
-* Via [Webi](https://webinstall.dev) for Windows
-
-  ```shell
-  curl.exe -A MS https://webinstall.dev/k9s | powershell
-  ```
-
-* As a [Docker Desktop Extension](https://docs.docker.com/desktop/extensions/) (for the Docker Desktop built in Kubernetes Server)
-
-  ```shell
-  docker extension install spurin/k9s-dd-extension:latest
-  ```
 
 ---
 
