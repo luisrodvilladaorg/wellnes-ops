@@ -1,29 +1,14 @@
-<img src="assets/k9s.png" alt="k9s">
+<img src="https://kubernetes.io/images/kubernetes-horizontal-color.png" alt="kubernetes">
 
-## K9s - Kubernetes CLI To Manage Your Clusters In Style!
-
-K9s provides a terminal UI to interact with your Kubernetes clusters.
-The aim of this project is to make it easier to navigate, observe and manage
-your applications in the wild. K9s continually watches Kubernetes
-for changes and offers subsequent commands to interact with your observed resources.
-
----
-
-## Note...
-
-K9s is not pimped out by a big corporation with deep pockets.
-It is a complex OSS project that demands a lot of my time to maintain and support.
-K9s will always remain OSS and therefore free! That said, if you feel k9s makes your day to day Kubernetes journey a tad brighter, saves you time and makes you more productive, please consider [sponsoring us!](https://github.com/sponsors/derailed)
-Your donations will go a long way in keeping our servers lights on and beers in our fridge!
 
 **Thank you!**
 
 ---
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/derailed/k9s?)](https://goreportcard.com/report/github.com/derailed/k9s)
-[![golangci badge](https://github.com/golangci/golangci-web/blob/master/src/assets/images/badge_a_plus_flat.svg)](https://golangci.com/r/github.com/derailed/k9s)
-[![codebeat badge](https://codebeat.co/badges/89e5a80e-dfe8-4426-acf6-6be781e0a12e)](https://codebeat.co/projects/github-com-derailed-k9s-master)
-[![Build Status](https://travis-ci.com/derailed/k9s.svg?branch=master)](https://travis-ci.com/derailed/k9s)
+[![golangci badge](https://img.shields.io/badge/golangci-A%2B-brightgreen)](https://golangci.com/r/github.com/derailed/k9s)
+[![codebeat badge](https://img.shields.io/codebeat/grade/github/derailed/k9s/master)](https://codebeat.co/projects/github-com-derailed-k9s-master)
+[![Build Status](https://img.shields.io/travis/com/derailed/k9s/master?label=build)](https://travis-ci.com/derailed/k9s)
 [![Docker Repository on Quay](https://quay.io/repository/derailed/k9s/status "Docker Repository on Quay")](https://quay.io/repository/derailed/k9s)
 [![release](https://img.shields.io/github/release-pre/derailed/k9s.svg)](https://github.com/derailed/k9s/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/mum4k/termdash/blob/master/LICENSE)
@@ -34,11 +19,11 @@ Your donations will go a long way in keeping our servers lights on and beers in 
 ## Screenshots
 
 1. Pods
-      <img src="assets/screen_po.png"/>
+  <img src="docs/pods.png" width="320" alt="Pods"/>
 2. Logs
-      <img src="assets/screen_logs.png"/>
+  <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='420'><rect width='100%' height='100%' fill='%230b1320'/><rect x='24' y='24' width='852' height='372' fill='%231c2541' stroke='%233a506b' stroke-width='2' rx='12'/><text x='50%' y='50%' fill='%23ffffff' font-size='48' font-family='Arial, sans-serif' text-anchor='middle' dominant-baseline='middle'>Logs</text></svg>" width="320" alt="Logs"/>
 3. Deployments
-      <img src="assets/screen_dp.png"/>
+  <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='420'><rect width='100%' height='100%' fill='%230b1320'/><rect x='24' y='24' width='852' height='372' fill='%231c2541' stroke='%233a506b' stroke-width='2' rx='12'/><text x='50%' y='50%' fill='%23ffffff' font-size='48' font-family='Arial, sans-serif' text-anchor='middle' dominant-baseline='middle'>Deployments</text></svg>" width="320" alt="Deployments"/>
 
 ---
 
