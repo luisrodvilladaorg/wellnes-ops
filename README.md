@@ -1,7 +1,8 @@
-<img src="https://kubernetes.io/images/kubernetes-horizontal-color.png" alt="kubernetes">
 
 
-**Thank you!**
+ ![Metrics Prometheus](docs/images/docker-kubernetes.png)
+
+**Thank you for watching!**
 
 ---
 
@@ -21,20 +22,29 @@
 1. Arquitecture
   ![architecture](docs/images/arquitecture.png)
 
+
+
 2. Pods
  ![Pods running](docs/images/pods-running.png)
 
+
+
 3. Monitoring
   ![Pods running](docs/images/monitoring.png)
+  
 
 2. Metrics
  ![Metrics Prometheus](docs/images/metrics-2.png)
 
+
+
 3. Prometheus
-  <![Metrics Prometheus](docs/images/metrics.png)
+  ![Metrics Prometheus](docs/images/metrics.png)
+
+
 
 3. Grafana
-  <![Metrics Grafana](docs/images/metrics-grafana.png)
+  ![Metrics Grafana](docs/images/metrics-grafana.png)
   
 
 ---
