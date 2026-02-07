@@ -229,57 +229,11 @@ To continue with the next, more advanced steps on installing the nginx ingress c
 
 ---
 
-## Common comands K9s
- ____  __.________
-|    |/ _/   __   \______
-|      < \____    /  ___/
-|    |  \   /    /\___ \
-|____|__ \ /____//____  >
-        \/            \/
-
-Version:           vX.Y.Z
-Config:            /Users/fernand/.config/k9s/config.yaml
-Logs:              /Users/fernand/.local/state/k9s/k9s.log
-Dumps dir:         /Users/fernand/.local/state/k9s/screen-dumps
-Benchmarks dir:    /Users/fernand/.local/state/k9s/benchmarks
-Skins dir:         /Users/fernand/.local/share/k9s/skins
-Contexts dir:      /Users/fernand/.local/share/k9s/clusters
-Custom views file: /Users/fernand/.local/share/k9s/views.yaml
-Plugins file:      /Users/fernand/.local/share/k9s/plugins.yaml
-Hotkeys file:      /Users/fernand/.local/share/k9s/hotkeys.yaml
-Alias file:        /Users/fernand/.local/share/k9s/aliases.yaml
-```
-
-### View K9s logs
-
-```shell
-tail -f /Users/fernand/.local/data/k9s/k9s.log
-```
-
-### Start K9s in debug mode
-
-```shell
-k9s -l debug
-```
-
-### Customize logs destination
-
-You can override the default log file destination either with the `--logFile` argument:
-
-```shell
-k9s --logFile /tmp/k9s.log
-less /tmp/k9s.log
-```
-
-Or through the `K9S_LOGS_DIR` environment variable:
-
-```shell
-K9S_LOGS_DIR=/var/log k9s
-less /var/log/k9s.log
-```
 
 ### Contributor
 
 Luis Fernando Rodríguez Villada
+
 luisfernando198912@gmail.com
+
 https://luisops.com
