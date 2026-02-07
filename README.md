@@ -169,39 +169,6 @@ To continue with the next, more advanced steps on installing the nginx ingress c
 
 
 
----
-
-## PreFlight Checks
-
-* K9s uses 256 colors terminal mode. On `Nix system make sure TERM is set accordingly.
-
-    ```shell
-    export TERM=xterm-256color
-    ```
-
-* In order to issue resource edit commands make sure your EDITOR and KUBE_EDITOR env vars are set.
-
-    ```shell
-    # Kubectl edit command will use this env var.
-    export KUBE_EDITOR=my_fav_editor
-    ```
-
-* K9s prefers recent kubernetes versions ie 1.28+
-
----
-
-## K8S Compatibility Matrix
-
-|         k9s        | k8s client |
-| ------------------ | ---------- |
-|     >= v0.27.0     |   1.26.1   |
-| v0.26.7 - v0.26.6  |   1.25.3   |
-| v0.26.5 - v0.26.4  |   1.25.1   |
-| v0.26.3 - v0.26.1  |   1.24.3   |
-| v0.26.0 - v0.25.19 |   1.24.2   |
-| v0.25.18 - v0.25.3 |   1.22.3   |
-| v0.25.2 - v0.25.0  |   1.22.0   |
-|      <= v0.24      |   1.21.3   |
 
 ---
 
@@ -260,14 +227,9 @@ To continue with the next, more advanced steps on installing the nginx ingress c
         │              (Rolling Updates & Rollback)               │
         └─────────────────────────────────────────────────────────┘
 
+---
 
-
-```shell
-# Find out where the logs are stored
-k9s info
-```
-
-```text
+## Common comands K9s
  ____  __.________
 |    |/ _/   __   \______
 |      < \____    /  ___/
@@ -320,4 +282,4 @@ less /var/log/k9s.log
 
 Luis Fernando Rodríguez Villada
 luisfernando198912@gmail.com
-luisops.com
+https://luisops.com
