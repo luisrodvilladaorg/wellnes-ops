@@ -34,7 +34,8 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
   
 
 
-## Continuous Integration
+## CI/CD Continuous Integration
+
 
  ![Pipelines](docs/images/deploy-nginx.png)
 
@@ -42,11 +43,13 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
 
 ## Continuous Integration Backend
 
+
  ![Pods running](docs/images/backend-ci.png)
 
 
 
-## CI/CD Continuous Deployment/Delivery Backend
+## Continuous Deployment/Delivery Backend
+
 
   ![Pods running](docs/images/backend-cd.png)
   
