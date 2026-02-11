@@ -44,11 +44,13 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
 ## Continuous Integration Backend
 
 
+
  ![Pods running](docs/images/backend-ci.png)
 
 
 
-## Continuous Deployment/Delivery Backend
+## Continuous Deployment/Delivery 
+
 
 
   ![Pods running](docs/images/backend-cd.png)
@@ -57,19 +59,29 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
 
 ## Pipelines
 
+
+
  ![Metrics Prometheus](docs/images/backend-cd-working.png)
 
 
 
 ## Prometheus
 
+
+
   ![Metrics Prometheus](docs/images/metrics-2.png)
 
-9. Grafana
+
+
+## Grafana
+
+
 
   ![Metrics Grafana](docs/images/metrics-grafana.png)
   
-10. Metrics
+
+
+# # Metrics
 
   ![Metrics Grafana](docs/images/metrics.png)
 
