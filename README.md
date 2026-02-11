@@ -12,11 +12,12 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
 
 ---
 
-## Screenshots
+
 
 ## Arquitecture
 
   ![architecture](docs/images/architecture.png)
+
 
 
 
@@ -26,14 +27,17 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
 
 
 
+
 ## Pods running
 
   ![Pods running](docs/images/monitoring.png)
   
 
+
 ## Continuous Integration
 
  ![Pipelines](docs/images/deploy-nginx.png)
+
 
 
 ## Continuous Integration Backend
@@ -41,14 +45,17 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
  ![Pods running](docs/images/backend-ci.png)
 
 
-## Continuous Deployment/Delivery Backend
+
+## CI/CD Continuous Deployment/Delivery Backend
 
   ![Pods running](docs/images/backend-cd.png)
   
 
+
 ## Pipelines
 
  ![Metrics Prometheus](docs/images/backend-cd-working.png)
+
 
 
 ## Prometheus
