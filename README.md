@@ -10,61 +10,48 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
   <img src="docs/images/docker-kubernetes.png" width="450">
 </p>
 
-
-**Thank you for watching!**
-
----
-
-[![Go Report Card](https://goreportcard.com/badge/github.com/derailed/k9s?)](https://goreportcard.com/report/github.com/derailed/k9s)
-[![golangci badge](https://img.shields.io/badge/golangci-A%2B-brightgreen)](https://golangci.com/r/github.com/derailed/k9s)
-[![codebeat badge](https://img.shields.io/codebeat/grade/github/derailed/k9s/master)](https://codebeat.co/projects/github-com-derailed-k9s-master)
-[![Docker Repository on Quay](https://quay.io/repository/derailed/k9s/status "Docker Repository on Quay")](https://quay.io/repository/derailed/k9s)
-[![release](https://img.shields.io/github/release-pre/derailed/k9s.svg)](https://github.com/derailed/k9s/releases)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/mum4k/termdash/blob/master/LICENSE)
-[![Releases](https://img.shields.io/github/downloads/derailed/k9s/total.svg)](https://github.com/derailed/k9s/releases)
-
 ---
 
 ## Screenshots
 
-1. Arquitecture
+## Arquitecture
 
-  ![architecture](docs/images/arquitecture.png)
+  ![architecture](docs/images/architecture.png)
 
 
 
-2. Pods
+## Pods
 
  ![Pods running](docs/images/pods-running.png)
 
 
 
-3. Pods Monitoring
+## Pods running
 
   ![Pods running](docs/images/monitoring.png)
   
 
-4. CI/CD
+## Continuous Integration
 
  ![Pipelines](docs/images/deploy-nginx.png)
 
 
-5. CI Backend
+## Continuous Integration Backend
 
  ![Pods running](docs/images/backend-ci.png)
 
 
-6. CD Backend
+## Continuous Deployment/Delivery Backend
 
   ![Pods running](docs/images/backend-cd.png)
   
 
-7. Some Workflows 
+## Pipelines
 
- ![Metrics Prometheus](docs/images/cackend-cd-working.png)
+ ![Metrics Prometheus](docs/images/backend-cd-working.png)
 
 
-8. Prometheus
+## Prometheus
 
   ![Metrics Prometheus](docs/images/metrics-2.png)
 
@@ -75,17 +62,6 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
 10. Metrics
 
   ![Metrics Grafana](docs/images/metrics.png)
----
-
-## Demo Videos/Recordings
-
-* [K9s v0.30.0 Sneak peek](https://youtu.be/mVBc1XneRJ4)
-* [Vulnerability Scans](https://youtu.be/ULkl0MsaidU)
-* [K9s v0.29.0](https://youtu.be/oiU3wmoAkBo)
-* [K9s v0.21.3](https://youtu.be/wG8KCwDAhnw)
-* [K9s v0.19.X](https://youtu.be/kj-WverKZ24)
-* [K9s v0.18.0](https://www.youtube.com/watch?v=zMnD5e53yRw)
-
 
 ---
 
