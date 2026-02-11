@@ -81,7 +81,7 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
   
 
 
-# # Metrics
+## Metrics
 
   ![Metrics Grafana](docs/images/metrics.png)
 
@@ -89,7 +89,7 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
 
 ## Documentation
 
-For additional screenshots related to the project and its execution, please visit the following link: [Kubernetes and Docker Guide wellness ops](https://github.com/luisrodvilladaorg/wellnes-ops/tree/main/docs).
+For additional screenshots related to the project and its execution, please visit the following link: [Kubernetes and Docker Guide wellness ops](docs/kubernetes-guide.pdf).
 
 
 ## Installation
