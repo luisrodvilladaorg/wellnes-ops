@@ -48,6 +48,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
     container_name: wellness-backend-container
+    ports:
+      - "3000:3000"
     env_file:
       - env/dev/.env
     depends_on:

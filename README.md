@@ -126,7 +126,13 @@ To install the project on your host, use the following command which will make a
 * Verify that the backend is working
 
   ```shell
-  docker logs -f backend
+  docker logs wellness-backend-container
+  ```
+
+* Exposes the backend’s internal port 3000 to the host
+
+  ```shell
+  docker run -d -p 3000:3000 --name wellness-backend wellnes-ops-backend
   ```
 
 * functional tests
@@ -134,6 +140,9 @@ To install the project on your host, use the following command which will make a
   ```shell
   curl http://localhost:3000/api/health
   ```
+
+
+
 
 ## Kubernetes (PRODUCTION / REAL mode)
 
