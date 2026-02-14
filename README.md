@@ -231,6 +231,75 @@ Para capturas de pantalla adicionales relacionadas con el proyecto y su ejecuci�
 
 ---
 
+## 🌐 Servicios Expuestos
+
+
+El cluster expone varios servicios accesibles desde fuera, permitiendo la comunicación con la aplicación a través de diferentes canales. Estos servicios están configurados con Ingress Controllers y balanceadores de carga para garantizar disponibilidad y escalabilidad.
+
+### 1. Ingress con IP externa
+
+
+El Ingress Controller asigna una dirección IP externa que actúa como punto de entrada único para todo el tráfico HTTP/HTTPS hacia el cluster.
+
+**Qué ves aquí:** IP externa asignada, rutas configuradas, y estado del Ingress en tiempo real.
+
+![Ingress con IP externa](docs/images/ingress-external-ip.png)
+
+---
+
+### 2. Servicio del Ingress Controller
+
+
+El servicio del Ingress Controller expone los puertos 80 (HTTP) y 443 (HTTPS) para recibir tráfico externo y enrutarlo a los servicios internos correspondientes.
+
+**Qué ves aquí:** Puertos expuestos, endpoints activos, y balanceo de carga en acción.
+
+![Servicio del Ingress Controller](docs/images/ingress-controller-service.png)
+
+---
+
+### 3. Acceso HTTPS funcionando
+
+
+Verificación de que el certificado TLS está correctamente instalado y que la comunicación segura HTTPS funciona sin errores de certificado.
+
+**Qué ves aquí:** Certificado válido, handshake HTTPS correcto, y cadena de certificación completa.
+
+![Acceso HTTPS funcionando](docs/images/https-access-working.png)
+
+---
+
+### 4. curl respondiendo correctamente
+
+
+Prueba funcional mediante solicitudes HTTP/HTTPS desde línea de comandos, demostrando que el API responde correctamente a través del Ingress.
+
+**Qué ves aquí:** Respuestas HTTP 200, tiempos de respuesta, y datos del API siendo servidos correctamente.
+
+```shell
+curl -k https://wellness.local/api/health
+curl -k https://wellness.local/api/entries
+```
+
+![curl respondiendo correctamente](docs/images/curl-response-working.png)
+
+---
+
+### 5. Acceso desde el navegador
+
+
+Acceso visual a través del navegador, demostrando que la aplicación frontend es completamente accesible y funcional desde el exterior.
+
+**Qué ves aquí:** Interfaz web cargada correctamente, assets sirviendo sin errores, y navegación funcional.
+
+![Acceso desde el navegador](docs/images/browser-access-working.png)
+
+---
+
+## 📚 Documentación original
+
+---
+
 ## 🔧 Instalación
 
 
