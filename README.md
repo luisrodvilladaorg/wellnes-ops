@@ -83,7 +83,7 @@ Este sistema construye y despliega un backend en Node.js, sirve un frontend est�
 ## 📚 Documentación
 
 
-Para capturas de pantalla adicionales relacionadas con el proyecto y su ejecución, visite el siguiente enlace: [Guía de Kubernetes y Docker - wellness ops](docs/Kubernetes guide.pdf).
+Para capturas de pantalla adicionales relacionadas con el proyecto y su ejecución, visite el siguiente enlace: [Guía de Kubernetes y Docker - wellness ops](docs/kubernetes-guide.pdf).
 
 ---
 
