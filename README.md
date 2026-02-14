@@ -1,10 +1,10 @@
-# 🧭 What is this?
+# 🧭 ¿Qué es esto?
 
-This project is a fully containerized, production‑ready DevOps environment designed to demonstrate modern infrastructure practices. It brings together Docker, Kubernetes, GitHub Actions, NGINX, TLS, monitoring, and a complete CI/CD pipeline to showcase how a real-world application is built, deployed, and operated end‑to‑end.
+Este proyecto es un entorno DevOps completamente containerizado y listo para producción, diseñado para demostrar prácticas modernas de infraestructura. Reúne Docker, Kubernetes, GitHub Actions, NGINX, TLS, monitoreo y un pipeline CI/CD completo para mostrar cómo una aplicación del mundo real se construye, se despliega y se opera de manera integral.
 
-## ⚙️ What does it do?
+## ⚙️ ¿Qué hace?
 
-This system builds and deploys a Node.js  backend, serves a static frontend through an NGINX gateway, manages traffic using an Ingress Controller, and exposes the application securely through TLS. It also includes automated CI/CD pipelines, container image publishing, Kubernetes manifests, and a full monitoring stack with Prometheus and Grafana.
+Este sistema construye y despliega un backend en Node.js, sirve un frontend estático a través de una puerta de enlace NGINX, gestiona el tráfico utilizando un Ingress Controller y expone la aplicación de forma segura a través de TLS. También incluye pipelines de CI/CD automatizados, publicación de imágenes de contenedor, manifiestos de Kubernetes y una pila completa de monitoreo con Prometheus y Grafana.
 
  <p align="center">
   <img src="docs/images/docker-kubernetes.png" width="450">
@@ -12,91 +12,74 @@ This system builds and deploys a Node.js  backend, serves a static frontend thro
 
 ---
 
+## 🎯 Características principales
 
-
-## Arquitecture
-
-  ![architecture](docs/images/architecture.png)
-
-
-
-
-## Pods
-
- ![Pods running](docs/images/pods-running.png)
-
-
-
-
-## Pods running
-
-  ![Pods running](docs/images/monitoring.png)
-  
-
-
-## CI/CD Continuous Integration
-
-
- ![Pipelines](docs/images/deploy-nginx.png)
-
-
-
-## Continuous Integration Backend
-
-
-
- ![Pods running](docs/images/backend-ci.png)
-
-
-
-## Continuous Deployment/Delivery 
-
-
-
-  ![Pods running](docs/images/backend-cd.png)
-  
-
-
-## Pipelines
-
-
-
- ![Metrics Prometheus](docs/images/backend-cd-working.png)
-
-
-
-## Prometheus
-
-
-
-  ![Metrics Prometheus](docs/images/metrics-2.png)
-
-
-
-## Grafana
-
-
-
-  ![Metrics Grafana](docs/images/metrics-grafana.png)
-  
-
-
-## Metrics
-
-  ![Metrics Grafana](docs/images/metrics.png)
+- ✅ Backend Node.js con rutas API y autenticación JWT
+- ✅ Frontend estático (HTML/CSS/JS) servido a través de NGINX
+- ✅ Base de datos PostgreSQL
+- ✅ Docker Compose para desarrollo local
+- ✅ Manifiestos de Kubernetes para orquestación en producción
+- ✅ CI/CD con GitHub Actions (construcción y publicación automática de imágenes)
+- ✅ Monitoreo con Prometheus e integración de métricas
+- ✅ TLS con Let's Encrypt (o certificados autofirmados en desarrollo)
+- ✅ MetalLB para equilibrio de carga en clusters bare-metal
+- ✅ NGINX como controlador de ingreso y proxy inverso
 
 ---
 
-## Documentation
+## 📐 Arquitectura
 
-For additional screenshots related to the project and its execution, please visit the following link: [Kubernetes and Docker Guide wellness ops](docs/kubernetes-guide.pdf).
+![architecture](docs/images/architecture.png)
 
+## 🐳 Pods en ejecución
 
-## Installation
+![Pods running](docs/images/pods-running.png)
 
-To install the project on your host, use the following command which will make a copy of the entire repository from Git.
+## 📊 Monitoreo
 
-*Prerequisites
+![Pods running](docs/images/monitoring.png)
+
+## 🔄 CI/CD - Integración Continua
+
+![Pipelines](docs/images/deploy-nginx.png)
+
+## 🚀 Integración Continua - Backend
+
+![Pods running](docs/images/backend-ci.png)
+
+## 📦 Despliegue/Entrega Continua
+
+![Pods running](docs/images/backend-cd.png)
+
+## 📈 Pipelines
+
+![Metrics Prometheus](docs/images/backend-cd-working.png)
+
+## 📉 Prometheus
+
+![Metrics Prometheus](docs/images/metrics-2.png)
+
+## 📊 Grafana
+
+![Metrics Grafana](docs/images/metrics-grafana.png)
+
+## 📌 Métricas
+
+![Metrics Grafana](docs/images/metrics.png)
+
+---
+
+## 📚 Documentación
+
+Para capturas de pantalla adicionales relacionadas con el proyecto y su ejecución, visite el siguiente enlace: [Guía de Kubernetes y Docker - wellness ops](docs/kubernetes-guia.pdf).
+
+---
+
+## 🔧 Instalación
+
+Para instalar el proyecto en tu equipo, utiliza el siguiente comando que descargará una copia del repositorio completo desde Git.
+
+### Requisitos previos
 
 - Docker >= 24
 - Docker Compose
@@ -104,146 +87,149 @@ To install the project on your host, use the following command which will make a
 - kubectl
 - Helm
 
-   
-* MacOS or Linux
+### En macOS o Linux
 
-   ```shell
-   git clone https://github.com/luisrodvilladaorg/wellnes-ops.git
-   cd wellnes-ops
-   ```
+```shell
+git clone https://github.com/luisrodvilladaorg/wellnes-ops.git
+cd wellnes-ops
+```
 
-* Create environment variables necessary for project use (see example file .env.example). For security reasons, we do not include public environment variables. 
+### Configurar variables de entorno
 
-  Edit the `.env` file if needed
+Crea las variables de entorno necesarias para el proyecto (ver archivo .env.example). Por razones de seguridad, no incluimos variables de entorno públicas.
 
-* Start the stack with Docker Compose (development environment) in the background
+Edita el archivo `.env` si es necesario
 
-  ```shell
-  docker compose -f docker-compose.dev.yml up -d
-  docker ps
-  ```
+### Iniciar el stack con Docker Compose
 
-* Verify that the backend is working
+Inicia la pila con Docker Compose (entorno de desarrollo) en segundo plano:
 
-  ```shell
-  docker logs wellness-backend-container
-  ```
+```shell
+docker compose -f docker-compose.dev.yml up -d
+docker ps
+```
 
-* Exposes the backend’s internal port 3000 to the host
+### Verificar que el backend está funcionando
 
-  ```shell
-  docker run -d -p 3000:3000 --name wellness-backend wellnes-ops-backend
-  ```
+```shell
+docker logs wellness-backend-container
+```
 
-* functional tests
+### Exponer el puerto interno 3000 del backend en el host
 
-  ```shell
-  curl http://localhost:3000/api/health
-  ```
+```shell
+docker run -d -p 3000:3000 --name wellness-backend wellnes-ops-backend
+```
 
+### Pruebas funcionales
 
-
-
-## Kubernetes (PRODUCTION / REAL mode)
-
-* Create cluster
-
-  ```shell
-  k3d cluster create cluster-wellness-local
-  ```
-
-* apply manifests
-
-  ```shell
-  kubectl apply -R -f k8s/
-  ```
-
-* Check status
-
-  ```shell
-  kubectl get pods
-  kubectl get svc
-  kubectl get ingress
-  ```
-* Access the application
-
-  ```shell
-  curl -k https://wellness.local/api/health
-
-  ```
-Please update your `/etc/hosts` file by adding the following entry:
-
-127.0.0.1   wellness.local
-
-
-The project can be run locally using Docker Compose for development or deployed to Kubernetes for a production-like environment.
-
-To continue with the next, more advanced steps on installing the nginx ingress controller and TLS certificates, please go to the file located in /docs/guide
-
-
-
+```shell
+curl http://localhost:3000/api/health
+```
 
 ---
 
-## Diferent layers
+## ☸️ Kubernetes (PRODUCCIÓN / Modo real)
 
+### Crear cluster
+
+```shell
+k3d cluster create cluster-wellness-local
+```
+
+### Aplicar manifiestos
+
+```shell
+kubectl apply -R -f k8s/
+```
+
+### Verificar el estado
+
+```shell
+kubectl get pods
+kubectl get svc
+kubectl get ingress
+```
+
+### Acceder a la aplicación
+
+```shell
+curl -k https://wellness.local/api/health
+```
+
+**Actualiza tu archivo `/etc/hosts` agregando la siguiente entrada:**
+
+```
+127.0.0.1   wellness.local
+```
+
+El proyecto puede ejecutarse localmente usando Docker Compose para desarrollo, o desplegarse en Kubernetes para un entorno similar al de producción.
+
+Para continuar con los pasos más avanzados sobre la instalación del controlador nginx ingress y certificados TLS, dirígete al archivo ubicado en `/docs/guide`
+
+---
+
+## 📊 Capas diferentes
+
+```
                           ┌───────────────────────┐
-                          │        Client         │
-                          │   Browser / Curl      │
+                          │        Cliente        │
+                          │   Navegador / Curl    │
                           └───────────┬───────────┘
                                       │
                                HTTPS (443)
                                       │
                     ┌─────────────────▼─────────────────┐
-                    │        NGINX Ingress Controller     │
-                    │      (TLS termination, routing)    │
+                    │   Controlador NGINX Ingress        │
+                    │  (terminación TLS, enrutamiento)  │
                     └───────────┬───────────┬───────────┘
                                 │           │
                            "/"  │           │  "/api/*"
                                 │           │
           ┌─────────────────────▼───┐   ┌───▼─────────────────────┐
-          │      nginx-gateway      │   │        Backend API        │
-          │   (internal reverse     │   │   Node.js / Express      │
-          │        proxy)           │   │   JWT · REST · Metrics   │
+          │      nginx-gateway      │   │    API Backend            │
+          │   (proxy inverso        │   │   Node.js / Express      │
+          │    interno)             │   │   JWT · REST · Métricas │
           └───────────┬─────────────┘   └───────────┬─────────────┘
                       │                               │
                  HTTP │                               │ SQL
                       │                               │
         ┌─────────────▼─────────────┐     ┌──────────▼──────────┐
-        │          Frontend          │     │     PostgreSQL       │
-        │     Static Web (Nginx)     │     │   StatefulSet + PVC  │
+        │        Frontend            │     │    PostgreSQL        │
+        │   Sitio Web Estático       │     │  StatefulSet + PVC   │
+        │   (Nginx)                  │     │                      │
         └───────────────────────────┘     └─────────────────────┘
 
-        ───────────────────────── Observability ─────────────────────────
+        ───────────────────────── Observabilidad ──────────────────────
 
                  ┌───────────────────┐     ┌───────────────────┐
-                 │    Prometheus     │◄────│  Backend /metrics │
-                 │  (ServiceMonitor) │     │   (internal only) │
+                 │   Prometheus      │◄────│ Backend /metrics  │
+                 │  (ServiceMonitor) │     │  (solo interno)   │
                  └─────────┬─────────┘
                            │
                            ▼
                      ┌───────────────┐
-                     │    Grafana    │
-                     │ Dashboards    │
+                     │   Grafana     │
+                     │  Dashboards   │
                      └───────────────┘
 
         ───────────────────────── CI / CD ─────────────────────────
 
-        ┌──────────────┐   build & push   ┌────────────────────────┐
-        │   GitHub     │ ───────────────► │   GHCR (Docker Images) │
-        │   Actions    │                  └───────────┬────────────┘
-        └──────┬───────┘                              │
-               │ deploy                                │ pull
-               ▼                                       ▼
+        ┌──────────────┐   compilar y push   ┌────────────────────────┐
+        │   GitHub     │ ──────────────────► │  GHCR (Imágenes Docker)│
+        │   Actions    │                     └───────────┬────────────┘
+        └──────┬───────┘                                 │
+               │ desplegar                               │ descargar
+               ▼                                         ▼
         ┌─────────────────────────────────────────────────────────┐
-        │                    Kubernetes Cluster                   │
-        │              (Rolling Updates & Rollback)               │
+        │              Cluster de Kubernetes                      │
+        │         (Actualizaciones continuas y Rollback)          │
         └─────────────────────────────────────────────────────────┘
+```
 
 ---
 
-
-### Contributor
+## 👤 Contribuidor
 
 Luis Fernando Rodríguez Villada
 
