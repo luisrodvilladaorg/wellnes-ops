@@ -28,6 +28,65 @@ Este sistema construye y despliega un backend en Node.js, sirve un frontend est�
 
 ---
 
+## 🌍 Entornos
+
+
+El proyecto soporta dos entornos completamente configurados, cada uno optimizado para su propósito específico.
+
+### 🖥️ Entorno de Desarrollo
+
+Configuración local para desarrollo e integración rápida de cambios.
+
+**Características:**
+
+- 🐳 Docker Compose para orquestación simple
+- 🔄 Hot-reload y recarga automática de cambios
+- 🐛 Logs detallados y debugging habilitado
+- 📝 Base de datos PostgreSQL en contenedor local
+- 🔓 Certificados autofirmados (sin HTTPS real)
+- ⚡ Stack minimalista y rápido de levantar
+
+**Comando:**
+```shell
+docker compose -f docker-compose.dev.yml up -d
+```
+
+### 🏢 Entorno de Producción
+
+Despliegue en Kubernetes con alta disponibilidad y resiliencia.
+
+**Características:**
+
+- ☸️ Kubernetes con rolling updates y auto-scaling
+- 🔐 HTTPS con certificados Let's Encrypt
+- 📊 Monitoreo completo con Prometheus y Grafana
+- 🚀 CI/CD automatizado con GitHub Actions
+- 💾 Persistencia de datos con StatefulSets
+- 🛡️ RBAC y políticas de red activadas
+- 📈 Métricas y alertas en tiempo real
+- 🔄 Loadbalancing con MetalLB
+
+**Comando:**
+```shell
+kubectl apply -R -f k8s/
+```
+
+### 📊 Comparativa de Entornos
+
+| Aspecto | Desarrollo | Producción |
+|--------|-----------|-----------|
+| **Orquestación** | Docker Compose | Kubernetes |
+| **Persistencia** | Volúmenes locales | StatefulSets + PVCs |
+| **TLS/HTTPS** | Autofirmado | Let's Encrypt |
+| **Monitoreo** | Básico | Prometheus + Grafana |
+| **Escalabilidad** | Manual | Automática (HPA) |
+| **Backup** | Manual | Automático |
+| **Tiempo setup** | ~2 minutos | ~5 minutos |
+
+👉 **Síntesis:** Desarrollo para iteración rápida, Producción para confiabilidad y escalabilidad
+
+---
+
 ## 📐 Arquitectura
 
 
