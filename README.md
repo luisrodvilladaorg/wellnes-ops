@@ -14,6 +14,7 @@ Este sistema construye y despliega un backend en Node.js, sirve un frontend est�
 
 ## 🎯 Características principales
 
+
 - ✅ Backend Node.js con rutas API y autenticación JWT
 - ✅ Frontend estático (HTML/CSS/JS) servido a través de NGINX
 - ✅ Base de datos PostgreSQL
@@ -29,41 +30,51 @@ Este sistema construye y despliega un backend en Node.js, sirve un frontend est�
 
 ## 📐 Arquitectura
 
+
 ![architecture](docs/images/architecture.png)
 
 ## 🐳 Pods en ejecución
+
 
 ![Pods running](docs/images/pods-running.png)
 
 ## 📊 Monitoreo
 
+
 ![Pods running](docs/images/monitoring.png)
 
-## 🔄 CI/CD - Integración Continua
+## 🔄 CI/CD - Integración Continua y Entrega Continua
+
 
 ![Pipelines](docs/images/deploy-nginx.png)
 
 ## 🚀 Integración Continua - Backend
 
+
 ![Pods running](docs/images/backend-ci.png)
 
 ## 📦 Despliegue/Entrega Continua
+
 
 ![Pods running](docs/images/backend-cd.png)
 
 ## 📈 Pipelines
 
+
 ![Metrics Prometheus](docs/images/backend-cd-working.png)
 
 ## 📉 Prometheus
+
 
 ![Metrics Prometheus](docs/images/metrics-2.png)
 
 ## 📊 Grafana
 
+
 ![Metrics Grafana](docs/images/metrics-grafana.png)
 
 ## 📌 Métricas
+
 
 ![Metrics Grafana](docs/images/metrics.png)
 
@@ -71,11 +82,13 @@ Este sistema construye y despliega un backend en Node.js, sirve un frontend est�
 
 ## 📚 Documentación
 
+
 Para capturas de pantalla adicionales relacionadas con el proyecto y su ejecución, visite el siguiente enlace: [Guía de Kubernetes y Docker - wellness ops](docs/kubernetes-guia.pdf).
 
 ---
 
 ## 🔧 Instalación
+
 
 Para instalar el proyecto en tu equipo, utiliza el siguiente comando que descargará una copia del repositorio completo desde Git.
 
@@ -131,6 +144,7 @@ curl http://localhost:3000/api/health
 
 ## ☸️ Kubernetes (PRODUCCIÓN / Modo real)
 
+
 ### Crear cluster
 
 ```shell
@@ -170,6 +184,7 @@ Para continuar con los pasos más avanzados sobre la instalación del controlado
 ---
 
 ## 📊 Capas diferentes
+
 
 ```
                           ┌───────────────────────┐
@@ -230,6 +245,7 @@ Para continuar con los pasos más avanzados sobre la instalación del controlado
 ---
 
 ## 👤 Contribuidor
+
 
 Luis Fernando Rodríguez Villada
 
