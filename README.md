@@ -243,7 +243,7 @@ El Ingress Controller asigna una dirección IP externa que actúa como punto de 
 
 **Qué ves aquí:** IP externa asignada, rutas configuradas, y estado del Ingress en tiempo real.
 
-![Ingress con IP externa](docs/images/ingress-external-ip.png)
+![Ingress con IP externa](docs/images/ingress.png)
 
 ---
 
@@ -254,18 +254,18 @@ El servicio del Ingress Controller expone los puertos 80 (HTTP) y 443 (HTTPS) pa
 
 **Qué ves aquí:** Puertos expuestos, endpoints activos, y balanceo de carga en acción.
 
-![Servicio del Ingress Controller](docs/images/ingress-controller-service.png)
+![Servicio del Ingress Controller](docs/images/svc-ingress.png)
 
 ---
 
-### 3. Acceso HTTPS funcionando
+### 3. Acceso HTTPS funcionando desde el navegador
 
 
 Verificación de que el certificado TLS está correctamente instalado y que la comunicación segura HTTPS funciona sin errores de certificado.
 
 **Qué ves aquí:** Certificado válido, handshake HTTPS correcto, y cadena de certificación completa.
 
-![Acceso HTTPS funcionando](docs/images/https-access-working.png)
+![Acceso HTTPS funcionando](docs/images/navegador.png)
 
 ---
 
@@ -274,27 +274,17 @@ Verificación de que el certificado TLS está correctamente instalado y que la c
 
 Prueba funcional mediante solicitudes HTTP/HTTPS desde línea de comandos, demostrando que el API responde correctamente a través del Ingress.
 
-**Qué ves aquí:** Respuestas HTTP 200, tiempos de respuesta, y datos del API siendo servidos correctamente.
+**Qué ves aquí:** Respuesta Backend salud y estado OK, tiempos de respuesta, y datos del API siendo servidos correctamente.
 
 ```shell
 curl -k https://wellness.local/api/health
-curl -k https://wellness.local/api/entries
+
 ```
 
-![curl respondiendo correctamente](docs/images/curl-response-working.png)
+![curl respondiendo correctamente](docs/images/curl-backend.png)
 
 ---
 
-### 5. Acceso desde el navegador
-
-
-Acceso visual a través del navegador, demostrando que la aplicación frontend es completamente accesible y funcional desde el exterior.
-
-**Qué ves aquí:** Interfaz web cargada correctamente, assets sirviendo sin errores, y navegación funcional.
-
-![Acceso desde el navegador](docs/images/browser-access-working.png)
-
----
 
 ## 📚 Documentación original
 
