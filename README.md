@@ -114,15 +114,52 @@ Visualización del estado y progreso de los pipelines CI/CD ejecutándose en Git
 ## 📉 Prometheus
 
 
+Sistema de monitoreo y base de datos de series temporales que recopila métricas del backend en tiempo real.
+
+**Funcionalidades de Prometheus:**
+
+- 📊 Recopilación automática de métricas del backend
+- 💾 Almacenamiento de series temporales (TSDB)
+- 🔍 Consultas avanzadas mediante PromQL
+- 🚨 Alertas basadas en reglas personalizadas
+- 📈 Retención configurable de datos históricos
+
+👉 **Ventaja:** Datos de monitoreo confiables, durables y consultables para análisis
+
 ![Metrics Prometheus](docs/images/metrics-2.png)
 
 ## 📊 Grafana
 
 
+Plataforma de visualización que transforma los datos de Prometheus en dashboards interactivos y alertas visuales.
+
+**Capacidades de Grafana:**
+
+- 📈 Dashboards personalizados en tiempo real
+- 🎨 Gráficos interactivos y tablas de datos
+- 📲 Alertas visuales y notificaciones
+- 👥 Control de acceso basado en roles (RBAC)
+- 📊 Análisis de tendencias históricas
+
+👉 **Resultado:** Visibilidad completa del estado y desempeño de la infraestructura
+
 ![Metrics Grafana](docs/images/metrics-grafana.png)
 
 ## 📌 Métricas
 
+
+Métricas clave del sistema que proporcionan información sobre el desempeño, disponibilidad y salud de la aplicación.
+
+**Métricas monitoreadas:**
+
+- ⏱️ Latencia de respuestas (p50, p95, p99)
+- 📊 Tasa de solicitudes por segundo (RPS)
+- ❌ Tasa de errores (5xx, 4xx)
+- 💾 Uso de memoria y CPU
+- 🔄 Estado de conectividad de base de datos
+- 📈 Throughput de transacciones
+
+👉 **Propósito:** Información cuantifiable para tomar decisiones sobre escalabilidad y optimización
 
 ![Metrics Grafana](docs/images/metrics.png)
 
