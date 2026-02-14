@@ -64,15 +64,50 @@ Este pipeline automatiza completamente el despliegue de los servicios en Kuberne
 ## 🚀 Integración Continua - Backend
 
 
+Este proceso valida y compila el código del backend cada vez que se realiza un push o pull request.
+
+**El flujo de integración continua del backend:**
+
+- 🔍 Se ejecutan pruebas unitarias e integración
+- 📦 Se construye la imagen Docker del servicio
+- 🏗️ Se validan las configuraciones y dependencias
+- 📤 Se etiqueta y prepara la imagen para publicar
+
+👉 **Garantía:** Código validado, compilado y listo para ser desplegado en cualquier momento
+
 ![Pods running](docs/images/backend-ci.png)
 
 ## 📦 Despliegue/Entrega Continua
 
 
+Automatiza la entrega y despliegue automático de las versiones compiladas en los ambientes correspondientes.
+
+**El proceso de despliegue continuo:**
+
+- 🐳 Se publica la imagen en el registro de contenedores (GHCR)
+- 🔐 Se valida la firma y integridad de la imagen
+- 📝 Se actualizan los manifiestos de Kubernetes
+- 🚀 Se despliega automáticamente en el cluster de producción
+- 📊 Se monitorean los logs y métricas post-despliegue
+
+👉 **Beneficio:** Entregas automáticas, auditorables y con historial completo de cambios
+
 ![Pods running](docs/images/backend-cd.png)
 
 ## 📈 Pipelines
 
+
+Visualización del estado y progreso de los pipelines CI/CD ejecutándose en GitHub Actions.
+
+**Monitoreo de pipelines:**
+
+- 📊 Estado en tiempo real de compilaciones
+- ⏱️ Tiempo de ejecución de cada etapa
+- ✅ Logs detallados de cada paso
+- 🔄 Historial de ejecuciones y rollbacks
+- 📧 Notificaciones automáticas en caso de fallos
+
+👉 **Transparencia:** Visibilidad total del ciclo de vida de cada despliegue
 
 ![Metrics Prometheus](docs/images/backend-cd-working.png)
 
