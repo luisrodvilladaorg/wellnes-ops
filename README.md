@@ -46,6 +46,19 @@ Este sistema construye y despliega un backend en Node.js, sirve un frontend est�
 ## 🔄 CI/CD - Integración Continua y Entrega Continua
 
 
+Este pipeline automatiza completamente el despliegue de los servicios en Kubernetes, garantizando entregas rápidas y seguras.
+
+**Cada vez que se publica una nueva versión o se ejecuta el workflow:**
+
+- 🔧 Se actualiza la imagen del servicio en el clúster
+- 🔄 Kubernetes realiza un rolling update sin interrupciones
+- ⏳ Se espera a que el despliegue finalice correctamente
+- ✅ Se verifica que la aplicación responde correctamente
+
+👉 **Resultado:** Despliegues seguros, automatizados y sin tiempo de inactividad (zero downtime)
+
+
+
 ![Pipelines](docs/images/deploy-nginx.png)
 
 ## 🚀 Integración Continua - Backend
