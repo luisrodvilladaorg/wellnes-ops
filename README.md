@@ -4,7 +4,7 @@ Este proyecto es un entorno DevOps completamente containerizado y listo para pro
 
 ## ⚙️ ¿Qué hace?
 
-Este sistema construye y despliega un backend en Node.js, sirve un frontend estático a través de una puerta de enlace NGINX, gestiona el tráfico utilizando un Ingress Controller y expone la aplicación de forma segura a través de TLS. También incluye pipelines de CI/CD automatizados, publicación de imágenes de contenedor, manifiestos de Kubernetes y una pila completa de monitoreo con Prometheus y Grafana.
+Este sistema construye y despliega un backend en Node.js, sirve un frontend estático a través de una puerta de enlace NGINX, gestiona el tráfico utilizando un Ingress Controller y expone la aplicación de forma segura a través de TLS. También incluye pipelines de CI/CD automatizados, publicación de imágenes de contenedor, manifiestos de Kubernetes y una pila completa de monitoreo con Prometheus, Grafana (instalado con Helm) y Alertmanager.
 
  <p align="center">
   <img src="docs/images/docker-kubernetes.png" width="450">
@@ -14,7 +14,6 @@ Este sistema construye y despliega un backend en Node.js, sirve un frontend est�
 
 ## 🎯 Características principales
 
-
 - ✅ Backend Node.js con rutas API y autenticación JWT
 - ✅ Frontend estático (HTML/CSS/JS) servido a través de NGINX
 - ✅ Base de datos PostgreSQL
@@ -22,7 +21,7 @@ Este sistema construye y despliega un backend en Node.js, sirve un frontend est�
 - ✅ Manifiestos de Kubernetes para orquestación en producción
 - ✅ CI/CD con GitHub Actions (construcción y publicación automática de imágenes)
 - ✅ Monitoreo con Prometheus e integración de métricas
-- ✅ TLS con Let's Encrypt (o certificados autofirmados en desarrollo)
+- ✅ TLS con certificados válidos (Let's Encrypt en producción, autofirmados en desarrollo)
 - ✅ MetalLB para equilibrio de carga en clusters bare-metal
 - ✅ NGINX como controlador de ingreso y proxy inverso
 
@@ -30,21 +29,23 @@ Este sistema construye y despliega un backend en Node.js, sirve un frontend est�
 
 ## 📐 Arquitectura
 
-
 ![architecture](docs/images/architecture.png)
+
+---
 
 ## 🐳 Pods en ejecución
 
-
 ![Pods running](docs/images/pods-running.png)
+
+---
 
 ## 📊 Monitoreo
 
-
 ![Pods running](docs/images/monitoring.png)
 
-## 🔄 CI/CD - Integración Continua y Entrega Continua
+---
 
+## 🔄 CI/CD - Integración Continua y Entrega Continua
 
 Este pipeline automatiza completamente el despliegue de los servicios en Kubernetes, garantizando entregas rápidas y seguras.
 
@@ -57,12 +58,11 @@ Este pipeline automatiza completamente el despliegue de los servicios en Kuberne
 
 👉 **Resultado:** Despliegues seguros, automatizados y sin tiempo de inactividad (zero downtime)
 
-
-
 ![Pipelines](docs/images/deploy-nginx.png)
 
-## 🚀 Integración Continua - Backend
+---
 
+## 🚀 Integración Continua - Backend
 
 Este proceso valida y compila el código del backend cada vez que se realiza un push o pull request.
 
@@ -77,8 +77,9 @@ Este proceso valida y compila el código del backend cada vez que se realiza un 
 
 ![Pods running](docs/images/backend-ci.png)
 
-## 📦 Despliegue/Entrega Continua
+---
 
+## 📦 Despliegue/Entrega Continua
 
 Automatiza la entrega y despliegue automático de las versiones compiladas en los ambientes correspondientes.
 
@@ -94,8 +95,9 @@ Automatiza la entrega y despliegue automático de las versiones compiladas en lo
 
 ![Pods running](docs/images/backend-cd.png)
 
-## 📈 Pipelines
+---
 
+## 📈 Pipelines
 
 Visualización del estado y progreso de los pipelines CI/CD ejecutándose en GitHub Actions.
 
@@ -111,8 +113,9 @@ Visualización del estado y progreso de los pipelines CI/CD ejecutándose en Git
 
 ![Metrics Prometheus](docs/images/backend-cd-working.png)
 
-## 📉 Prometheus
+---
 
+## 📉 Prometheus
 
 Sistema de monitoreo y base de datos de series temporales que recopila métricas del backend en tiempo real.
 
@@ -128,10 +131,11 @@ Sistema de monitoreo y base de datos de series temporales que recopila métricas
 
 ![Metrics Prometheus](docs/images/metrics-2.png)
 
+---
+
 ## 📊 Grafana
 
-
-Plataforma de visualización que transforma los datos de Prometheus en dashboards interactivos y alertas visuales.
+Plataforma de visualización que transforma los datos de Prometheus en dashboards interactivos y alertas visuales. Instalado en el cluster de Kubernetes mediante Helm.
 
 **Capacidades de Grafana:**
 
@@ -141,12 +145,13 @@ Plataforma de visualización que transforma los datos de Prometheus en dashboard
 - 👥 Control de acceso basado en roles (RBAC)
 - 📊 Análisis de tendencias históricas
 
-👉 **Resultado:** Visibilidad completa del estado y desempeño de la infraestructura
+👉 **Resultado:** Visibilidad completa del estado y desempeño de la infraestructura en producción
 
 ![Metrics Grafana](docs/images/metrics-grafana.png)
 
-## 📌 Métricas
+---
 
+## 📌 Métricas
 
 Métricas clave del sistema que proporcionan información sobre el desempeño, disponibilidad y salud de la aplicación.
 
@@ -166,7 +171,6 @@ Métricas clave del sistema que proporcionan información sobre el desempeño, d
 ---
 
 ## 🌍 Entornos
-
 
 El proyecto soporta dos entornos completamente configurados, cada uno optimizado para su propósito específico.
 
@@ -194,12 +198,11 @@ Despliegue en Kubernetes con alta disponibilidad y resiliencia.
 
 **Características:**
 
-- ☸️ Kubernetes con rolling updates y auto-scaling
-- 🔐 HTTPS con certificados Let's Encrypt
-- 📊 Monitoreo completo con Prometheus y Grafana
+- ☸️ Kubernetes con rolling updates (configurado) y auto-scaling (en implementación)
+- 🔐 HTTPS con certificados Let's Encrypt válidos (cert-manager + ACME)
+- 📊 Monitoreo completo con Prometheus, Grafana (instalado con Helm) y Alertmanager
 - 🚀 CI/CD automatizado con GitHub Actions
 - 💾 Persistencia de datos con StatefulSets
-- 🛡️ RBAC y políticas de red activadas
 - 📈 Métricas y alertas en tiempo real
 - 🔄 Loadbalancing con MetalLB
 
@@ -214,10 +217,10 @@ kubectl apply -R -f k8s/
 |--------|-----------|-----------|
 | **Orquestación** | Docker Compose | Kubernetes |
 | **Persistencia** | Volúmenes locales | StatefulSets + PVCs |
-| **TLS/HTTPS** | Autofirmado | Let's Encrypt |
-| **Monitoreo** | Básico | Prometheus + Grafana |
-| **Escalabilidad** | Manual | Automática (HPA) |
-| **Backup** | Manual | Automático |
+| **TLS/HTTPS** | Autofirmado | Let's Encrypt (válido) |
+| **Monitoreo** | Prometheus + Grafana | Prometheus + Grafana (Helm) + Alertmanager |
+| **Escalabilidad** | Manual | Automática (HPA en desarrollo) |
+| **Alertas** | No | Alertmanager + Grafana |
 | **Tiempo setup** | ~2 minutos | ~5 minutos |
 
 👉 **Síntesis:** Desarrollo para iteración rápida, Producción para confiabilidad y escalabilidad
@@ -226,18 +229,15 @@ kubectl apply -R -f k8s/
 
 ## 📚 Documentación
 
-
 Para capturas de pantalla adicionales relacionadas con el proyecto y su ejecución, visite el siguiente enlace: [Guía de Kubernetes y Docker - wellness ops](docs/kubernetes-guide.pdf).
 
 ---
 
 ## 🌐 Servicios Expuestos
 
-
 El cluster expone varios servicios accesibles desde fuera, permitiendo la comunicación con la aplicación a través de diferentes canales. Estos servicios están configurados con Ingress Controllers y balanceadores de carga para garantizar disponibilidad y escalabilidad.
 
 ### 1. Ingress con IP externa
-
 
 El Ingress Controller asigna una dirección IP externa que actúa como punto de entrada único para todo el tráfico HTTP/HTTPS hacia el cluster.
 
@@ -249,7 +249,6 @@ El Ingress Controller asigna una dirección IP externa que actúa como punto de 
 
 ### 2. Servicio del Ingress Controller
 
-
 El servicio del Ingress Controller expone los puertos 80 (HTTP) y 443 (HTTPS) para recibir tráfico externo y enrutarlo a los servicios internos correspondientes.
 
 **Qué ves aquí:** Puertos expuestos, endpoints activos, y balanceo de carga en acción.
@@ -259,7 +258,6 @@ El servicio del Ingress Controller expone los puertos 80 (HTTP) y 443 (HTTPS) pa
 ---
 
 ### 3. Acceso HTTPS funcionando desde el navegador
-
 
 Verificación de que el certificado TLS está correctamente instalado y que la comunicación segura HTTPS funciona sin errores de certificado.
 
@@ -271,27 +269,19 @@ Verificación de que el certificado TLS está correctamente instalado y que la c
 
 ### 4. curl respondiendo correctamente
 
-
 Prueba funcional mediante solicitudes HTTP/HTTPS desde línea de comandos, demostrando que el API responde correctamente a través del Ingress.
 
 **Qué ves aquí:** Respuesta Backend salud y estado OK, tiempos de respuesta, y datos del API siendo servidos correctamente.
 
 ```shell
 curl -k https://wellness.local/api/health
-
 ```
 
 ![curl respondiendo correctamente](docs/images/curl-backend.png)
 
 ---
 
-
-## 📚 Documentación original
-
----
-
 ## 🔧 Instalación
-
 
 Para instalar el proyecto en tu equipo, utiliza el siguiente comando que descargará una copia del repositorio completo desde Git.
 
@@ -314,9 +304,7 @@ cd wellnes-ops
 
 Crea las variables de entorno necesarias para el proyecto (ver archivo .env.example). Por razones de seguridad, no incluimos variables de entorno públicas.
 
-Edita el archivo `.env` si es necesario
-
-### Iniciar el stack con Docker Compose
+Edita el archivo `.env` si es necesario.
 
 Inicia la pila con Docker Compose (entorno de desarrollo) en segundo plano:
 
@@ -388,7 +376,6 @@ Para continuar con los pasos más avanzados sobre la instalación del controlado
 
 ## 📊 Capas diferentes
 
-
 ```
                           ┌───────────────────────┐
                           │        Cliente        │
@@ -448,7 +435,6 @@ Para continuar con los pasos más avanzados sobre la instalación del controlado
 ---
 
 ## 👤 Contribuidor
-
 
 Luis Fernando Rodríguez Villada
 
