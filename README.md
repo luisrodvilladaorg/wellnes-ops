@@ -301,7 +301,7 @@ El tráfico ingresa al cluster a través de **MetalLB**, que asigna una direcci�
 
 El **Backend** es el único componente autorizado para acceder a **PostgreSQL**, garantizando que la base de datos esté aislada de conexiones externas. Cada capa implementa protecciones específicas: TLS en la capa de transporte, rate limiting en NGINX, autenticación JWT en la API, y aislamiento de red en la base de datos.
 
-### �🔐 Seguridad en Capas
+### � Seguridad en Capas
 
 | Capa | Mecanismo | Propósito |
 |------|-----------|----------|
