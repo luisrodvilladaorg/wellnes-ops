@@ -287,32 +287,8 @@ Este proyecto implementa una arquitectura de red moderna y segura que gestiona e
     └──────────────────────┘
 ```
 
-### 🔄 Ejemplos de Flujos Específicos
 
-**1️⃣ Solicitud al Frontend (ej: GET wellness.local)**
-- Usuario accede a `wellness.local` en navegador
-- MetalLB recibe conexión HTTPS en IP:443
-- NGINX Ingress termina TLS y decodifica hostname
-- NGINX enruta a Frontend Service (ClusterIP:80)
-- Frontend Pod sirve index.html con CSS/JS
-- Navegador renderiza contenido estático
-
-**2️⃣ Solicitud a la API (ej: GET /api/health)**
-- JavaScript del frontend realiza fetch a `/api/health`
-- NGINX Ingress inspecciona la ruta `/api/*`
-- Enruta específicamente al Backend Service (ClusterIP:3000)
-- Backend Pod ejecuta controlador auth/health
-- Respuesta JSON se retorna al navegador
-
-**3️⃣ Autenticación con JWT (ej: POST /api/login)**
-- Cliente envía credenciales a `/api/login`
-- Backend valida contra PostgreSQL
-- Genera token JWT y lo retorna en respuesta
-- Cliente almacena token en localStorage
-- Solicitudes posteriores incluyen token en header `Authorization`
-- Backend middleware valida JWT antes de procesar
-
-### � Explicación del Flujo de Tráfico
+### Explicación del Flujo de Tráfico
 
 El tráfico ingresa al cluster a través de **MetalLB**, que asigna una dirección IP externa y actúa como punto de entrada. Desde ahí, todas las solicitudes HTTPS (puerto 443) son recibidas por el **NGINX Ingress Controller**, quien:
 
