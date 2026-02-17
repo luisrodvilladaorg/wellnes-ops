@@ -233,27 +233,140 @@ Para capturas de pantalla adicionales relacionadas con el proyecto y su ejecuci�
 
 ---
 
+## 🔀 Flujo de Tráfico
+
+Este proyecto implementa una arquitectura de red moderna y segura que gestiona el tráfico en múltiples capas, desde la entrada del usuario final hasta los servicios backend. Cada capa tiene un propósito específico en la cadena de procesamiento de solicitudes.
+
+### 📍 Arquitectura de Red por Capas
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    🌐 Cliente/Navegador                      │
+│              (Usuario accediendo a wellness.local)            │
+└────────────────────────┬────────────────────────────────────┘
+                         │ HTTPS (Puerto 443)
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│         🔐 MetalLB Load Balancer (Capa 3/4)                  │
+│     • Asigna IP externa al Ingress Controller                │
+│     • Enruta tráfico TCP/UDP a los pods del Ingress         │
+│     • Distribuye conexiones entre réplicas                   │
+└────────────────────────┬────────────────────────────────────┘
+                         │ TCP/443 → IP:443
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│      🎛️ NGINX Ingress Controller (Capa 7)                    │
+│     • Termina conexiones TLS/SSL                             │
+│     • Inspecciona headers HTTP                               │
+│     • Enruta basado en hostname/path                         │
+│     • Reescribe URLs (URI rewriting)                         │
+└──────────────┬────────────────────────────────┬──────────────┘
+               │                                │
+        /api/* │                                │ /*
+               ▼                                ▼
+    ┌──────────────────────┐      ┌──────────────────────┐
+    │  🟢 Backend Service  │      │ 🟡 Frontend Service  │
+    │   (Node.js + Prom)   │      │  (NGINX Static HTML) │
+    │  ClusterIP:3000      │      │  ClusterIP:80        │
+    └──────────┬───────────┘      └──────────┬───────────┘
+               │                             │
+               ▼                             ▼
+    ┌──────────────────────┐      ┌──────────────────────┐
+    │  📊 Backend Pod(s)   │      │ 🖼️ Frontend Pod(s)  │
+    │  • Rutas API REST    │      │ • Contenido estático │
+    │  • JWT Auth          │      │ • Redirects          │
+    │  • Métricas (9090)   │      │ • Cache control      │
+    └──────────┬───────────┘      └──────────────────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │   🗄️ PostgreSQL DB   │
+    │   ClusterIP:5432     │
+    │   • Persistencia     │
+    │   • Transacciones    │
+    └──────────────────────┘
+```
+
+### 🔄 Ejemplos de Flujos Específicos
+
+**1️⃣ Solicitud al Frontend (ej: GET wellness.local)**
+- Usuario accede a `wellness.local` en navegador
+- MetalLB recibe conexión HTTPS en IP:443
+- NGINX Ingress termina TLS y decodifica hostname
+- NGINX enruta a Frontend Service (ClusterIP:80)
+- Frontend Pod sirve index.html con CSS/JS
+- Navegador renderiza contenido estático
+
+**2️⃣ Solicitud a la API (ej: GET /api/health)**
+- JavaScript del frontend realiza fetch a `/api/health`
+- NGINX Ingress inspecciona la ruta `/api/*`
+- Enruta específicamente al Backend Service (ClusterIP:3000)
+- Backend Pod ejecuta controlador auth/health
+- Respuesta JSON se retorna al navegador
+
+**3️⃣ Autenticación con JWT (ej: POST /api/login)**
+- Cliente envía credenciales a `/api/login`
+- Backend valida contra PostgreSQL
+- Genera token JWT y lo retorna en respuesta
+- Cliente almacena token en localStorage
+- Solicitudes posteriores incluyen token en header `Authorization`
+- Backend middleware valida JWT antes de procesar
+
+### � Explicación del Flujo de Tráfico
+
+El tráfico ingresa al cluster a través de **MetalLB**, que asigna una dirección IP externa y actúa como punto de entrada. Desde ahí, todas las solicitudes HTTPS (puerto 443) son recibidas por el **NGINX Ingress Controller**, quien:
+
+1. **Termina la conexión TLS/SSL** - Desencripta el tráfico HTTPS
+2. **Inspecciona headers HTTP** - Extrae información del hostname y la ruta solicitada
+3. **Enruta inteligentemente** - Dirige las solicitudes según rules configuradas:
+   - Rutas que comienzan con `/api/*` → Backend Service (ClusterIP:3000)
+   - Todas las demás rutas `/*` → Frontend Service (ClusterIP:80)
+4. **Propaga la solicitud** - Los servicios internos distribuyen el tráfico a los pods correspondientes
+
+El **Backend** es el único componente autorizado para acceder a **PostgreSQL**, garantizando que la base de datos esté aislada de conexiones externas. Cada capa implementa protecciones específicas: TLS en la capa de transporte, rate limiting en NGINX, autenticación JWT en la API, y aislamiento de red en la base de datos.
+
+### �🔐 Seguridad en Capas
+
+| Capa | Mecanismo | Propósito |
+|------|-----------|----------|
+| **Ingress/TLS** | Certificado Let's Encrypt | Encriptación en tránsito, identidad del dominio |
+| **NGINX** | Rate limiting, validación de headers | Protección contra abuso y ataques HTTP |
+| **Backend API** | JWT Bearer tokens | Autenticación de usuarios y autorización |
+| **Database** | ClusterIP (no expuesto externamente) | Aislamiento de red, solo acceso desde Backend |
+
+### 📈 Características Operacionales
+
+- **Zero-Downtime Deployments**: Rolling updates sin interrumpir el tráfico
+- **Load Balancing**: Solicitudes distribuidas entre múltiples réplicas de pods
+- **Health Checks**: Readiness y liveness probes aseguran alta disponibilidad
+- **Observabilidad**: Prometheus recopila métricas de cada capa para monitoreo
+- **Escalabilidad Horizontal**: Agregar más pods automáticamente bajo carga
+
+👉 **Síntesis:** Una arquitectura resiliente, escalable y observable diseñada para aplicaciones empresariales
+
+---
+
 ## 🌐 Servicios Expuestos
 
 El cluster expone varios servicios accesibles desde fuera, permitiendo la comunicación con la aplicación a través de diferentes canales. Estos servicios están configurados con Ingress Controllers y balanceadores de carga para garantizar disponibilidad y escalabilidad.
 
-### 1. Ingress con IP externa
-
-El Ingress Controller asigna una dirección IP externa que actúa como punto de entrada único para todo el tráfico HTTP/HTTPS hacia el cluster.
-
-**Qué ves aquí:** IP externa asignada, rutas configuradas, y estado del Ingress en tiempo real.
-
-![Ingress con IP externa](docs/images/ingress.png)
-
----
-
-### 2. Servicio del Ingress Controller
+### 1. Servicio del Ingress Controller
 
 El servicio del Ingress Controller expone los puertos 80 (HTTP) y 443 (HTTPS) para recibir tráfico externo y enrutarlo a los servicios internos correspondientes.
 
 **Qué ves aquí:** Puertos expuestos, endpoints activos, y balanceo de carga en acción.
 
 ![Servicio del Ingress Controller](docs/images/svc-ingress.png)
+
+---
+
+### 2. Ingress con IP externa
+
+El Ingress Controller asigna una dirección IP externa que actúa como punto de entrada único para todo el tráfico HTTP/HTTPS hacia el cluster.
+
+**Qué ves aquí:** IP externa asignada, rutas configuradas, y estado del Ingress en tiempo real.
+
+![Ingress con IP externa](docs/images/ingress.png)
 
 ---
 
@@ -374,7 +487,7 @@ Para continuar con los pasos más avanzados sobre la instalación del controlado
 
 ---
 
-## 📊 Capas diferentes
+## 📊 Diferentes capas
 
 ```
                           ┌───────────────────────┐
