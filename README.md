@@ -1,6 +1,6 @@
 # 🧭 ¿Qué es esto?
 
-Este proyecto es un entorno DevOps completamente containerizado y listo para producción, diseñado para demostrar prácticas modernas de infraestructura. Reúne Docker, Kubernetes, GitHub Actions, NGINX, TLS, monitoreo y un pipeline CI/CD completo para mostrar cómo una aplicación del mundo real se construye, se despliega y se opera de manera integral.
+Este proyecto es un entorno DevOps completamente containerizado y listo para producción, diseñado para demostrar prácticas modernas de infraestructura. Reúne Docker, Kubernetes, GitHub Actions, NGINX, TLS, monitoreo y pipelines CI/CD completos para mostrar cómo una aplicación del mundo real se construye, se despliega y se opera de manera integral.
 
 ## ⚙️ ¿Qué hace?
 
