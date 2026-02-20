@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: backend
   annotations:
-    kubernetes.io/change-cause: "Update backend to v1.0.04"
+    kubernetes.io/change-cause: "Update backend to v1.0.01"
 
 spec:
-  replicas: 3
+  replicas: 1
 
   strategy:
     type: RollingUpdate
@@ -41,7 +41,7 @@ spec:
 
       containers:
         - name: backend
-          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.04
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.01
           imagePullPolicy: Always
           ports:
             - containerPort: 3000

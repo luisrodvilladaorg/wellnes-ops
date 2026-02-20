@@ -32,6 +32,11 @@ COPY --from=build /app ./
 ENV NODE_ENV=production
 ENV PORT=3000
 
+ARG APP_VERSION=dev
+ARG GIT_SHA=unknown
+ENV APP_VERSION=${APP_VERSION}
+ENV GIT_SHA=${GIT_SHA}
+
 EXPOSE 3000
 
 # Healthcheck
