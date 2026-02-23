@@ -39,9 +39,6 @@ ENV GIT_SHA=${GIT_SHA}
 
 EXPOSE 3000
 
-# Healthcheck
-HEALTHCHECK --interval=10s --timeout=3s \
-    CMD wget -qO- http://localhost:3000/health || exit 1
 
 # Arranque
 CMD ["node", "src/server.js"]
