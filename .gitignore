@@ -1,5 +1,5 @@
 errores
-comandos
+Comandos
 Apuntes
 HTTPS
 postgres-secret.yml
@@ -10,3 +10,5 @@ env
 wellnes-ops-backup/
 .secrets
 reset-docker.sh
+Docker-practica
+HTTPS.md
