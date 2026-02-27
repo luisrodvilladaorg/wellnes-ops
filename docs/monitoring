@@ -1,7 +1,0 @@
-    Create a namespace  
-kubectl create namespace monitoring
-
-   Password for Grafana
-user: admin
-edfsyjIQBR5Jlxm5pnlP0yav71jZGqEPKuU7EL96
-
