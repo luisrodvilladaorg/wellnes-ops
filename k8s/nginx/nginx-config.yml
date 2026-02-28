@@ -13,7 +13,7 @@ data:
 
       # --- UPSTREAMS ---
       upstream backend_upstream {
-        server backend:3000;
+        server backend-service:3000;
       }
 
       upstream frontend_upstream {
