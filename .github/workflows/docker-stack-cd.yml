@@ -6,6 +6,8 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+    env:
+      KUBECONFIG: /opt/kubeconfig-ci.yaml
     environment: production
 
     steps:
