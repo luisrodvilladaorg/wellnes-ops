@@ -15,15 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Normalize kubeconfig endpoint
-        run: |
-          CLUSTER_NAME=$(kubectl config view --minify -o jsonpath='{.clusters[0].name}')
-          SERVER_URL=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
-
-          if [[ "$SERVER_URL" == *"0.0.0.0"* ]]; then
-            kubectl config set-cluster "$CLUSTER_NAME" --server="${SERVER_URL/0.0.0.0/127.0.0.1}"
-          fi
-
       - name: Set frontend image version
         run: |
           kubectl set image deployment/frontend \
@@ -35,4 +26,4 @@ jobs:
 
       - name: Verify frontend availability
         run: |
-          curl -fsS http://wellness.local || curl -kfsS https://wellness.local
+          curl -k https://wellness.local
