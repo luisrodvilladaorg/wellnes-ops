@@ -15,15 +15,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Normalize kubeconfig endpoint
+        run: |
+          CLUSTER_NAME=$(kubectl config view --minify -o jsonpath='{.clusters[0].name}')
+          SERVER_URL=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
+
+          if [[ "$SERVER_URL" == *"0.0.0.0"* ]]; then
+            kubectl config set-cluster "$CLUSTER_NAME" --server="${SERVER_URL/0.0.0.0/127.0.0.1}"
+          fi
+
+      - name: Resolve backend deployment name
+        run: |
+          if kubectl get deployment backend >/dev/null 2>&1; then
+            echo "BACKEND_DEPLOYMENT=backend" >> "$GITHUB_ENV"
+          elif kubectl get deployment backend-green >/dev/null 2>&1; then
+            echo "BACKEND_DEPLOYMENT=backend-green" >> "$GITHUB_ENV"
+          else
+            echo "No backend deployment found (backend/backend-green)." >&2
+            kubectl get deployments
+            exit 1
+          fi
+
       - name: Set backend image version
         run: |
-          kubectl set image deployment/backend \
+          kubectl set image deployment/${BACKEND_DEPLOYMENT} \
             backend=ghcr.io/luisrodvilladaorg/wellness-ops-backend:${GITHUB_REF_NAME}
 
       - name: Wait for rollout
         run: |
-          kubectl rollout status deployment/backend --timeout=120s
+          kubectl rollout status deployment/${BACKEND_DEPLOYMENT} --timeout=120s
 
       - name: Verify backend health
         run: |
-          curl -k https://wellness.local/api/health
+          curl -fsS http://wellness.local/api/health || curl -kfsS https://wellness.local/api/health
