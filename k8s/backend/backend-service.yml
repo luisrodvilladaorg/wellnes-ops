@@ -12,7 +12,6 @@ metadata:
 spec:
   selector:
     app: backend
-    version: green
   ports:
     - name: http
       port: 3000

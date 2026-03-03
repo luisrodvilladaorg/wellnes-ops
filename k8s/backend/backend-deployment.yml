@@ -1,24 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-green
+  name: backend
 spec:
-  replicas: 1
+  replicas: 2
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+
   selector:
     matchLabels:
       app: backend
-      version: green
 
   template:
     metadata:
       labels:
         app: backend
-        version: green
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "3000"
 
     spec:
+      terminationGracePeriodSeconds: 16
+
       initContainers:
         - name: wait-for-postgres
           image: ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:latest
@@ -33,9 +40,14 @@ spec:
 
       containers:
         - name: backend
-          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.4 # nueva versión
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.4
           ports:
             - containerPort: 3000
+
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 5"]
 
           envFrom:
             - configMapRef:
@@ -49,15 +61,17 @@ spec:
             httpGet:
               path: /api/health
               port: 3000
-            initialDelaySeconds: 25
+            initialDelaySeconds: 30
             periodSeconds: 5
+            failureThreshold: 3
 
           livenessProbe:
             httpGet:
               path: /api/health
               port: 3000
-            initialDelaySeconds: 60
+            initialDelaySeconds: 30
             periodSeconds: 10
+            failureThreshold: 3
 
           resources:
             requests:

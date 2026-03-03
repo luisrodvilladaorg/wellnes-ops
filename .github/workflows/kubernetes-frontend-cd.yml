@@ -8,16 +8,12 @@ on:
 jobs:
   deploy-frontend:
     runs-on: self-hosted
+    env:
+      KUBECONFIG: /opt/kubeconfig-ci.yaml
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-          chmod 600 ~/.kube/config
 
       - name: Set frontend image version
         run: |
