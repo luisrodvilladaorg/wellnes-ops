@@ -22,7 +22,7 @@ jobs:
 
       - name: Wait for rollout
         run: |
-          kubectl rollout status deployment/backend --timeout=300s
+          kubectl rollout status deployment/backend --timeout=600s
 
       - name: Verify backend health
         run: |
