@@ -24,7 +24,7 @@ spec:
         prometheus.io/port: "3000"
 
     spec:
-      terminationGracePeriodSeconds: 15
+      terminationGracePeriodSeconds: 16
 
       initContainers:
         - name: wait-for-postgres
