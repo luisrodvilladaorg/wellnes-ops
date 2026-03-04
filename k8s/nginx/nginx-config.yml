@@ -24,6 +24,8 @@ data:
       server {
         listen 80;
 
+        
+
         # --- BACKEND /api ---
         location /api/ {
           proxy_pass http://backend_upstream;
