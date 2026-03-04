@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-v1
+  namespace: wellness-bg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: backend
+        version: v1
+    spec:
+      terminationGracePeriodSeconds: 16
+
+      initContainers:
+        - name: wait-for-postgres
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:latest
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres-service.default.svc.cluster.local -p 5432; do
+                echo "Waiting for PostgreSQL..."
+                sleep 2
+              done
+
+      containers:
+        - name: backend
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.4
+          ports:
+            - containerPort: 3000
+
+          envFrom:
+            - configMapRef:
+                name: backend-config
+            - secretRef:
+                name: backend-secret
+            - secretRef:
+                name: backend-jwt-secret
+
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: wellness-bg
+spec:
+  type: ExternalName
+  externalName: postgres.default.svc.cluster.local
+
+  # Este servicio actúa como un alias para el servicio de Postgres en el namespace "default". Permite que las aplicaciones en el namespace "wellness-bg" accedan a la base de datos utilizando el nombre "postgres" sin necesidad de conocer la ubicación exacta del servicio en el cluster.

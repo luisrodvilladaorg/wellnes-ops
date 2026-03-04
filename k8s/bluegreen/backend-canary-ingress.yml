@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wellness-canary
+  namespace: wellness-bg
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "90"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: wellness.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-v2-service
+                port:
+                  number: 80
