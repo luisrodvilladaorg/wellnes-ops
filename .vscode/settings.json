@@ -1,5 +1,8 @@
 {
     "chat.tools.terminal.autoApprove": {
         "kubectl get": true
-    }
+    },
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/backend-cd.yml"
+    ]
 }
