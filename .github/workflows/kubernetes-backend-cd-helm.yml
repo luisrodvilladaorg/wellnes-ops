@@ -1,0 +1,32 @@
+name: Backend CD (Kubernetes)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  deploy-backend:
+    runs-on: self-hosted
+
+    env:
+      KUBECONFIG: /opt/kubeconfig-ci.yaml
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade wellness ./k8s/helm/wellness \
+            --set backend.image=ghcr.io/luisrodvilladaorg/wellness-ops-backend:broken \
+            --atomic \
+            --wait \
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/backend --timeout=600s
+
+      - name: Verify backend health
+        run: |
+          curl -k https://wellness.local/api/health
