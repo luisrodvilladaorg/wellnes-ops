@@ -1,9 +1,4 @@
-# Default owner
-* @luisrodvilladaorg
-
-# Infrastructure
-terraform/ @luisrodvilladaorg
-kubernetes/ @luisrodvilladaorg
-
-# CI/CD
-.github/workflows/ @luisrodvilladaorg
+* @luisrodvilladaorg/ops
+terraform/ @luisrodvilladaorg/ops
+kubernetes/ @luisrodvilladaorg/ops
+.github/workflows/ @luisrodvilladaorg/ops
