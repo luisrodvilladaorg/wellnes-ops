@@ -10,11 +10,11 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # 1️⃣ Clonamos el repositorio
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Validamos la sintaxis del nginx.ci.conf
+      # 2️⃣ Validate nginx.ci.conf syntax
       - name: Validate nginx configuration
         run: |
           docker run --rm \
@@ -22,7 +22,7 @@ jobs:
             nginx:stable-alpine \
             nginx -t
 
-      # 3️⃣ Construimos la imagen Docker de Nginx (producción)
+      # 3️⃣ Build Nginx Docker image (production)
       - name: Build nginx Docker image
         run: |
           docker build \

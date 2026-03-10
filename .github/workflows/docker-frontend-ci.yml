@@ -12,11 +12,11 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # 1️⃣ Clonamos el repositorio
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Validamos que la estructura del frontend existe
+      # 2️⃣ Validate frontend structure
       - name: Validate frontend structure
         run: |
           test -f frontend/Dockerfile.prod
@@ -25,7 +25,7 @@ jobs:
           test -d frontend/mi-web/css
           test -d frontend/mi-web/js
 
-      # 3️⃣ Construimos la imagen Docker del frontend (solo build)
+      # 3️⃣ Build frontend Docker image (build only)
       - name: Build frontend Docker image
         run: |
           docker build \

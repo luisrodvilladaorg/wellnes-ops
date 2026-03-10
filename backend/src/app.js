@@ -24,7 +24,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/entries", entriesRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/metrics", metricsRoutes);
-// Healthcheck simple para Docker / orquestadores
+// Simple health check for Docker / orchestrators
 app.get("/health", (req, res) => {
     res.json({ status: "OK" });
 });

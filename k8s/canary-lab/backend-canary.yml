@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.4 # nueva versión
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.4 # new version
           ports:
             - containerPort: 3000
           envFrom:

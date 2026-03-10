@@ -7,13 +7,13 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Copiamos solo manifests
+# Copy manifest files only
 COPY package*.json ./
 
 
 RUN npm install 
 
-# Copiamos código
+# Copy source code
 COPY src ./src
 
 COPY test ./test
@@ -24,11 +24,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copiamos app ya lista
+# Copy built app
 COPY --from=build /app ./
 
 
-# Variables por defecto (sobrescribibles)
+# Default variables (overridable)
 ENV NODE_ENV=production
 ENV PORT=3000
 
@@ -40,5 +40,5 @@ ENV GIT_SHA=${GIT_SHA}
 EXPOSE 3000
 
 
-# Arranque
+# Startup
 CMD ["node", "src/server.js"]

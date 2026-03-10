@@ -1,5 +1,5 @@
 # monitoring-k8s
 
-Esta carpeta contiene los manifiestos de monitorización para Kubernetes.
+This folder contains monitoring manifests for Kubernetes.
 
-- `backend-servicemonitor.yml`: Manifiesto ServiceMonitor para Prometheus Operator en Kubernetes.
+- `backend-servicemonitor.yml`: ServiceMonitor manifest for Prometheus Operator in Kubernetes.

@@ -1,28 +1,33 @@
-# Frontend de Wellness-Ops
+# Wellness-Ops Frontend
 
-Este directorio contiene la aplicación web del proyecto Wellness-Ops. Aquí encontrarás los archivos necesarios para la interfaz de usuario, desarrollada para facilitar la interacción con el sistema de gestión de bienestar.
+This directory contains the web application for the Wellness-Ops project. It includes the files required for the user interface and static site experience.
 
-## Estructura
-- **mi-web/**: Contiene los archivos HTML, CSS, imágenes y scripts de la web.
-- **Dockerfile.dev / Dockerfile.prod**: Archivos para construir la imagen Docker del frontend en entornos de desarrollo y producción.
+## Structure
 
-## Características
-- Visualización de videos e imágenes.
-- Páginas de contacto, información y detalles multimedia.
-- Integración con el backend para mostrar métricas y datos.
+- **mi-web/**: HTML, CSS, image, and JavaScript files for the website.
+- **Dockerfile.dev / Dockerfile.prod**: Docker build files for development and production frontend images.
 
-## Captura de pantalla
-![Vista del navegador](../docs/images/navegador.png)
+## Features
 
-## Cómo ejecutar
-Puedes levantar el frontend usando Docker:
+- Video and image content views.
+- Contact, about, and media detail pages.
+- Integration with backend endpoints to display app data and metrics.
+
+## Screenshot
+
+![Browser view](../docs/images/navegador.png)
+
+## How to Run
+
+You can run the frontend with Docker:
 
 ```bash
 docker build -f Dockerfile.dev -t wellness-frontend .
 docker run -p 8080:80 wellness-frontend
 ```
 
-O mediante el archivo `docker-compose.yml` correspondiente.
+You can also run it through the corresponding `docker-compose` configuration.
 
 ---
-Para más información, consulta la documentación general del proyecto o contacta con el equipo de desarrollo.
+
+For more details, check the main project documentation.

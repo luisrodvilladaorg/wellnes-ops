@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (!res.ok) {
-            error.innerText = "Login incorrecto";
+            error.innerText = "Invalid login";
             return;
         }
 
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const token = getToken();
 
         if (!token) {
-            alert("Debes iniciar sesión");
+            alert("You must log in");
             return;
         }
 
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (!res.ok) {
-            alert("Error al guardar");
+            alert("Error while saving");
             return;
         }
 

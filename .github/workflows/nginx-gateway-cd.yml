@@ -3,7 +3,7 @@ name: Nginx Gateway CD (Kubernetes)
 on:
   push:
     branches:
-      - "no-ejecutar-esta-rama"
+      - "do-not-run-this-branch"
 
 jobs:
   deploy-nginx-gateway:

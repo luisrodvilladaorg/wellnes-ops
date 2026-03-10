@@ -4,12 +4,12 @@
 
 FROM nginx:stable-alpine
 
-# Eliminamos config por defecto
+# Remove default config
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copiamos nuestra config de producción
+# Copy production config
 COPY nginx.prod.conf /etc/nginx/conf.d/default.conf
 COPY certs /etc/nginx/certs
 
-# Exponemos puerto 80 (443 vendrá después)
+# Expose ports 80 and 443
 EXPOSE 80 443

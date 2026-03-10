@@ -7,7 +7,7 @@ spec:
   isCA: true
   commonName: wellness-ca
   secretName: wellness-ca-secret
-  duration: 87600h # 10 años
+  duration: 87600h # 10 years
   issuerRef:
     name: selfsigned-issuer
     kind: ClusterIssuer
