@@ -2,8 +2,8 @@ name: Backend CD (Kubernetes)
 
 on:
   push:
-    branches:
-      - "no-ejecutar-esta-rama"
+    tags:
+      - "v*.*.*"
 
 jobs:
   deploy-backend:

@@ -4,17 +4,13 @@
 [![Frontend CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-frontend-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-frontend-ci.yml)
 [![Nginx CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-nginx-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-nginx-ci.yml)
 [![Stack CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-ci.yml)
-[![Security Scan](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/security-scan.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/security-scan.yml)
 [![Backend Image CI Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-backend-image-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-backend-image-ci.yml)
 [![Frontend Image CI Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-frontend-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-frontend-ci.yml)
-[![Nginx Gateway Image CI Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-nginx-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-nginx-ci.yml)
-[![Backend CD Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-backend-cd.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-backend-cd.yml)
 [![Frontend CD Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-frontend-cd.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-frontend-cd.yml)
 [![Nginx Gateway CD Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/nginx-gateway-cd.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/nginx-gateway-cd.yml)
 [![Stack CD Production](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-cd.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-cd.yml)
 [![Stack DOWN Production](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-down-prod.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-down-prod.yml)
 [![Stack ROLLBACK Production](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-rollback.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-rollback.yml)
-[![Backend CD Kubernetes Legacy](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/backend-cd.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/backend-cd.yml)
 
 Este proyecto es un entorno DevOps completamente containerizado y listo para producción, diseñado para demostrar prácticas modernas de infraestructura. Reúne Docker, Kubernetes, GitHub Actions, NGINX, TLS, monitoreo y pipelines CI/CD completos para mostrar cómo una aplicación del mundo real se construye, se despliega y se opera de manera integral.
 
