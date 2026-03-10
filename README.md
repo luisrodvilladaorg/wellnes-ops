@@ -260,3 +260,11 @@ For advanced ingress and TLS setup, follow the documentation in `docs/`.
 ## 📄 License
 
 This project is distributed under the license defined in [LICENSE](LICENSE).
+
+---
+
+## 👤 Author
+
+Luis Fernando Rodríguez Villada
+
+luisfernando198912@gmail.com
