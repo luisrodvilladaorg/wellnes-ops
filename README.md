@@ -2,7 +2,7 @@
 
 [![Backend CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-backend-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-backend-ci.yml)
 [![Frontend CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-frontend-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-frontend-ci.yml)
-[![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/wellnes-ops/main?logo=github)](https://github.com/luisrodvilladaorg/wellnes-ops/commits/main)
+[![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/wellnes-ops?display_timestamp=committer&label=Last%20Commit&logo=github)](https://github.com/luisrodvilladaorg/wellnes-ops/commits/main)
 [![Nginx CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-nginx-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-nginx-ci.yml)
 [![Stack CI](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/docker-stack-ci.yml)
 [![Backend Image CI Kubernetes](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-backend-image-ci.yml/badge.svg)](https://github.com/luisrodvilladaorg/wellnes-ops/actions/workflows/kubernetes-backend-image-ci.yml)
