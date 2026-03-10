@@ -2,7 +2,7 @@ name: Nginx CI
 
 on:
   push:
-    branches: [main, Feature-Blindate-CI/CD]
+    branches: [main]
   pull_request:
 
 jobs:
