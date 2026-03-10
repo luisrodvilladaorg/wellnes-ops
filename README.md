@@ -1,5 +1,8 @@
 # 🧭 ¿Qué es esto?
 
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
+![Security Scan](https://img.shields.io/badge/Security%20Scan-Enabled-2EA043?logo=shield&logoColor=white)
+
 Este proyecto es un entorno DevOps completamente containerizado y listo para producción, diseñado para demostrar prácticas modernas de infraestructura. Reúne Docker, Kubernetes, GitHub Actions, NGINX, TLS, monitoreo y pipelines CI/CD completos para mostrar cómo una aplicación del mundo real se construye, se despliega y se opera de manera integral.
 
 ## ⚙️ ¿Qué hace?
