@@ -1,7 +1,7 @@
 name: Stack DOWN (Production)
 
-# ❗ Este workflow NO se ejecuta con push
-# ❗ Solo manual desde GitHub Actions
+# ❗ This workflow does NOT run on push
+# ❗ Manual trigger only from GitHub Actions
 on:
   workflow_dispatch:
     inputs:

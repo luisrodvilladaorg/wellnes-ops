@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
-// Usuario fijo SOLO para DEV
+// Fixed user for DEV only
 const USER = {
     id: 1,
     username: "admin",

@@ -2,11 +2,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copiamos dependencias
+# Copy dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copiamos código
+# Copy source code
 COPY src/ ./src
 
 ENV PORT=3000

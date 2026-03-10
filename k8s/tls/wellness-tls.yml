@@ -5,8 +5,8 @@ metadata:
   namespace: default
 spec:
   secretName: wellness-tls
-  duration: 2160h # 90 días
-  renewBefore: 360h # 15 días
+  duration: 2160h # 90 days
+  renewBefore: 360h # 15 days
   issuerRef:
     name: wellness-ca
     kind: ClusterIssuer

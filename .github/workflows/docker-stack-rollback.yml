@@ -1,6 +1,6 @@
 name: Stack ROLLBACK (Production)
 
-# ❗ Rollback manual y controlado
+# ❗ Manual and controlled rollback
 on:
     workflow_dispatch:
         inputs:
@@ -19,7 +19,7 @@ jobs:
         environment: production
 
         steps:
-            # 1️⃣ Seguridad dura
+            # 1️⃣ Strict safety check
             - name: Validate confirmation
               run: |
                   if [ "${{ github.event.inputs.confirm }}" != "ROLLBACK" ]; then
@@ -27,7 +27,7 @@ jobs:
                     exit 1
                   fi
 
-            # 2️⃣ Info del runner
+            # 2️⃣ Runner info
             - name: Show runner info
               run: |
                   hostname
@@ -36,39 +36,39 @@ jobs:
                   docker version
                   docker compose version
 
-            # 3️⃣ Ir al repo y sincronizar
+            # 3️⃣ Fetch repository and sync
             - name: Fetch repository
               run: |
                   cd /opt/wellnes-ops
                   git fetch --all --tags
 
-            # 4️⃣ Rollback al commit/tag indicado
+            # 4️⃣ Roll back to the provided commit/tag
             - name: Checkout rollback ref
               run: |
                   cd /opt/wellnes-ops
                   git reset --hard ${{ github.event.inputs.ref }}
 
-            # 5️⃣ Pull de imágenes correspondientes
+            # 5️⃣ Pull matching images
             - name: Pull images
               run: |
                   cd /opt/wellnes-ops
                   docker compose -f docker-compose.prod.yml pull
 
-            # 6️⃣ Levantar stack
+            # 6️⃣ Start rollback stack
             - name: Deploy rollback stack
               run: |
                   cd /opt/wellnes-ops
                   docker compose -f docker-compose.prod.yml up -d
 
-            # 7️⃣ Mostrar contenedores
+            # 7️⃣ Show running containers
             - name: Show running containers
               run: docker ps
 
-            # 8️⃣ Esperar servicios
+            # 8️⃣ Wait for services
             - name: Wait for services
               run: sleep 10
 
-            # 9️⃣ Healthchecks básicos
+            # 9️⃣ Basic health checks
             - name: Backend healthcheck
               run: curl -fsS http://localhost/api/health
 

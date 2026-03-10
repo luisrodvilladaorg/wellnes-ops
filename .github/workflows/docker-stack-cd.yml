@@ -1,7 +1,7 @@
 name: Stack CD (Production)
 
 on:
-  workflow_dispatch: # SOLO manual
+  workflow_dispatch: # Manual trigger only
 
 jobs:
   deploy:
@@ -51,8 +51,8 @@ jobs:
           curl -fsS http://localhost/
           curl -kfsS https://localhost/
 
-          - name: Ensure clean repo state
-            run: |
-              cd /opt/wellnes-ops
-              git fetch origin main --prune
-              git reset --hard origin/main
+      - name: Ensure clean repo state
+        run: |
+          cd /opt/wellnes-ops
+          git fetch origin main --prune
+          git reset --hard origin/main
