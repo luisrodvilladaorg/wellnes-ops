@@ -22,7 +22,7 @@ jobs:
 
       - name: Wait for rollout
         run: |
-          kubectl rollout status deployment/frontend --timeout=120s
+          kubectl rollout status deployment/frontend --timeout=300s
 
       - name: Verify frontend availability
         run: |
