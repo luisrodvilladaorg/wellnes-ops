@@ -3,7 +3,7 @@ name: Backend CD (Kubernetes)
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "!v*.*.*"
 
 jobs:
   deploy-backend:

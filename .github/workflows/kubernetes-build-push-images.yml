@@ -1,0 +1,112 @@
+name: Build Images CI
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_FRONTEND: ghcr.io/luisrodvilladaorg/wellness-ops-frontend
+  IMAGE_BACKEND: ghcr.io/luisrodvilladaorg/wellness-ops-backend
+
+jobs:
+
+  build-frontend:
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate frontend files
+        run: |
+          test -f frontend/Dockerfile.prod
+          test -d frontend/mi-web
+
+      - name: Login to GHCR
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+          -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      - name: Enable Docker BuildKit
+        run: |
+          export DOCKER_BUILDKIT=1
+
+      - name: Build frontend image with cache
+        run: |
+          docker buildx build \
+          --cache-from=type=registry,ref=${{ env.IMAGE_FRONTEND }}:cache \
+          --cache-to=type=registry,ref=${{ env.IMAGE_FRONTEND }}:cache,mode=max \
+          -f frontend/Dockerfile.prod \
+          -t ${{ env.IMAGE_FRONTEND }}:${{ github.ref_name }} \
+          frontend \
+          --push
+
+      - name: CI completed
+        run: echo "Frontend image built and pushed"
+
+
+
+
+  build-backend:
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate backend files
+        run: |
+          test -f backend/Dockerfile.prod
+          test -f backend/package.json
+          test -d backend/src
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('backend/package-lock.json') }}
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Login to GHCR
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+          -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      - name: Enable Docker BuildKit
+        run: |
+          export DOCKER_BUILDKIT=1
+
+      - name: Build backend image with cache
+        run: |
+          docker buildx build \
+          --build-arg APP_VERSION=${{ github.ref_name }} \
+          --build-arg GIT_SHA=${{ github.sha }} \
+          --cache-from=type=registry,ref=${{ env.IMAGE_BACKEND }}:cache \
+          --cache-to=type=registry,ref=${{ env.IMAGE_BACKEND }}:cache,mode=max \
+          -f backend/Dockerfile.prod \
+          -t ${{ env.IMAGE_BACKEND }}:${{ github.ref_name }} \
+          backend \
+          --push
+
+      - name: CI completed
+        run: echo "Backend image built and pushed"
