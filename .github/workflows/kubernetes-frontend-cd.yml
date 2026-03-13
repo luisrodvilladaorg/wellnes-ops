@@ -1,12 +1,14 @@
 name: Frontend CD (Kubernetes)
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_run:
+    workflows: ["Frontend Image CI (Kubernetes)"]
+    types:
+      - completed
 
 jobs:
   deploy-frontend:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: self-hosted
     env:
       KUBECONFIG: /opt/kubeconfig-ci.yaml
@@ -21,7 +23,7 @@ jobs:
 
           echo "Waiting for image $IMAGE"
 
-          for i in {1..60}; do
+          for i in {1..180}; do
             if docker manifest inspect $IMAGE > /dev/null 2>&1; then
               echo "Image found in GHCR"
               exit 0
