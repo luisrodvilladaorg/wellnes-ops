@@ -1,9 +1,9 @@
 name: Nginx Gateway Image CI (Kubernetes)
-
+#This workflow doesn't work because we have Ingress configured to use the nginx gateway image, so when we push a new image it causes the workflow to fail because the nginx gateway deployment can't pull the new image until it's available in GHCR. We need to find a way to trigger this workflow only when we push a new image to GHCR, or we need to find a way to update the nginx gateway deployment without causing the workflow to fail.
 on:
     push:
         tags:
-            - "v*.*.*"
+            - "!v*.*.*"
 
 jobs:
     build-nginx-gateway-image:

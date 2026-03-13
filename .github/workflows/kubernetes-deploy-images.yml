@@ -1,0 +1,50 @@
+name: Deploy Kubernetes
+
+on:
+  workflow_run:
+    workflows: ["Build Images CI"]
+    types:
+      - completed
+
+jobs:
+
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: self-hosted
+
+    env:
+      KUBECONFIG: /opt/kubeconfig-ci.yaml
+      IMAGE_FRONTEND: ghcr.io/luisrodvilladaorg/wellness-ops-frontend
+      IMAGE_BACKEND: ghcr.io/luisrodvilladaorg/wellness-ops-backend
+      VERSION: ${{ github.event.workflow_run.head_branch }}
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy backend
+        run: |
+          kubectl set image deployment/backend \
+          backend=${IMAGE_BACKEND}:${VERSION}
+
+      - name: Deploy frontend
+        run: |
+          kubectl set image deployment/frontend \
+          frontend-deployment=${IMAGE_FRONTEND}:${VERSION}
+
+      - name: Wait backend rollout
+        run: |
+          kubectl rollout status deployment/backend --timeout=900s
+
+      - name: Wait frontend rollout
+        run: |
+          kubectl rollout status deployment/frontend --timeout=900s
+
+      - name: Verify backend health
+        run: |
+          curl -k https://wellness.local/api/health
+
+      - name: Verify frontend availability
+        run: |
+          curl -k https://wellness.local

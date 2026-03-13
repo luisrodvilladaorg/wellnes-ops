@@ -3,7 +3,7 @@ name: Backend Image CI Kubernetes
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "!v*.*.*"
 
 jobs:
   build-backend-image:
