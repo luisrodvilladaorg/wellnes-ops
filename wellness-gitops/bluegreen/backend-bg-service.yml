@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-bg-service
+  namespace: wellness-bg
+spec:
+  selector:
+    app: backend
+    version: v1
+  ports:
+    - port: 80
+      targetPort: 3000

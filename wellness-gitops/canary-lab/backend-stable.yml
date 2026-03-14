@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-stable
+  namespace: canary-lab
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: backend
+        track: stable
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.4
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: backend-config
+            - secretRef:
+                name: backend-secret
+            - secretRef:
+                name: backend-jwt-secret

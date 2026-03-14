@@ -1,0 +1,23 @@
+-- ==========================
+-- init.sql
+-- Initial database schema
+-- ==========================
+
+-- This table stores core system records
+-- It runs automatically ONLY when the DB is created for the first time
+
+CREATE TABLE IF NOT EXISTS entries (
+  id SERIAL PRIMARY KEY,           -- Unique auto-increment ID
+  title TEXT NOT NULL,             -- Entry title
+  description TEXT,                -- Optional description
+  created_at TIMESTAMP DEFAULT NOW()-- Creation timestamp
+);
+
+-- Example seed data
+-- Useful for testing and validation
+
+INSERT INTO entries (title, description)
+VALUES
+  ('First entry', 'Initial test entry'),
+  ('Docker ready', 'Database initialized via init.sql'),
+  ('Sample in English', 'This is a sample entry in English');
