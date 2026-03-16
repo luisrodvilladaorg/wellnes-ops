@@ -107,6 +107,30 @@ jobs:
           -t ${{ env.IMAGE_BACKEND }}:${{ github.ref_name }} \
           backend \
           --push
+      
+      - name: Checkout GitOps repository
+        uses: actions/checkout@v4
+        with:
+          repository: luisrodvilladaorg/wellness-gitops
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: wellness-gitops
+
+      - name: Update backend image tag
+        run: |
+          cd wellness-gitops/backend
+          sed -i "s|image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:.*|image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:${{ github.ref_name }}|" backend-deployment.yml
+
+      - name: Commit and push changes
+        run: |
+          cd wellness-gitops
+
+          git config user.name "github-actions"
+          git config user.email "ci@github.com"
+
+          git add backend/backend-deployment.yml
+          git commit -m "Update backend image to ${{ github.ref_name }}"
+          git push 
+
 
       - name: CI completed
         run: echo "Backend image built and pushed"
