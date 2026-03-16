@@ -1,4 +1,4 @@
-name: Build Images CI
+name: Build & push Images CI
 on:
   push:
     tags:
