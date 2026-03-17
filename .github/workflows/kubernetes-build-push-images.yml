@@ -1,4 +1,4 @@
-name: Build & push Images  I
+name: Build & push Images
 on:
   push:
     tags:
@@ -27,15 +27,11 @@ jobs:
         run: |
           test -f frontend/Dockerfile.prod
           test -d frontend/mi-web
-
+      
       - name: Login to GHCR
         run: |
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
           -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
-
-      - name: Enable Docker BuildKit
-        run: |
-          export DOCKER_BUILDKIT=1
 
       - name: Build frontend image with cache
         run: |
@@ -46,6 +42,34 @@ jobs:
           -t ${{ env.IMAGE_FRONTEND }}:${{ github.ref_name }} \
           frontend \
           --push
+
+      - name: Checkout GitOps repository
+        uses: actions/checkout@v4
+        with:
+          repository: luisrodvilladaorg/wellness-gitops
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: wellness-gitops
+
+
+      - name: Update frontend image tag
+        run: |
+          cd wellness-gitops/frontend
+          sed -i "s|image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:.*|image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:${{ github.ref_name }}|" frontend-deployment.yml
+
+      - name: Commit and push changes (frontend)
+        run: |
+          cd wellness-gitops  
+
+          git config user.name "github-actions"
+          git config user.email "ci@github.com"
+
+          git add frontend/frontend-deployment.yml
+          git commit -m "Update frontend image to ${{ github.ref_name }}" || echo "No changes"
+          git push    
+
+  
+     
+     
 
       - name: CI completed
         run: echo "Frontend image built and pushed"
@@ -91,9 +115,7 @@ jobs:
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
           -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
-      - name: Enable Docker BuildKit
-        run: |
-          export DOCKER_BUILDKIT=1
+    
 
       - name: Build backend image with cache
         run: |
@@ -127,9 +149,11 @@ jobs:
           git config user.email "ci@github.com"
 
           git add backend/backend-deployment.yml
-          git commit -m "Update backend image to ${{ github.ref_name }}"
+          git commit -m "Update backend image to ${{ github.ref_name }}" || echo "No changes"
           git push 
 
 
       - name: CI completed
         run: echo "Backend image built and pushed"
+
+         
