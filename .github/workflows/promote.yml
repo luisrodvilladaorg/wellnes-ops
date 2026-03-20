@@ -1,0 +1,48 @@
+name: Promote DEV → PROD
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to promote (SHA)"
+        required: true
+
+jobs:
+  promote:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: luisrodvilladaorg/wellness-gitops
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: wellness-gitops
+
+      # ========================
+      # FRONTEND
+      # ========================
+      - name: Update PROD frontend
+        run: |
+          sed -i "s|image: .*|image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:${{ github.event.inputs.image_tag }}|" \
+          wellness-gitops/k8s/overlays/prod/frontend/patch-image.yml
+
+      # ========================
+      # BACKEND
+      # ========================
+      - name: Update PROD backend
+        run: |
+          sed -i "s|image: .*|image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:${{ github.event.inputs.image_tag }}|" \
+          wellness-gitops/k8s/overlays/prod/backend/patch-image.yml
+
+      # ========================
+      # COMMIT
+      # ========================
+      - name: Commit & push
+        run: |
+          cd wellness-gitops
+          git config user.name "github-actions"
+          git config user.email "ci@github.com"
+          git add .
+          git commit -m "promote: deploy ${{ github.event.inputs.image_tag }} to prod" || echo "No changes"
+          git push
