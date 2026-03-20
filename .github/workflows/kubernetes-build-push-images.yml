@@ -1,13 +1,16 @@
-name: Build & push Images
+name: Build & Push Images (DEV)
+
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches:
+      - main
   workflow_dispatch:
+
 env:
   REGISTRY: ghcr.io
   IMAGE_FRONTEND: ghcr.io/luisrodvilladaorg/wellness-ops-frontend
   IMAGE_BACKEND: ghcr.io/luisrodvilladaorg/wellness-ops-backend
+  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
 
@@ -19,27 +22,26 @@ jobs:
       packages: write
 
     steps:
-
-      - name: Checkout repository
+      - name: Checkout app repository
         uses: actions/checkout@v4
 
       - name: Validate frontend files
         run: |
           test -f frontend/Dockerfile.prod
           test -d frontend/mi-web
-      
+
       - name: Login to GHCR
         run: |
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
           -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
-      - name: Build frontend image with cache
+      - name: Build & push frontend image
         run: |
           docker buildx build \
           --cache-from=type=registry,ref=${{ env.IMAGE_FRONTEND }}:cache \
           --cache-to=type=registry,ref=${{ env.IMAGE_FRONTEND }}:cache,mode=max \
           -f frontend/Dockerfile.prod \
-          -t ${{ env.IMAGE_FRONTEND }}:${{ github.ref_name }} \
+          -t ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }} \
           frontend \
           --push
 
@@ -50,32 +52,19 @@ jobs:
           token: ${{ secrets.GITOPS_TOKEN }}
           path: wellness-gitops
 
-
-      - name: Update frontend image tag
+      - name: Update frontend image in DEV overlay
         run: |
-          cd wellness-gitops/frontend
-          sed -i "s|image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:.*|image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:${{ github.ref_name }}|" frontend-deployment.yml
+          cd wellness-gitops/k8s/overlays/dev/frontend
+          sed -i "s|image: .*|image: ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }}|" frontend-deployment.yml
 
-      - name: Commit and push changes (frontend)
+      - name: Commit & push changes (frontend)
         run: |
-          cd wellness-gitops  
-
+          cd wellness-gitops
           git config user.name "github-actions"
           git config user.email "ci@github.com"
-
-          git add frontend/frontend-deployment.yml
-          git commit -m "Update frontend image to ${{ github.ref_name }}" || echo "No changes"
-          git push    
-
-  
-     
-     
-
-      - name: CI completed
-        run: echo "Frontend image built and pushed"
-
-
-
+          git add k8s/overlays/dev/frontend/frontend-deployment.yml
+          git commit -m "dev: update frontend image to ${{ env.IMAGE_TAG }}" || echo "No changes"
+          git push
 
   build-backend:
     runs-on: self-hosted
@@ -85,8 +74,7 @@ jobs:
       packages: write
 
     steps:
-
-      - name: Checkout repository
+      - name: Checkout app repository
         uses: actions/checkout@v4
 
       - name: Validate backend files
@@ -106,7 +94,7 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('backend/package-lock.json') }}
 
-      - name: Install backend dependencies
+      - name: Install dependencies
         working-directory: backend
         run: npm ci
 
@@ -115,20 +103,18 @@ jobs:
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
           -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
-    
-
-      - name: Build backend image with cache
+      - name: Build & push backend image
         run: |
           docker buildx build \
-          --build-arg APP_VERSION=${{ github.ref_name }} \
+          --build-arg APP_VERSION=${{ env.IMAGE_TAG }} \
           --build-arg GIT_SHA=${{ github.sha }} \
           --cache-from=type=registry,ref=${{ env.IMAGE_BACKEND }}:cache \
           --cache-to=type=registry,ref=${{ env.IMAGE_BACKEND }}:cache,mode=max \
           -f backend/Dockerfile.prod \
-          -t ${{ env.IMAGE_BACKEND }}:${{ github.ref_name }} \
+          -t ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }} \
           backend \
           --push
-      
+
       - name: Checkout GitOps repository
         uses: actions/checkout@v4
         with:
@@ -136,24 +122,16 @@ jobs:
           token: ${{ secrets.GITOPS_TOKEN }}
           path: wellness-gitops
 
-      - name: Update backend image tag
+      - name: Update backend image in DEV overlay
         run: |
-          cd wellness-gitops/backend
-          sed -i "s|image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:.*|image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:${{ github.ref_name }}|" backend-deployment.yml
+          cd wellness-gitops/k8s/overlays/dev/backend
+          sed -i "s|image: .*|image: ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }}|" backend-deployment.yml
 
-      - name: Commit and push changes
+      - name: Commit & push changes (backend)
         run: |
           cd wellness-gitops
-
           git config user.name "github-actions"
           git config user.email "ci@github.com"
-
-          git add backend/backend-deployment.yml
-          git commit -m "Update backend image to ${{ github.ref_name }}" || echo "No changes"
-          git push 
-
-
-      - name: CI completed
-        run: echo "Backend image built and pushed"
-
-         
+          git add k8s/overlays/dev/backend/backend-deployment.yml
+          git commit -m "dev: update backend image to ${{ env.IMAGE_TAG }}" || echo "No changes"
+          git push
