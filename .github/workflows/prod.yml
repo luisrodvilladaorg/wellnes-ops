@@ -1,0 +1,50 @@
+name: CD PROD (tag → promote)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  promote:
+    runs-on: self-hosted
+
+    environment:
+      name: prod
+
+    steps:
+      - name: Get DEV backend image
+        run: |
+          kubectl get deployment backend -n dev -o jsonpath='{.spec.template.spec.containers[0].image}' > backend_image.txt
+
+      - name: Get DEV frontend image
+        run: |
+          kubectl get deployment frontend -n dev -o jsonpath='{.spec.template.spec.containers[0].image}' > frontend_image.txt
+
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: luisrodvilladaorg/wellness-gitops
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: wellness-gitops
+
+      - name: Update PROD backend
+        run: |
+          BACKEND_IMAGE=$(cat backend_image.txt)
+          sed -i "s|image: .*|image: $BACKEND_IMAGE|" \
+          wellness-gitops/k8s/overlays/prod/backend/patch-image.yml
+
+      - name: Update PROD frontend
+        run: |
+          FRONTEND_IMAGE=$(cat frontend_image.txt)
+          sed -i "s|image: .*|image: $FRONTEND_IMAGE|" \
+          wellness-gitops/k8s/overlays/prod/frontend/patch-image.yml
+
+      - name: Commit & push
+        run: |
+          cd wellness-gitops
+          git config user.name "github-actions"
+          git config user.email "ci@github.com"
+          git add .
+          git diff --quiet || git commit -m "prod: promote from dev $GITHUB_REF_NAME"
+          git push

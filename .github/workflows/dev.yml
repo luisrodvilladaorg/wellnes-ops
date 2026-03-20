@@ -1,0 +1,73 @@
+name: CI/CD DEV
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_FRONTEND: ghcr.io/luisrodvilladaorg/wellness-ops-frontend
+  IMAGE_BACKEND: ghcr.io/luisrodvilladaorg/wellness-ops-backend
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+
+  build-and-deploy-dev:
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout app repo
+        uses: actions/checkout@v4
+
+      - name: Login GHCR
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+          -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      # ---------- FRONTEND ----------
+      - name: Build & push frontend
+        run: |
+          docker buildx build \
+          -f frontend/Dockerfile.prod \
+          -t ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }} \
+          frontend --push
+
+      # ---------- BACKEND ----------
+      - name: Build & push backend
+        run: |
+          docker buildx build \
+          -f backend/Dockerfile.prod \
+          -t ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }} \
+          backend --push
+
+      # ---------- GITOPS ----------
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: luisrodvilladaorg/wellness-gitops
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: wellness-gitops
+
+      - name: Update DEV backend image
+        run: |
+          sed -i "s|image: .*|image: ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }}|" \
+          wellness-gitops/k8s/overlays/dev/backend/patch-image.yml
+
+      - name: Update DEV frontend image
+        run: |
+          sed -i "s|image: .*|image: ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }}|" \
+          wellness-gitops/k8s/overlays/dev/frontend/patch-image.yml
+
+      - name: Commit & push
+        run: |
+          cd wellness-gitops
+          git config user.name "github-actions"
+          git config user.email "ci@github.com"
+          git add .
+          git diff --quiet || git commit -m "dev: update images ${{ env.IMAGE_TAG }}"
+          git push
