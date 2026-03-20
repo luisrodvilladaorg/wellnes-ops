@@ -1,4 +1,4 @@
-name: Promote DEV → PROD
+name: Promote DEV → PROD Manually
 
 on:
   workflow_dispatch:
