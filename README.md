@@ -9,21 +9,21 @@ Main application repository and local/Kubernetes operations workspace.
 
 ## Quick Profile (Portfolio)
 
-End-to-end DevOps project with a real separation between application code and GitOps desired state.
+End-to-end DevOps platform with clear separation between application code and GitOps desired state.
 
 - Node.js backend + frontend + PostgreSQL deployed on Kubernetes.
 - CI/CD with GitHub Actions and GitOps delivery with ArgoCD.
 - `dev` and `prod` environments managed through Kustomize overlays.
 - Secure exposure through NGINX Ingress Controller + TLS (`cert-manager`).
 - Observability with Prometheus, Grafana, and `ServiceMonitor`.
-- Production promotion flow based on semantic tag `v*.*.*`.
+- Production promotion flow driven by semantic tag `v*.*.*`.
 - Operational state validated in `dev` (backend/frontend/postgres running).
 
-Result: a reproducible, traceable flow aligned with real cluster operations.
+Result: reproducible and traceable delivery aligned with real cluster operations.
 
 ## Recruiter TL;DR
 
-- Demo platform with `frontend + backend + PostgreSQL`.
+- Production-style demo stack with `frontend + backend + PostgreSQL`.
 - CI/CD with **GitHub Actions + ArgoCD (GitOps model)**.
 - Repository split:
   - `wellnes-ops`: app code, Docker, workflows, documentation.
@@ -32,11 +32,16 @@ Result: a reproducible, traceable flow aligned with real cluster operations.
 - Exposure through **NGINX Ingress Controller** and TLS via `cert-manager`.
 - Observability with Prometheus/Grafana and backend `ServiceMonitor`.
 
+## Repository Model
+
+- `wellnes-ops`: application code, Dockerfiles, runtime configs, and operational docs.
+- `wellness-gitops`: Kubernetes desired state (base + overlays) synchronized by ArgoCD.
+
 ## What this project does today
 
 - Builds frontend/backend images and publishes them to GHCR.
-- Updates image tags in `wellness-gitops` from GitHub Actions.
-- ArgoCD synchronizes desired state from the GitOps repository to the cluster.
+- Updates image tags in `wellness-gitops` via GitHub Actions.
+- ArgoCD synchronizes desired state from Git to the cluster.
 - HTTP(S) routing through NGINX Ingress:
   - `/api` -> `backend-service`
   - `/` -> `frontend-service`
@@ -180,12 +185,20 @@ kubectl get all -n dev
 
 ![Browser access](docs/images/navegador.png)
 
-## Local startup (`dev`)
+## Quick usage
+
+- Local startup (`dev`):
 
 ```bash
 git clone https://github.com/luisrodvilladaorg/wellnes-ops.git
 cd wellnes-ops
 docker compose -f docker-compose.dev.yml up -d
+```
+
+- Kubernetes quick check (`dev`):
+
+```bash
+kubectl get all -n dev
 ```
 
 ## Resources
