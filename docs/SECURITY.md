@@ -1,49 +1,49 @@
-# 🔐 Seguridad en Wellness Ops
+# 🔐 Security in Wellness Ops
 
-Este documento describe las amenazas consideradas para esta plataforma Kubernetes y las medidas concretas que se han implementado o planificado para mitigarlas.
-
----
-
-## ⚠️ Amenazas básicas consideradas
-
-En una plataforma Kubernetes con CI/CD, GitHub Actions, Ingress expuesto y base de datos, las amenazas relevantes se agrupan en tres niveles:
-
-### 1. Nivel de acceso y permisos
-
-| Amenaza | Descripción |
-|---|---|
-| Acceso no autorizado al clúster | Un usuario o proceso obtiene permisos que no le corresponden |
-| Escalada de privilegios | Un pod o SA obtiene acceso a recursos fuera de su ámbito |
-| Service accounts con permisos excesivos | Por defecto, `default` SA en Kubernetes tiene acceso amplio |
-| Acceso lateral entre namespaces | Un pod comprometido puede alcanzar otros servicios del clúster |
-
-### 2. Nivel de imagen y cadena de suministro
-
-| Amenaza | Descripción |
-|---|---|
-| Imagen con vulnerabilidades conocidas (CVEs) | Dependencias desactualizadas o imágenes base inseguras |
-| Imagen modificada en tránsito | Sin verificación de integridad del artefacto |
-| Credenciales en el Dockerfile o código fuente | Secrets hardcodeados en la imagen |
-
-### 3. Nivel de secretos y configuración
-
-| Amenaza | Descripción |
-|---|---|
-| Secrets en texto plano en Git | Contraseñas visibles en el repositorio |
-| Variables sensibles en ConfigMaps | Datos que deberían estar cifrados pero no lo están |
-| Tokens de acceso (GitHub, GHCR) con vida larga | Sin rotación ni scope limitado |
+This document describes the threats considered for this Kubernetes platform and the concrete controls that are implemented or planned to mitigate them.
 
 ---
 
-## 🛡️ Medidas implementadas
+## ⚠️ Core threats considered
 
-### 1. RBAC — Control de acceso basado en roles
+In a Kubernetes platform with CI/CD, GitHub Actions, exposed Ingress, and a database, relevant threats can be grouped into three levels:
 
-El principio es simple: cada identidad (usuario, ServiceAccount, proceso) sólo puede hacer lo estrictamente necesario.
+### 1. Access and permissions level
 
-#### ¿Qué se ha configurado?
+| Threat | Description |
+|---|---|
+| Unauthorized cluster access | A user or process obtains permissions it should not have |
+| Privilege escalation | A pod or service account gains access outside its allowed scope |
+| Over-privileged service accounts | By default, Kubernetes `default` service accounts may be too permissive |
+| Lateral movement across namespaces | A compromised pod can reach other cluster services |
 
-**Role con permisos mínimos** (namespaced, sólo lectura de pods):
+### 2. Image and supply chain level
+
+| Threat | Description |
+|---|---|
+| Image with known vulnerabilities (CVEs) | Outdated dependencies or insecure base images |
+| Image tampering in transit | Artifact integrity is not verified |
+| Credentials in Dockerfile or source code | Secrets hardcoded in the image |
+
+### 3. Secrets and configuration level
+
+| Threat | Description |
+|---|---|
+| Plain-text secrets in Git | Passwords visible in the repository |
+| Sensitive variables in ConfigMaps | Data that should be encrypted is stored in plain text |
+| Long-lived access tokens (GitHub, GHCR) | No rotation and no limited scope |
+
+---
+
+## 🛡️ Implemented controls
+
+### 1. RBAC — Role-based access control
+
+The principle is simple: each identity (user, service account, process) can do only what is strictly necessary.
+
+#### What is configured?
+
+**Role with minimum permissions** (namespaced, read-only pods):
 
 ```yaml
 # k8s/rback/role-read-pods/role.yml
@@ -58,7 +58,7 @@ rules:
   verbs: ["get", "list", "watch"]
 ```
 
-**ServiceAccount dedicada** (en lugar de usar `default`):
+**Dedicated ServiceAccount** (instead of using `default`):
 
 ```yaml
 # k8s/rback/role-read-pods/serviceaccount.yml
@@ -69,7 +69,7 @@ metadata:
   namespace: rbac-lab
 ```
 
-**ClusterRole para acceso global de sólo lectura** (cuando el scope necesita abarcar el clúster):
+**ClusterRole for global read-only access** (when scope must span the cluster):
 
 ```yaml
 # k8s/rback/cluster-role/clusterrole.yml
@@ -83,26 +83,26 @@ rules:
   verbs: ["get", "list", "watch"]
 ```
 
-Referencias:
+References:
 - [k8s/rback/role-read-pods/](../k8s/rback/role-read-pods/)
 - [k8s/rback/cluster-role/](../k8s/rback/cluster-role/)
 
-#### Por qué importa
+#### Why it matters
 
-Sin RBAC bien definido, cualquier pod comprometido puede listar secretos, escalar privilegios o modificar deployments del clúster entero. Con `Role` namespaced y `ServiceAccount` específica, el radio de daño de un compromiso queda acotado al namespace y a los verbos permitidos.
+Without well-defined RBAC, any compromised pod can list secrets, escalate privileges, or modify deployments across the whole cluster. With namespaced `Role` and dedicated `ServiceAccount`, blast radius is constrained to the namespace and permitted verbs.
 
 ---
 
-### 2. NetworkPolicy — Aislamiento de tráfico de red
+### 2. NetworkPolicy — Network traffic isolation
 
-Kubernetes por defecto permite comunicación libre entre todos los pods de todos los namespaces. Las `NetworkPolicy` establecen reglas de red declarativas que restringen ese tráfico.
+By default, Kubernetes allows free communication between pods across namespaces. `NetworkPolicy` objects define declarative network rules that restrict that traffic.
 
-#### ¿Qué debería aplicarse en este proyecto?
+#### What should be applied in this project?
 
-Actualmente el proyecto no tiene NetworkPolicies aplicadas (el clúster usa k3s con Flannel CNI, que sí las soporta). El siguiente ejemplo es la política recomendada para el backend:
+Currently, this project does not have NetworkPolicies applied (the cluster uses k3s with Flannel CNI, which supports them). The following is the recommended policy for backend:
 
 ```yaml
-# Ejemplo recomendado: k8s/network/backend-network-policy.yml
+# Recommended example: k8s/network/backend-network-policy.yml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -128,77 +128,77 @@ spec:
       ports:
         - protocol: TCP
           port: 5432
-    - to: []           # permite salida DNS (puerto 53 UDP)
+    - to: []           # allow DNS egress (UDP port 53)
       ports:
         - protocol: UDP
           port: 53
 ```
 
-#### Lo que conseguimos con esto
+#### What this achieves
 
-- El backend sólo acepta tráfico entrante desde el Ingress Controller.
-- El backend sólo puede salir hacia postgres en el puerto 5432 y hacia DNS.
-- Ningún otro pod puede alcanzar el backend directamente.
+- Backend only accepts incoming traffic from the Ingress Controller.
+- Backend can only egress to postgres on port 5432 and to DNS.
+- No other pod can reach backend directly.
 
-#### Por qué importa
+#### Why it matters
 
-Si un pod en otro namespace del clúster queda comprometido, no puede acceder al backend ni a la base de datos. El movimiento lateral queda bloqueado por defecto.
+If a pod in another namespace is compromised, it cannot reach backend or the database. Lateral movement is blocked by default.
 
 ---
 
-### 3. Image Scanning — Escaneo de vulnerabilidades en CI
+### 3. Image Scanning — CI vulnerability scanning
 
-Las imágenes Docker pueden contener librerías con CVEs conocidos. Detectarlos en la pipeline antes de que la imagen llegue a producción es una medida preventiva fundamental.
+Docker images can contain libraries with known CVEs. Detecting them in the pipeline before images reach production is a critical preventive control.
 
-#### Estado actual
+#### Current status
 
-La pipeline actual ([.github/workflows/kubernetes-build-push-images.yml](../.github/workflows/kubernetes-build-push-images.yml)) construye y sube imágenes a GHCR pero **no incluye escaneo de vulnerabilidades**.
+The current pipeline ([.github/workflows/kubernetes-build-push-images.yml](../.github/workflows/kubernetes-build-push-images.yml)) builds and pushes images to GHCR but **does not include vulnerability scanning**.
 
-#### Integración recomendada con Trivy
+#### Recommended Trivy integration
 
-[Trivy](https://github.com/aquasecurity/trivy) es un escáner open-source de Aqua Security, usado ampliamente en entornos Kubernetes y soportado de forma nativa en GitHub Actions.
+[Trivy](https://github.com/aquasecurity/trivy) is an open-source scanner from Aqua Security, widely used in Kubernetes environments and natively supported in GitHub Actions.
 
 ```yaml
-# Añadir este step después del build, antes del push:
+# Add this step after build and before push:
 - name: Scan image with Trivy
   uses: aquasecurity/trivy-action@master
   with:
     image-ref: ghcr.io/${{ github.repository_owner }}/wellness-ops-backend:${{ github.ref_name }}
     format: table
-    exit-code: '1'          # falla la pipeline si hay CVEs CRITICAL
+    exit-code: '1'          # fail the pipeline on CRITICAL CVEs
     severity: 'CRITICAL,HIGH'
-    ignore-unfixed: true    # ignora CVEs sin parche disponible
+    ignore-unfixed: true    # ignore CVEs with no available fix
 ```
 
-#### ¿Qué escanea Trivy?
+  #### What Trivy scans
 
-- Vulnerabilidades en librerías del sistema base (Debian, Alpine…)
-- Dependencias de Node.js listadas en `package.json`
-- Ficheros de configuración con malas prácticas
-- Secrets hardcodeados en la imagen
+  - Vulnerabilities in base system libraries (Debian, Alpine…)
+  - Node.js dependencies listed in `package.json`
+  - Configuration files with unsafe practices
+  - Hardcoded secrets in images
 
-#### Umbrales recomendados
+  #### Recommended thresholds
 
-| Severidad | Acción sugerida |
-|---|---|
-| CRITICAL | Bloquear build — corrección obligatoria |
-| HIGH | Bloquear build — corrección obligatoria |
-| MEDIUM | Notificar — revisar en el sprint |
-| LOW | Inventariar — sin bloqueo inmediato |
+  | Severity | Suggested action |
+  |---|---|
+  | CRITICAL | Block build — mandatory remediation |
+  | HIGH | Block build — mandatory remediation |
+  | MEDIUM | Notify — review in sprint |
+  | LOW | Inventory — no immediate blocking |
 
 ---
 
-### 4. Gestión de Secrets — Evitar secretos en texto plano
+### 4. Secrets management — Avoid plain-text secrets
 
-Los secretos (contraseñas, tokens, claves JWT) son los datos más sensibles de cualquier plataforma. Exponerlos en Git o en logs es una de las vulnerabilidades más comunes y más graves.
+Secrets (passwords, tokens, JWT keys) are among the most sensitive platform data. Exposing them in Git or logs is one of the most common and severe vulnerabilities.
 
-#### Estrategia actual del proyecto
+#### Current project strategy
 
-El proyecto aplica una estrategia en capas:
+The project applies a layered strategy:
 
-**Capa 1 — Kubernetes Secrets (base)**
+**Layer 1 — Kubernetes Secrets (base)**
 
-Las credenciales de la base de datos y el token JWT se inyectan como variables de entorno a través de Secrets de Kubernetes, no de ConfigMaps.
+Database credentials and JWT token are injected as environment variables through Kubernetes Secrets, not ConfigMaps.
 
 ```yaml
 # k8s/backend/backend-secret.yml
@@ -213,11 +213,11 @@ stringData:
   DB_PASSWORD: wellness
 ```
 
-> ⚠️ Este fichero existe en el repositorio con valores de desarrollo. **En producción, este fichero no debe existir en Git.** Los valores deben gestionarse fuera del repositorio.
+> ⚠️ This file exists in the repository with development values. **In production, this file should not exist in Git.** Values must be managed outside the repository.
 
-**Capa 2 — Sealed Secrets (cifrado en reposo para GitOps)**
+**Layer 2 — Sealed Secrets (encryption at rest for GitOps)**
 
-Para el flujo GitOps con ArgoCD, el secreto de PostgreSQL se cifra con [Sealed Secrets de Bitnami](https://github.com/bitnami-labs/sealed-secrets) antes de subirse al repositorio.
+For the GitOps flow with ArgoCD, the PostgreSQL secret is encrypted using [Bitnami Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) before being committed to the repository.
 
 ```yaml
 # k8s/postgres-sealed-secret.yml
@@ -228,57 +228,57 @@ metadata:
   namespace: default
 spec:
   encryptedData:
-    POSTGRES_DB: AgCrvt/pkogBVde...   # cifrado con clave del clúster
+    POSTGRES_DB: AgCrvt/pkogBVde...   # encrypted with cluster key
     POSTGRES_PASSWORD: AgBCRwnpGigh...
     POSTGRES_USER: AgDI1cimGIZWro...
 ```
 
-El controlador `sealed-secrets-controller` en el clúster descifra el `SealedSecret` y crea el `Secret` real en tiempo de ejecución. La clave de descifrado **nunca sale del clúster**.
+The `sealed-secrets-controller` in the cluster decrypts the `SealedSecret` and creates the real `Secret` at runtime. The decryption key **never leaves the cluster**.
 
-Referencia: [k8s/postgres-sealed-secret.yml](../k8s/postgres-sealed-secret.yml)
+Reference: [k8s/postgres-sealed-secret.yml](../k8s/postgres-sealed-secret.yml)
 
-**Capa 3 — GitHub Actions Secrets**
+**Layer 3 — GitHub Actions Secrets**
 
-Los tokens necesarios para la pipeline (GHCR, kubeconfig) se almacenan como Secrets cifrados del repositorio en GitHub, nunca en el código:
+Required pipeline tokens (GHCR, kubeconfig) are stored as encrypted repository secrets in GitHub, never in source code:
 
 ```yaml
-# Ejemplo de uso en el workflow:
+# Example usage in workflow:
 - name: Login to GHCR
   uses: docker/login-action@v3
   with:
     registry: ghcr.io
     username: ${{ github.actor }}
-    password: ${{ secrets.GITHUB_TOKEN }}   # token efímero por job
+    password: ${{ secrets.GITHUB_TOKEN }}   # ephemeral token per job
 ```
 
-#### Buenas prácticas aplicadas
+  #### Applied best practices
 
-| Práctica | Estado |
-|---|---|
-| Credenciales DB en Secret, no en ConfigMap | ✅ Aplicado |
-| Sealed Secrets para GitOps | ✅ Aplicado (producción) |
-| Token GHCR no hardcodeado | ✅ `GITHUB_TOKEN` efímero |
-| JWT Secret como Kubernetes Secret | ✅ `backend-jwt-secret` existe |
-| Secret de desarrollo sin valores reales en Git | ⚠️ Pendiente de revisar |
-| Rotación periódica de credenciales | ⚠️ Sin automatizar |
+  | Practice | Status |
+  |---|---|
+  | DB credentials in Secret, not ConfigMap | ✅ Applied |
+  | Sealed Secrets for GitOps | ✅ Applied (production) |
+  | GHCR token not hardcoded | ✅ ephemeral `GITHUB_TOKEN` |
+  | JWT secret as Kubernetes Secret | ✅ `backend-jwt-secret` exists |
+  | Development secret without real values in Git | ⚠️ Pending review |
+  | Periodic credential rotation | ⚠️ Not automated |
 
 ---
 
-## 🔍 Resumen de postura de seguridad
+## 🔍 Security posture summary
 
-| Área | Estado | Prioridad de mejora |
+| Area | Status | Improvement priority |
 |---|---|---|
-| RBAC con principio de mínimo privilegio | ✅ Configurado | Ampliar a todos los servicios |
-| NetworkPolicy | ⚠️ Sin aplicar | Alta — implementar antes de exposición externa |
-| Image scanning en CI | ❌ No configurado | Alta — añadir Trivy a la pipeline |
-| Secrets en Kubernetes Secret | ✅ Aplicado | — |
-| Sealed Secrets para GitOps | ✅ Aplicado | — |
-| Secrets de desarrollo en Git | ⚠️ Revisar | Media — usar valores ficticios o excluir |
-| Rotación de credenciales | ❌ Manual | Media — evaluar automatización |
+| RBAC with least privilege principle | ✅ Configured | Extend to all services |
+| NetworkPolicy | ⚠️ Not applied | High — implement before external exposure |
+| CI image scanning | ❌ Not configured | High — add Trivy to pipeline |
+| Secrets in Kubernetes Secret | ✅ Applied | — |
+| Sealed Secrets for GitOps | ✅ Applied | — |
+| Development secrets in Git | ⚠️ Review | Medium — use dummy values or exclude |
+| Credential rotation | ❌ Manual | Medium — evaluate automation |
 
 ---
 
-## 📎 Referencias del repositorio
+## 📎 Repository references
 
 - RBAC (Role namespaced): [k8s/rback/role-read-pods/](../k8s/rback/role-read-pods/)
 - RBAC (ClusterRole): [k8s/rback/cluster-role/](../k8s/rback/cluster-role/)
