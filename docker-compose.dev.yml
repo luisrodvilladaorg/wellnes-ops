@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: wellness-frontend-container
     ports:
-      - "8080:80"                 # Host 8080 → contenedor 80
+      - "8080:80"                 # Host 8080 -> container 80
     networks:
       - web_net
     restart: unless-stopped
@@ -28,7 +28,7 @@ services:
     container_name: wellness-nginx-proxy
     ports:
       - "80:80"
-      - "443:443"                   # Punto de entrada al sistema
+      - "443:443"                   # Main system entrypoint
     depends_on:
       - frontend
       - backend
@@ -55,7 +55,7 @@ services:
     depends_on:
       - postgres  
     networks:
-      - backend_net               # Red separada (seguridad)
+      - backend_net               # Dedicated network (security)
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
@@ -72,7 +72,7 @@ services:
     env_file:
       - env/dev/.env
     volumes:
-      - db-data:/var/lib/postgresql/data   # Persistencia real
+      - db-data:/var/lib/postgresql/data   # Persistent storage
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - backend_net

@@ -8,7 +8,7 @@ jobs:
     runs-on: self-hosted
 
     environment:
-      name: prod   # 👈 aquí está el approval gate
+      name: prod   # approval gate
 
     steps:
       - name: Get current DEV backend image

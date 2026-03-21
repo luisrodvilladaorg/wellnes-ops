@@ -2,7 +2,7 @@ name: Stack CI (docker-compose validation)
 
 on:
   push:
-    branches: [branch-name] # Reemplaza con el nombre de tu rama principal, ej: main
+    branches: [branch-name] # Replace with your main branch name, e.g. main
   pull_request:
 
 jobs:

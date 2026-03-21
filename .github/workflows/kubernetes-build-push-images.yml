@@ -3,9 +3,9 @@ name: CI/CD (GitOps PRO)
 on:
   push:
     branches:
-      - main        # DEV automático
+      - main        # automatic DEV
     tags:
-      - "v*.*.*"    # PROD controlado
+      - "v*.*.*"    # controlled PROD
   workflow_dispatch:
 
 env:
