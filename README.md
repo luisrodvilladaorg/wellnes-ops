@@ -41,11 +41,65 @@ Result: a reproducible, traceable flow aligned with real cluster operations.
   - `/api` -> `backend-service`
   - `/` -> `frontend-service`
 
-> Note: this README documents the current flow. Historical/lab files still exist in the repository (for example `nginx-gateway`) and do not represent the current primary deployment path.
+## Platform Overview
+
+![Platform Overview](docs/images/docker-kubernetes.png)
+
+## Project Structure
+
+```text
+wellnes-ops/
+├── backend/                  # Node.js API, tests, Dockerfiles
+│   ├── src/
+│   └── test/
+├── frontend/                 # Frontend app and production/dev Dockerfiles
+│   └── mi-web/
+├── db/                       # Database bootstrap SQL
+│   └── init.sql
+├── env/                      # Environment variable files per environment
+│   ├── dev/
+│   └── prod/
+├── k8s/                      # Kubernetes manifests and deployment strategies
+│   ├── backend/
+│   ├── frontend/
+│   ├── postgres/
+│   ├── ingress/
+│   ├── monitoring/
+│   ├── metallb/
+│   ├── tls/
+│   ├── bluegreen/
+│   └── canary-lab/
+├── nginx/                    # NGINX configs and Dockerfiles
+├── docs/                     # Runbook, security, deployment flow, architecture images
+│   └── images/
+├── monitoring-docker/        # Local Prometheus config
+├── monitoring-k8s/           # ServiceMonitor manifests for Kubernetes
+├── Docker-practica/          # Practice/lab sandbox
+├── docker-compose*.yml       # Local and production-style compose stacks
+├── Makefile                  # Operational shortcuts
+└── README.md
+```
+
+### Folder guide
+
+- `backend/`: API service, runtime logic, tests, and image build definitions.
+- `frontend/`: static/frontend app and containerization config.
+- `k8s/`: production-style Kubernetes resources, including ingress, TLS, observability, and rollout labs.
+- `docs/`: operational and architecture documentation.
+- `nginx/`: reverse-proxy configuration for container-based environments.
+- `monitoring-*`: observability resources split by Docker and Kubernetes contexts.
 
 ## Architecture (current)
 
 ![Architecture](docs/images/arquitecture-one.png)
+
+## Running Pods
+
+![Pods running](docs/images/pods-running.png)
+
+## Monitoring
+
+![Monitoring](docs/images/monitoring.png)
 
 ## CI/CD (current)
 
@@ -58,6 +112,26 @@ Main operational flow:
 Flow documentation:
 
 - [docs/deployment-flow.md](docs/deployment-flow.md)
+
+## CI/CD Overview
+
+![Pipelines](docs/images/deploy-nginx.png)
+
+## Backend CI
+
+![Backend CI](docs/images/backend-ci.png)
+
+## Continuous Delivery
+
+![Backend CD](docs/images/backend-cd.png)
+
+## Pipeline Visibility
+
+![Pipeline runs](docs/images/backend-cd-working.png)
+
+## Jobs (Reference)
+
+![Jobs](docs/images/jobs-working.png)
 
 ## Current status (`dev` namespace)
 
@@ -78,13 +152,33 @@ kubectl get all -n dev
 
 > Alertmanager is not declared as a confirmed operational component in this primary repository.
 
-## What this README does NOT claim
+## Prometheus
 
-To avoid discrepancies, this README does not claim the following as implemented in `wellnes-ops`:
+![Prometheus metrics](docs/images/metrics-2.png)
 
-- Active Trivy scanning in pipelines (there is strategy/documentation, but no active integration in primary workflows).
-- Terraform as operational IaC for this repository.
-- NGINX gateway as the current primary frontend route.
+## Grafana
+
+![Grafana dashboard](docs/images/metrics-grafana.png)
+
+## Key Metrics
+
+![Metrics](docs/images/metrics.png)
+
+## External Access
+
+### Ingress and Service Exposure
+
+![Ingress external IP](docs/images/ingress.png)
+
+![Ingress Service](docs/images/svc-ingress.png)
+
+### API Validation
+
+![cURL backend response](docs/images/curl-backend.png)
+
+### Browser Validation
+
+![Browser access](docs/images/navegador.png)
 
 ## Local startup (`dev`)
 
@@ -102,11 +196,12 @@ docker compose -f docker-compose.dev.yml up -d
 - [docs/observability-grafana-prometheus.md](docs/observability-grafana-prometheus.md)
 - [docs/SECURITY.md](docs/SECURITY.md)
 
-## Pending visual documentation
-
-- Updated ArgoCD screenshots.
-- Screenshots from the additional namespace (besides `dev`).
-
 ## License
 
 Project distributed under [LICENSE](LICENSE).
+
+## Author
+
+Luis Fernando Rodríguez Villada
+
+luisfernando198912@gmail.com
