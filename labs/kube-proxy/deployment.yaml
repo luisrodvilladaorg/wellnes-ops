@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-kp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-kp
+  template:
+    metadata:
+      labels:
+        app: backend-kp
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+          - containerPort: 80

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dns-client
+spec:
+  containers:
+  - name: curl
+    image: curlimages/curl
+    command: ["sleep", "3600"]

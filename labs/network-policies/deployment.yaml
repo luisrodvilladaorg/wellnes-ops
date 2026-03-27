@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-np
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-np
+  template:
+    metadata:
+      labels:
+        app: backend-np
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+          - containerPort: 80
