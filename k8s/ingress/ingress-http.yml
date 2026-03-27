@@ -1,9 +1,15 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: wellness-ingress-http
+  name: wellness-ingress
 spec:
   ingressClassName: nginx
+
+  tls:
+    - hosts:
+        - wellness.local
+      secretName: tls-secret
+
   rules:
     - host: wellness.local
       http:
@@ -12,6 +18,14 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: nginx-gateway
+                name: frontend-service   # 👈 ESTE
                 port:
                   number: 80
+
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service   # 👈 ESTE
+                port:
+                  number: 3000

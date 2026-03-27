@@ -1,0 +1,29 @@
+// Este deployment simula un backend con una ruta que devuelve 404, lo que hace que el readiness probe 
+//falle y el pod no esté listo para recibir tráfico.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-buggy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-buggy
+  template:
+    metadata:
+      labels:
+        app: backend-buggy
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+          - containerPort: 80
+
+        readinessProbe:
+          httpGet:
+            path: /fail   # ❌ NO EXISTE → devuelve 404
+            port: 80
+          initialDelaySeconds: 2
+          periodSeconds: 3
