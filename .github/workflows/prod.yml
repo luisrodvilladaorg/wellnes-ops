@@ -44,8 +44,9 @@ jobs:
       # =========================
       - name: Update PROD backend image
         run: |
-          BACKEND_IMAGE=$(cat backend_image.txt)
-          sed -i "s|image: .*|image: $BACKEND_IMAGE|" \
+          export BACKEND_IMAGE=$(cat backend_image.txt)
+
+          yq -i '.spec.template.spec.containers[0].image = env(BACKEND_IMAGE)' \
           wellness-gitops/k8s/overlays/prod/backend/patch-image.yml
 
       # =========================
@@ -53,10 +54,10 @@ jobs:
       # =========================
       - name: Update PROD frontend image
         run: |
-          FRONTEND_IMAGE=$(cat frontend_image.txt)
-          sed -i "s|image: .*|image: $FRONTEND_IMAGE|" \
-          wellness-gitops/k8s/overlays/prod/frontend/patch-image.yml
+          export FRONTEND_IMAGE=$(cat frontend_image.txt)
 
+          yq -i '.spec.template.spec.containers[0].image = env(FRONTEND_IMAGE)' \
+          wellness-gitops/k8s/overlays/prod/frontend/patch-image.yml
       # =========================
       # COMMIT GITOPS
       # =========================
