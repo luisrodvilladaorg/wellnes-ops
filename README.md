@@ -48,7 +48,7 @@ Result: reproducible and traceable delivery aligned with real cluster operations
 
 ## Platform Overview
 
-![Platform Overview](docs/images/docker-kubernetes.png)
+![Platform Overview](docs/images/overview.png)
 
 ## Project Structure
 
@@ -96,11 +96,17 @@ wellnes-ops/
 
 ## Architecture (current)
 
-![Architecture](docs/images/arquitecture-one.png)
+![Architecture](docs/images/architecture-one.png)
 
 ## Running Pods
 
-![Pods running](docs/images/pods-running.png)
+### Prod Namespace
+
+![Pods running (default)](docs/images/pods_running_default.png)
+
+### Dev Namespace
+
+![Pods running (dev)](docs/images/pods_running_dev.png)
 
 ## Monitoring
 
@@ -120,7 +126,7 @@ Flow documentation:
 
 ## Continuous Integration
 
-![Pipelines](docs/images/deploy-nginx.png)
+![Pipelines](docs/images/Pipelines.png)
 
 ## Backend CI
 
@@ -137,6 +143,24 @@ Flow documentation:
 ## Jobs (Reference)
 
 ![Jobs](docs/images/jobs-working.png)
+
+## ArgoCD
+
+Production CD control plane: ArgoCD continuously syncs production manifests from Git to keep cluster state aligned.
+
+![ArgoCD sync](docs/images/argocd.png)
+
+## Dev Environment
+
+Development environment focused on validation and fast iteration before production promotion.
+
+![Dev environment](docs/images/wellness-ops-dev.png)
+
+## Production Environment
+
+Production environment with the promoted release and stable runtime configuration.
+
+![Production environment](docs/images/wellness-ops-production.png)
 
 ## Current status (`dev` namespace)
 
