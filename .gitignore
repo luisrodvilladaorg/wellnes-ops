@@ -1,6 +1,9 @@
+leeme-todo.md
+labs/
+certificado509
 errores
 Comandos
-Apuntes
+Apuntes-rbac.md
 HTTPS
 postgres-secret.yml
 .env
@@ -13,3 +16,5 @@ reset-docker.sh
 Docker-practica
 HTTPS.md
 wellnes-ops.code-workspace
+apuntes
+pod-test
