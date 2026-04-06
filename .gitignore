@@ -1,3 +1,4 @@
+k8s/backend/backend-jwt-secret-plain.yml
 k8s/backend/backend-secret-plain.yml
 leeme-todo.md
 labs/
