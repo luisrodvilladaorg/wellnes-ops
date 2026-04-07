@@ -3,9 +3,9 @@ name: CI/CD (GitOps PRO)
 on:
   push:
     branches:
-      - main        # automatic DEV
+      - main
     tags:
-      - "v*.*.*"    # controlled PROD
+      - "v*.*.*"
   workflow_dispatch:
 
 env:
@@ -38,19 +38,54 @@ jobs:
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
           -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
-      - name: Build & push frontend (DEV)
+      # =========================
+      # BUILD LOCAL (sin push)
+      # =========================
+      - name: Build frontend DEV (local)
         run: |
           docker buildx build \
           -f frontend/Dockerfile.prod \
           -t ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }} \
-          frontend --push
+          --load \
+          frontend
 
-      - name: Build & push backend (DEV)
+      - name: Build backend DEV (local)
         run: |
           docker buildx build \
           -f backend/Dockerfile.prod \
           -t ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }} \
-          backend --push
+          --load \
+          backend
+
+      # =========================
+      # TRIVY SCAN
+      # =========================
+      - name: Trivy scan frontend DEV
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          image-ref: ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL
+          ignore-unfixed: true
+
+      - name: Trivy scan backend DEV
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          image-ref: ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL
+          ignore-unfixed: true
+
+      # =========================
+      # PUSH
+      # =========================
+      - name: Push frontend DEV
+        run: docker push ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }}
+
+      - name: Push backend DEV
+        run: docker push ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }}
 
       - name: Checkout GitOps repo
         uses: actions/checkout@v4
@@ -101,19 +136,54 @@ jobs:
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
           -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
-      - name: Build & push frontend (PROD)
+      # =========================
+      # BUILD LOCAL (sin push)
+      # =========================
+      - name: Build frontend PROD (local)
         run: |
           docker buildx build \
           -f frontend/Dockerfile.prod \
           -t ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }} \
-          frontend --push
+          --load \
+          frontend
 
-      - name: Build & push backend (PROD)
+      - name: Build backend PROD (local)
         run: |
           docker buildx build \
           -f backend/Dockerfile.prod \
           -t ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }} \
-          backend --push
+          --load \
+          backend
+
+      # =========================
+      # TRIVY SCAN
+      # =========================
+      - name: Trivy scan frontend PROD
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          image-ref: ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL
+          ignore-unfixed: true
+
+      - name: Trivy scan backend PROD
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          image-ref: ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL
+          ignore-unfixed: true
+
+      # =========================
+      # PUSH
+      # =========================
+      - name: Push frontend PROD
+        run: docker push ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }}
+
+      - name: Push backend PROD
+        run: docker push ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }}
 
       - name: Checkout GitOps repo
         uses: actions/checkout@v4
