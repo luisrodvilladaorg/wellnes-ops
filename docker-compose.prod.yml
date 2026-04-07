@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v1.0.5
+    image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:v1.0.3
     container_name: wellness-frontend
     networks:
       - web_net
