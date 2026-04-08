@@ -1,3 +1,4 @@
+docker-labs
 k8s/backend/backend-jwt-secret-plain.yml
 k8s/backend/backend-secret-plain.yml
 leeme-todo.md
@@ -10,6 +11,7 @@ HTTPS
 postgres-secret.yml
 .env
 backend/.env
+node_modules
 node_modules/
 env
 wellness-ops-backup/
@@ -21,3 +23,4 @@ wellness-ops.code-workspace
 apuntes
 pod-test
 k8s/
+*.code-workspace
