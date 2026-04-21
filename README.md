@@ -38,9 +38,14 @@
 
 ![Pods running (dev)](docs/images/pods_running_dev.png)
 
-## Monitoring
+## Observability
+
+Backend metrics exposed via `ServiceMonitor` and scraped by Prometheus.
+Grafana dashboards provide real-time visibility into cluster and application health.
 
 ![Monitoring](docs/images/monitoring.png)
+![Prometheus metrics](docs/images/metrics-2.png)
+![Grafana dashboard](docs/images/metrics-grafana.png)
 
 ## CI/CD Pipeline
 
@@ -52,27 +57,15 @@
 ![Backend CI](docs/images/backend-ci.png)
 ![Backend CD](docs/images/backend-cd.png)
 
-## Prometheus
-
-![Prometheus metrics](docs/images/metrics-2.png)
-
-## Grafana
-
-![Grafana dashboard](docs/images/metrics-grafana.png)
-
-## Key Metrics
-
-![Metrics](docs/images/metrics.png)
-
 ## External Access
 
-### Ingress and Service Exposure
+HTTP(S) routing via NGINX Ingress Controller — `/api` → `backend-service`, `/` → `frontend-service`.
 
 ![Ingress external IP](docs/images/ingress.png)
 
+
 ![Ingress Service](docs/images/svc-ingress.png)
 
-## API Validation
 
 ![cURL backend response](docs/images/curl-backend.png)
 
@@ -83,18 +76,12 @@
 
 ## Infrastructure & GitOps
 
-Kubernetes manifests and ArgoCD configuration live in a dedicated GitOps repository,
-following the GitOps pattern to keep application code and deployment state separated.
+Application code and deployment state are fully separated across two repositories:
 
--> [wellness-gitops](https://github.com/luisrodvilladaorg/wellness-gitops)
+- [`wellness-ops`](https://github.com/luisrodvilladaorg/wellness-ops): app code, Dockerfiles, workflows, and docs.
+- [`wellness-gitops`](https://github.com/luisrodvilladaorg/wellness-gitops): Kubernetes desired state (base + overlays) synced by ArgoCD.
 
-Architecture:
-
-- CI pipeline builds and pushes images, then commits new image tags to the GitOps repo.
-- ArgoCD watches the GitOps repo and syncs changes to the cluster automatically.
-- Environments: `dev` / `prod` managed with Kustomize overlays.
-
-This avoids duplicating Kubernetes source-of-truth manifests across repositories.
+CI pushes new image tags to `wellness-gitops` - ArgoCD handles the rest.
 
 ## Production Environment
 
@@ -122,6 +109,13 @@ Development environment focused on validation and fast iteration before producti
 Backend-to-PostgreSQL traffic is handled through internal Kubernetes Services (`backend-service` and `postgres-service`) and is encrypted in transit with SSL/TLS.
 PostgreSQL is configured with `ssl=on` and the backend connects using SSL (`ssl: { rejectUnauthorized: false }` for a self-signed certificate setup).
 Operational validation confirmed active encrypted sessions (`TLSv1.3` with `AES-256-GCM`), while PostgreSQL remains private with no direct external exposure.
+
+## Security
+
+- **TLS in transit**: PostgreSQL configured with `ssl=on`, backend connects via TLS 1.3 + AES-256-GCM.
+- **Secrets management**: SealedSecrets — secrets encrypted at rest, safe to commit to Git.
+- **Image scanning**: Trivy scans images on every CI run before pushing to GHCR.
+- **Image signing**: Cosign signs images in GHCR for supply chain integrity.
 
 ## Project Structure
 
@@ -156,15 +150,6 @@ wellness-ops/
 └── README.md
 ```
 
-### Folder guide
-
-- `backend/`: API service, runtime logic, tests, and image build definitions.
-- `frontend/`: static/frontend app and containerization config.
-- `k8s/`: local reference manifests for practice and validation; canonical cluster desired state lives in `wellness-gitops`.
-- `docs/`: operational and architecture documentation.
-- `nginx/`: reverse-proxy configuration for container-based environments.
-- `monitoring-*`: observability resources split by Docker and Kubernetes contexts.
-
 ## Current status (`dev` namespace)
 
 Snapshot taken on **2026-03-21**:
@@ -176,13 +161,6 @@ Snapshot taken on **2026-03-21**:
 ```bash
 kubectl get all -n dev
 ```
-
-## Observability
-
-- Backend metrics are exposed and scraped by Prometheus via `ServiceMonitor`.
-- Grafana dashboards are used for visualization.
-
-> Alertmanager is not declared as a confirmed operational component in this primary repository.
 
 ## Quick usage
 
@@ -208,12 +186,20 @@ kubectl get all -n dev
 - [docs/observability-grafana-prometheus.md](docs/observability-grafana-prometheus.md)
 - [docs/SECURITY.md](docs/SECURITY.md)
 
+### Folder guide
+
+- `backend/`: API service, runtime logic, tests, and image build definitions.
+- `frontend/`: static/frontend app and containerization config.
+- `k8s/`: local reference manifests for practice and validation; canonical cluster desired state lives in `wellness-gitops`.
+- `docs/`: operational and architecture documentation.
+- `nginx/`: reverse-proxy configuration for container-based environments.
+- `monitoring-*`: observability resources split by Docker and Kubernetes contexts.
+
 ## License
 
 Project distributed under [LICENSE](LICENSE).
 
 ## Author
 
-Luis Fernando Rodríguez Villada
-
-luisfernando198912@gmail.com
+Luis Fernando Rodríguez Villada  
+[LinkedIn](https://www.linkedin.com/in/luis-fernando-rodriguez-villada/?locale=es) · luisfernando198912@gmail.com
