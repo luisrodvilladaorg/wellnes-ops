@@ -22,7 +22,7 @@ async function waitForDB(retries = 10) {
             await pool.query("SELECT 1");
             logger.info("Connected to PostgreSQL");
             return;
-        } catch (err) {
+        } catch (_err) {
             logger.warn("PostgreSQL not ready", { attempt: i + 1, total: retries });
             await new Promise(r => setTimeout(r, 3000));
         }
