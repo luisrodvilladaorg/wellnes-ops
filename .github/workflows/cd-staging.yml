@@ -122,3 +122,11 @@ jobs:
                   k8s/overlays/staging/frontend/patch-image.yml
           git diff --staged --quiet || git commit -m "staging: update images to ${{ env.IMAGE_TAG }}"
           git push
+
+      - name: Sync ArgoCD staging
+        run: |
+          argocd login 127.0.0.1:8080 --insecure \
+            --username admin \
+            --password ${{ secrets.ARGOCD_PASSWORD }}
+          argocd app sync backend-staging
+          argocd app sync frontend-staging
