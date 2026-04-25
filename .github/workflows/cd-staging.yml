@@ -1,0 +1,124 @@
+name: CD — Deploy STAGING
+
+on:
+  push:
+    tags:
+      - 'v*.*.*-rc.*'
+
+env:
+  IMAGE_BACKEND: ghcr.io/luisrodvilladaorg/wellness-ops-backend
+  IMAGE_FRONTEND: ghcr.io/luisrodvilladaorg/wellness-ops-frontend
+  IMAGE_TAG: ${{ github.ref_name }}
+
+jobs:
+
+  build-backend:
+    name: Build & Scan Backend
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login GHCR
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+          -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      - name: Build backend
+        run: |
+          docker buildx build \
+            --build-arg APP_VERSION=${{ env.IMAGE_TAG }} \
+            --build-arg GIT_SHA=${{ github.sha }} \
+            -f backend/Dockerfile.prod \
+            -t ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }} \
+            --load \
+            backend
+
+      - name: Trivy scan backend
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          image-ref: ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL
+          ignore-unfixed: true
+
+      - name: Push backend
+        run: docker push ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }}
+
+
+  build-frontend:
+    name: Build & Scan Frontend
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login GHCR
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+          -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      - name: Build frontend
+        run: |
+          docker buildx build \
+            -f frontend/Dockerfile.prod \
+            -t ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }} \
+            --load \
+            frontend
+
+      - name: Trivy scan frontend
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          image-ref: ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL
+          ignore-unfixed: true
+
+      - name: Push frontend
+        run: docker push ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }}
+
+
+  update-gitops-staging:
+    name: Update GitOps — STAGING overlay
+    runs-on: self-hosted
+    needs: [build-backend, build-frontend]
+
+    steps:
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: luisrodvilladaorg/wellness-gitops
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: wellness-gitops
+
+      - name: Update backend image tag
+        run: |
+          sed -i "s|image: .*|image: ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }}|" \
+          wellness-gitops/k8s/overlays/staging/backend/patch-image.yml
+
+      - name: Update frontend image tag
+        run: |
+          sed -i "s|image: .*|image: ${{ env.IMAGE_FRONTEND }}:${{ env.IMAGE_TAG }}|" \
+          wellness-gitops/k8s/overlays/staging/frontend/patch-image.yml
+
+      - name: Commit & push
+        run: |
+          cd wellness-gitops
+          git config user.name "github-actions"
+          git config user.email "ci@github.com"
+          git add k8s/overlays/staging/backend/patch-image.yml \
+                  k8s/overlays/staging/frontend/patch-image.yml
+          git diff --staged --quiet || git commit -m "staging: update images to ${{ env.IMAGE_TAG }}"
+          git push
