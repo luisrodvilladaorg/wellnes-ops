@@ -32,3 +32,4 @@ k8s/postgres/postgres-ssl-plain.yml
 /docs/argocd.md
 
 contexto-k8s.md
+pipelines/
