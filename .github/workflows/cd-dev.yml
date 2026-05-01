@@ -33,7 +33,7 @@ jobs:
       - name: Build backend
         run: |
           docker buildx build \
-            --build-arg APP_VERSION=${{ env.IMAGE_TAG }} \
+            --build-arg APP_VERSION=dev \
             --build-arg GIT_SHA=${{ env.IMAGE_TAG }} \
             -f backend/Dockerfile.prod \
             -t ${{ env.IMAGE_BACKEND }}:${{ env.IMAGE_TAG }} \
