@@ -33,3 +33,4 @@ k8s/postgres/postgres-ssl-plain.yml
 
 contexto-k8s.md
 pipelines/
+linux-practices
